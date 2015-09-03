@@ -36,7 +36,6 @@ public abstract class QuickAdapter<T extends ISelectable> extends
 	private int mSelectMode;
 	private List<Integer> mSelectedPositions;
 	private int mSelectedPosition = -1;
-	private boolean mInited;
 
 	/**
 	 * Same as QuickAdapter#QuickAdapter(Context,int) but with some

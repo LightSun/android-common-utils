@@ -54,6 +54,29 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
         this.mDatas = mDatas!=null ? new ArrayList<>(mDatas) : new ArrayList<T>();
         this.mLayoutId = layoutId;
         this.mSelectMode = selectMode;
+        initSelected(mDatas);
+    }
+
+    private void initSelected(List<T> mDatas) {
+        if(mDatas==null || mDatas.size() ==0){
+            return;
+        }
+        T t ;
+        for(int i=0 ,size =mDatas.size() ;i<size ; i++){
+            t = getItem(i);
+            if (mSelectMode ==  ISelectable.SELECT_MODE_SINGLE) {
+                if (mSelectedPosition ==  ISelectable.INVALID_POSITION && t.isSelected()) {
+                    mSelectedPosition = i;
+                }
+            } else if (mSelectMode ==  ISelectable.SELECT_MODE_MULTI) {
+                if (t.isSelected()) {
+                    mSelectedPositions.add(Integer.valueOf(i));
+                }
+            } else {
+                //can't reach here
+                throw new RuntimeException();
+            }
+        }
     }
 
     public final T getItem(int position){
@@ -184,26 +207,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
 
     @Override
     public final void onBindViewHolder(ViewHolder holder, int position) {
-        //may int with selected, so keep it
-        if(!mInited) {//only need execute once
-            mInited = true;
-            final T t = getItem(position);
-            if (mSelectMode == ISelectable.SELECT_MODE_SINGLE) {
-                if (mSelectedPosition == ISelectable.INVALID_POSITION && t.isSelected()) {
-                    mSelectedPosition = position;
-                }
-            } else if (mSelectMode == ISelectable.SELECT_MODE_MULTI) {
-                if (t.isSelected()) {
-                    mSelectedPositions.add(Integer.valueOf(position));
-                }
-            } else {
-                //can't reach here
-                throw new RuntimeException();
-            }
-            onBindData( holder.getContext() ,position, t, holder.mViewHelper);
-        }else{
-            onBindData( holder.getContext() ,position, getItem(position), holder.mViewHelper);
-        }
+        onBindData( holder.getContext() ,position, getItem(position), holder.mViewHelper);
     }
 
     @Override

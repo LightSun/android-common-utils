@@ -33,9 +33,7 @@ import java.util.List;
 public abstract class QuickAdapter<T extends ISelectable> extends
 		BaseQuickAdapter<T, BaseAdapterHelper> {
 
-	private int mSelectMode;
-	private List<Integer> mSelectedPositions;
-	private int mSelectedPosition = -1;
+	private SelectHelper<T> mSelectHelper;
 
 	/**
 	 * Same as QuickAdapter#QuickAdapter(Context,int) but with some
@@ -51,12 +49,27 @@ public abstract class QuickAdapter<T extends ISelectable> extends
 	}
 	public QuickAdapter(int layoutResId, List<T> data,int selectMode) {
 		super(layoutResId, data);
-		if(selectMode == ISelectable.SELECT_MODE_MULTI)
-			this.mSelectedPositions = new ArrayList<>();
-		if(selectMode!= ISelectable.SELECT_MODE_SINGLE && selectMode != ISelectable.SELECT_MODE_MULTI){
-			throw new IllegalArgumentException("invalid select mode = " +selectMode);
-		}
-		this.mSelectMode = selectMode;
+		init(selectMode,data);
+	}
+
+	private void init(int selectMode,List<T> list){
+		mSelectHelper = new SelectHelper<T>(selectMode) {
+			@Override
+			protected void notifyAllChanged() {
+				notifyDataSetChanged();
+			}
+
+			@Override
+			protected void notifyItemChanged(int itemPosition) {
+				throw new UnsupportedOperationException();
+			}
+
+			@Override
+			protected T getSelectedItemAtPosition(int position) {
+				return getItem(position);
+			}
+		};
+		mSelectHelper.initSelectPositions(list);
 	}
 
 	public QuickAdapter(ArrayList<T> data,
@@ -68,57 +81,24 @@ public abstract class QuickAdapter<T extends ISelectable> extends
 	 * select the target position with notify data.if currentPosition  == position.ignore it.
 	 * <li></>only support select mode = {@link ISelectable#SELECT_MODE_SINGLE} ,this will auto update**/
 	public void setSelected(int position){
-		if(mSelectMode == ISelectable.SELECT_MODE_MULTI)
-			return ;
-		if(mSelectedPosition == position){
-			return ;
-		}
-		if(position < 0)
-			throw new IllegalArgumentException();
-		if(mSelectedPosition!= ISelectable.INVALID_POSITION){
-			getItem(mSelectedPosition).setSelected(false);
-		}
-		mSelectedPosition = position;
-		getItem(position).setSelected(true);
-		notifyDataSetChanged();
+		mSelectHelper.setSelected(position);
 	}
 
 	/** only support select mode = {@link ISelectable#SELECT_MODE_MULTI}**/
 	public void addSelected(int selectPosition){
-		if(mSelectMode == ISelectable.SELECT_MODE_SINGLE)
-			return ;
-		if(mSelectedPositions ==null)
-			throw new IllegalStateException("select mode must be multi");
-		mSelectedPositions.add(selectPosition);
-		getItem(selectPosition).setSelected(true);
-		notifyDataSetChanged();
+		mSelectHelper.addSelected(selectPosition);
 	}
 
 	public void clearAllSelected(){
-		if(mSelectMode == ISelectable.SELECT_MODE_MULTI) {
-			int pos;
-			for (int i = 0, size = mSelectedPositions.size(); i < size; i++) {
-				pos = mSelectedPositions.get(i);
-				getItem(pos).setSelected(false);
-			}
-			mSelectedPositions.clear();
-			notifyDataSetChanged();
-		}else{
-			if(mSelectedPosition!= ISelectable.INVALID_POSITION){
-				getItem(mSelectedPosition).setSelected(false);
-				notifyDataSetChanged();
-			}
-		}
+		mSelectHelper.clearAllSelected();
 	}
 
 	public T getSelectedData(){
-		if(mSelectedPosition == ISelectable.INVALID_POSITION)
-			return null;
-		return getItem(mSelectedPosition);
+		return mSelectHelper.getSelectedItem();
 	}
 
 	public int getSelectedPosition(){
-		return mSelectedPosition ;
+		return mSelectHelper.getSelectedPosition() ;
 	}
 
 	@Override

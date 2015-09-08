@@ -20,11 +20,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
 
     private List<T> mDatas ;
     private int mLayoutId = 0;
-
-    private int mSelectMode;
-    private List<Integer> mSelectedPositions;
-    private int mSelectedPosition = -1;
-    private boolean mInited;
+    private SelectHelper<T> mSelectHelper;
 
     /**
      * create QuickRecycleViewAdapter with the layout id. if layoutId==0, the method
@@ -33,7 +29,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
      * @param mDatas
      */
     public QuickRecycleViewAdapter(int layoutId, List<T> mDatas) {
-       this(layoutId,mDatas,ISelectable.SELECT_MODE_SINGLE);
+       this(layoutId, mDatas, ISelectable.SELECT_MODE_SINGLE);
     }
     /**
      * create QuickRecycleViewAdapter with the layout id. if layoutId==0, the method
@@ -46,37 +42,34 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
        if(layoutId <0 ){
            throw new IllegalArgumentException("layoutId can't be negative ");
        }
-        if(selectMode == ISelectable.SELECT_MODE_MULTI)
-              this.mSelectedPositions = new ArrayList<>();
-        if(selectMode!= ISelectable.SELECT_MODE_SINGLE && selectMode != ISelectable.SELECT_MODE_MULTI){
-            throw new IllegalArgumentException("invalid select mode = " +selectMode);
-        }
-        this.mDatas = mDatas!=null ? new ArrayList<>(mDatas) : new ArrayList<T>();
         this.mLayoutId = layoutId;
-        this.mSelectMode = selectMode;
-        initSelected(mDatas);
+        this.mDatas = mDatas == null ? new ArrayList<T>() : new ArrayList<>(mDatas);
+        init(selectMode,mDatas);
     }
 
-    private void initSelected(List<T> mDatas) {
-        if(mDatas==null || mDatas.size() ==0){
-            return;
-        }
-        T t ;
-        for(int i=0 ,size =mDatas.size() ;i<size ; i++){
-            t = getItem(i);
-            if (mSelectMode ==  ISelectable.SELECT_MODE_SINGLE) {
-                if (mSelectedPosition ==  ISelectable.INVALID_POSITION && t.isSelected()) {
-                    mSelectedPosition = i;
-                }
-            } else if (mSelectMode ==  ISelectable.SELECT_MODE_MULTI) {
-                if (t.isSelected()) {
-                    mSelectedPositions.add(Integer.valueOf(i));
-                }
-            } else {
-                //can't reach here
-                throw new RuntimeException();
+    private void init(int selectMode,List<T> list){
+        mSelectHelper = new SelectHelper<T>(selectMode) {
+            @Override
+            protected boolean isRecyclable() {
+                return true;
             }
-        }
+
+            @Override
+            protected void notifyAllChanged() {
+                notifyDataSetChanged();
+            }
+
+            @Override
+            protected void notifyItemChanged(int itemPosition) {
+                QuickRecycleViewAdapter.this.notifyItemChanged(itemPosition);
+            }
+
+            @Override
+            protected T getSelectedItemAtPosition(int position) {
+                return getItem(position);
+            }
+        };
+        mSelectHelper.initSelectPositions(list);
     }
 
     public final T getItem(int position){
@@ -84,51 +77,24 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
     }
     /** only support select mode = {@link ISelectable#SELECT_MODE_MULTI}**/
     public void addSelected(int selectPosition){
-        if(mSelectMode == ISelectable.SELECT_MODE_SINGLE)
-             return ;
-        if(mSelectedPositions ==null)
-            throw new IllegalStateException("select mode must be multi");
-        mSelectedPositions.add(selectPosition);
-        getItem(selectPosition).setSelected(true);
-        notifyItemChanged(selectPosition);
+        mSelectHelper.addSelected(selectPosition);
     }
     public void clearAllSelected(){
-        int pos ;
-        for(int i=0,size = mSelectedPositions.size() ;i<size ;i++){
-            pos = mSelectedPositions.get(i);
-            mDatas.get(pos).setSelected(false);
-            notifyItemChanged(pos);
-        }
-        mSelectedPositions.clear();
+        mSelectHelper.clearAllSelected();
     }
     /**
      * select the target position with notify data.if currentPosition  == position.ignore it.
      * <li></>only support select mode = {@link ISelectable#SELECT_MODE_SINGLE} ,this will auto update**/
     public void setSelected(int position){
-        if(mSelectMode == ISelectable.SELECT_MODE_MULTI)
-            return ;
-        if(mSelectedPosition == position){
-            return ;
-        }
-        if(position < 0)
-            throw new IllegalArgumentException();
-        if(mSelectedPosition!= ISelectable.INVALID_POSITION){
-            getItem(mSelectedPosition).setSelected(false);
-            notifyItemChanged(mSelectedPosition);
-        }
-        mSelectedPosition = position;
-        getItem(position).setSelected(true);
-        notifyItemChanged(position);
+        mSelectHelper.setSelected(position);
     }
 
     public T getSelectedData(){
-        if(mSelectedPosition == ISelectable.INVALID_POSITION)
-            return null;
-        return getItem(mSelectedPosition);
+       return mSelectHelper.getSelectedItem();
     }
 
     public int getSelectedPosition(){
-        return mSelectedPosition ;
+        return mSelectHelper.getSelectedPosition() ;
     }
 
     public void addItems(List<T> items){

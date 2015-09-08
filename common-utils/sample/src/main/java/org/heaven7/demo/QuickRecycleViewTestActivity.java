@@ -1,9 +1,11 @@
 package org.heaven7.demo;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.android.volley.extra.ImageParam;
 
@@ -35,8 +37,18 @@ public class QuickRecycleViewTestActivity extends BaseActivity {
         addTestData(items);
         mRecyclerView.setAdapter(new QuickRecycleViewAdapter<Item>(R.layout.item_image, items) {
             @Override
-            protected void onBindData(Context ctx, int position, Item item, ViewHelper helper) {
-                helper.setImageUrl(R.id.eniv, item.url, new ImageParam.Builder().create());
+            protected void onBindData(Context ctx, final int position, Item item, ViewHelper helper) {
+                helper.setImageUrl(R.id.eniv, item.url, new ImageParam.Builder().create())
+                        .view(R.id.tv)
+                        .setTextColor(item.isSelected() ? Color.RED : Color.BLACK)
+                        .setText(item.url).reverse(helper)
+                        .setOnClickListener(R.id.ll, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showToast("select position is " + position);
+                                setSelected(position);
+                            }
+                        });
             }
         });
     }
@@ -50,6 +62,7 @@ public class QuickRecycleViewTestActivity extends BaseActivity {
     public static class Item implements ISelectable{
 
         public String url;
+        private boolean selected;
 
         public Item(String url) {
             this.url = url;
@@ -57,11 +70,12 @@ public class QuickRecycleViewTestActivity extends BaseActivity {
 
         @Override
         public void setSelected(boolean selected) {
+            this.selected = selected;
         }
 
         @Override
         public boolean isSelected() {
-            return false;
+            return selected;
         }
     }
 }

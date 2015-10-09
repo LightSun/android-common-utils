@@ -16,18 +16,17 @@ import java.util.List;
  */
 public abstract class QuickExpandListAdapter<Group,Child> extends BaseExpandableListAdapter {
 
-    private List<ExpandListItem<Group,Child>> mItems;
+    private List<IExpandListItem<Group,Child>> mItems;
     private int mGroupLayoutId;
     private int mChildLayoutId;
 
-    public QuickExpandListAdapter(int groupLayoutId, int childLayoutId, List<ExpandListItem<Group, Child>> mItems) {
-        this.mItems = mItems!=null ? new ArrayList<>(mItems) :new ArrayList<ExpandListItem<Group,Child>>();
+    public QuickExpandListAdapter(int groupLayoutId, int childLayoutId, List<IExpandListItem<Group, Child>> mItems) {
+        this.mItems = mItems!=null ? new ArrayList<>(mItems) :new ArrayList<IExpandListItem<Group,Child>>();
         if(groupLayoutId <=0 || childLayoutId <=0)
             throw new IllegalArgumentException();
         this.mGroupLayoutId = groupLayoutId;
         this.mChildLayoutId = childLayoutId;
     }
-
     @Override
     public int getGroupCount() {
         return mItems.size();
@@ -35,17 +34,22 @@ public abstract class QuickExpandListAdapter<Group,Child> extends BaseExpandable
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return mItems.get(groupPosition).children.size();
+        return mItems.get(groupPosition).getChildren().size();
+    }
+
+    public void setData(List<IExpandListItem<Group,Child>> mItems){
+        this.mItems  = mItems;
+        notifyDataSetChanged();
     }
 
     @Override
-    public Object getGroup(int groupPosition) {
-        return mItems.get(groupPosition).group;
+    public Group getGroup(int groupPosition) {
+        return mItems.get(groupPosition).getGroup();
     }
 
     @Override
-    public Object getChild(int groupPosition, int childPosition) {
-        return mItems.get(groupPosition).children.get(childPosition);
+    public Child getChild(int groupPosition, int childPosition) {
+        return mItems.get(groupPosition).getChildren().get(childPosition);
     }
 
     @Override
@@ -68,7 +72,7 @@ public abstract class QuickExpandListAdapter<Group,Child> extends BaseExpandable
             convertView.setTag(helper);
         }
         helper = (ViewHelper)convertView.getTag();
-        onBindGroupData(context, groupPosition, (Group) getGroup(groupPosition), isExpanded, helper);
+        onBindGroupData(context, groupPosition, getGroup(groupPosition), isExpanded, helper);
         return convertView;
     }
 
@@ -86,7 +90,7 @@ public abstract class QuickExpandListAdapter<Group,Child> extends BaseExpandable
         }
         helper = (ViewHelper)convertView.getTag();
         onBindChildData(context, groupPosition, childPosition, isLastChild,
-                (Child)getChild(groupPosition, childPosition), helper);
+                getChild(groupPosition, childPosition), helper);
         return convertView;
     }
 
@@ -102,15 +106,8 @@ public abstract class QuickExpandListAdapter<Group,Child> extends BaseExpandable
         return false;
     }
 
-    public static class ExpandListItem<Group,Child>{
-        public Group group;
-        public List<Child> children;
-
-        public ExpandListItem(){}
-        public ExpandListItem(Group group, List<Child> children) {
-            this.group = group;
-            this.children = children;
-        }
-
+    public static interface IExpandListItem<Group,Child>{
+        List<Child> getChildren();
+        Group getGroup();
     }
 }

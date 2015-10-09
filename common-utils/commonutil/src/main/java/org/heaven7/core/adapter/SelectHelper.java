@@ -53,6 +53,51 @@ public abstract class SelectHelper<T extends ISelectable>{
         }else
             notifyAllChanged();
     }
+    public void unselect(int position){
+        if(mSelectMode == ISelectable.SELECT_MODE_MULTI){
+            addUnselected(position);
+        }else{
+            setUnselected(position);
+        }
+    }
+    /** unselect the position of item ,
+     * only support select mode = {@link ISelectable#SELECT_MODE_SINGLE}
+     * */
+    public void setUnselected(int position){
+        if(mSelectMode == ISelectable.SELECT_MODE_MULTI)
+            return ;
+        //  mSelectedPosition must == position
+        if(mSelectedPosition == ISelectable.INVALID_POSITION
+                || mSelectedPosition != position){
+            return ;
+        }
+        if(position < 0)
+            throw new IllegalArgumentException();
+
+        getSelectedItemAtPosition(position).setSelected(false);
+        mSelectedPosition = ISelectable.INVALID_POSITION;
+        if(isRecyclable()){
+            notifyItemChanged(position);
+        }else{
+            notifyAllChanged();
+        }
+    }
+    /** only support select mode = {@link ISelectable#SELECT_MODE_MULTI}**/
+    public void addUnselected(int position){
+        if(mSelectMode == ISelectable.SELECT_MODE_SINGLE)
+            return ;
+        if(mSelectedPositions == null)
+            throw new IllegalStateException("select mode must be multi");
+        if(!mSelectedPositions.contains(position)){
+            return ; //not selected
+        }
+        mSelectedPositions.remove(Integer.valueOf(position));
+        getSelectedItemAtPosition(position).setSelected(false);
+        if(isRecyclable()){
+            notifyItemChanged(position);
+        }else
+            notifyAllChanged();
+    }
 
     /** only support select mode = {@link ISelectable#SELECT_MODE_MULTI}**/
     public void addSelected(int selectPosition){
@@ -70,6 +115,13 @@ public abstract class SelectHelper<T extends ISelectable>{
             notifyItemChanged(selectPosition);
         }else
             notifyAllChanged();
+    }
+    public void clearSelectedPositions(){
+        if(mSelectMode == ISelectable.SELECT_MODE_MULTI){
+            mSelectedPositions.clear();
+        }else {
+            mSelectedPosition = ISelectable.INVALID_POSITION;
+        }
     }
 
     public void clearAllSelected(){
@@ -137,7 +189,7 @@ public abstract class SelectHelper<T extends ISelectable>{
         return mSelectDatas;
     }
 
-    public void initSelectPositions(List<T> list){
+    /*public*/ void initSelectPositions(List<T> list){
         if(list==null || list.size() ==0){
             return;
         }

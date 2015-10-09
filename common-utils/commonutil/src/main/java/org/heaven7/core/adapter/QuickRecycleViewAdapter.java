@@ -44,7 +44,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
        }
         this.mLayoutId = layoutId;
         this.mDatas = mDatas == null ? new ArrayList<T>() : new ArrayList<>(mDatas);
-        init(selectMode,mDatas);
+        init(selectMode, mDatas);
     }
 
     private void init(int selectMode,List<T> list){
@@ -70,6 +70,10 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
             }
         };
         mSelectHelper.initSelectPositions(list);
+    }
+
+    public SelectHelper<T> getSelectHelper(){
+        return mSelectHelper;
     }
 
     public final T getItem(int position){

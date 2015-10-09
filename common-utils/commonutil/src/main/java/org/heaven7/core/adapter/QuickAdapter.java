@@ -77,6 +77,10 @@ public abstract class QuickAdapter<T extends ISelectable> extends
 		super(data, multiItemSupport);
 	}
 
+	public SelectHelper<T> getSelectHelper(){
+		return mSelectHelper;
+	}
+
 	/**
 	 * select the target position with notify data.if currentPosition  == position.ignore it.
 	 * <li></>only support select mode = {@link ISelectable#SELECT_MODE_SINGLE} ,this will auto update**/

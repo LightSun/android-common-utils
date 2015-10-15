@@ -25,8 +25,8 @@ public class DialogHelper {
         return this;
     }
 
-    public DialogHelper addOnClickListener(int viewId, View.OnClickListener l){
-        mDialog.findViewById(viewId).setOnClickListener(l);
+    public DialogHelper setOnClickListener(int viewId, View.OnClickListener l){
+        mViewHelper.setOnClickListener(viewId,l);
         return this;
     }
 

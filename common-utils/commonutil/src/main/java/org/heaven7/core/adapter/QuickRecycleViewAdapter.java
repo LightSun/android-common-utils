@@ -136,7 +136,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
 
     /**
      * un select the all selected position.
-     * single or multi all supoorted*/
+     * mode single or multi all supoorted */
     public void clearAllSelected(){
         mSelectHelper.clearAllSelected();
     }

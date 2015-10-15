@@ -21,6 +21,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
     private List<T> mDatas ;
     private int mLayoutId = 0;
     private SelectHelper<T> mSelectHelper;
+    private HeaderFooterManager mHeaderFooterManager;
 
     /**
      * create QuickRecycleViewAdapter with the layout id. if layoutId==0, the method
@@ -61,6 +62,8 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
 
             @Override
             protected void notifyItemChanged(int itemPosition) {
+                if(mHeaderFooterManager!=null)
+                    itemPosition += mHeaderFooterManager.getHeaderViewSize();
                 QuickRecycleViewAdapter.this.notifyItemChanged(itemPosition);
             }
 
@@ -71,6 +74,45 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
         };
         mSelectHelper.initSelectPositions(list);
     }
+
+    //=================== start header footer view ======================= //
+    public void addHeaderView(View v){
+        if(mHeaderFooterManager == null)
+            mHeaderFooterManager = new HeaderFooterManager();
+        int headerSize = getHeaderSize();
+        mHeaderFooterManager.addHeaderView(v);
+        notifyItemInserted(headerSize);
+    }
+    public void removeHeaderView(View v){
+        if(mHeaderFooterManager!=null){
+            int index = mHeaderFooterManager.removeHeaderView(v);
+            if(index != -1){
+                notifyItemRemoved(index);
+            }
+        }
+    }
+    public void addFooterView(View v){
+        if(mHeaderFooterManager==null)
+            mHeaderFooterManager = new HeaderFooterManager();
+        int itemCount = getItemCount();
+        mHeaderFooterManager.addFooterView(v);
+        notifyItemInserted(itemCount);
+    }
+    public void removeFooterView(View v){
+        if(mHeaderFooterManager!=null){
+            int index = mHeaderFooterManager.removeFooterView(v);
+            if(index != -1){
+                notifyItemRemoved(index + getHeaderSize() + mDatas.size());
+            }
+        }
+    }
+    public int getHeaderSize() {
+        return mHeaderFooterManager==null ? 0 : mHeaderFooterManager.getHeaderViewSize();
+    }
+    public int getFooterSize() {
+        return mHeaderFooterManager==null ? 0 : mHeaderFooterManager.getFooterViewSize();
+    }
+    // =================== end header footer view ======================= //
 
     public SelectHelper<T> getSelectHelper(){
         return mSelectHelper;
@@ -101,6 +143,8 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
         return mSelectHelper.getSelectedPosition() ;
     }
 
+    //=================== begin items ==========================//
+
     public void addItems(List<T> items){
         List<T> mDatas = this.mDatas;
         final int preSize = mDatas.size();
@@ -108,8 +152,9 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
         for(int i=0 ; i<size ;i++){
             mDatas.add(items.get(i));
         }
-        notifyItemRangeInserted(preSize,size);
+        notifyItemRangeInserted(preSize + getHeaderSize() ,size);
     }
+
     public void addItems(T...items){
         List<T> mDatas = this.mDatas;
         final int preSize = mDatas.size();
@@ -117,20 +162,39 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
         for(int i=0 ; i<size ;i++){
             mDatas.add(items[i]);
         }
-        notifyItemRangeInserted(preSize, size);
+        notifyItemRangeInserted(preSize + getHeaderSize(), size);
     }
 
     public void removeItem(T t){
         int index =  mDatas.indexOf(t);
         if(index == -1) return ;
         mDatas.remove(index);
-        notifyItemRemoved(index);
+        notifyItemRemoved(index + getHeaderSize());
+    }
+    public void removeItems(List<T> ts){
+        if(ts==null || ts.size()==0)
+            return;
+        for(int i=0,size=ts.size() ;i<size ; i++){
+            removeItem(ts.get(i));
+        }
+    }
+    public void removeItemsByPosition(List<Integer> positions){
+        if(positions==null || positions.size()==0)
+            return;
+        final int headerSize = getHeaderSize();
+        List<T> mDatas = this.mDatas;
+        int pos ;
+        for(int i=0,size=positions.size() ;i<size ; i++){
+            pos = positions.get(i).intValue();
+            mDatas.remove(pos);
+            notifyItemRemoved(pos + headerSize);
+        }
     }
 
     public void setItem(int position ,T t){
         List<T> mDatas = this.mDatas;
         mDatas.set(position, t);
-        notifyItemChanged(position);
+        notifyItemChanged(position + getHeaderSize());
     }
     /** change item from startPosition. */
     public void setItems(int startPosition ,List<T> newItems){
@@ -145,7 +209,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
         for(int i=0; i<size ; i++){
             mDatas.set(startPosition + i, newItems.get(i));
         }
-        notifyItemRangeChanged(startPosition, size);
+        notifyItemRangeChanged(startPosition + getHeaderSize(), size);
     }
 
     public void removeItems(int startIndex,int count){
@@ -154,7 +218,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
         for(int i=0  ; i< count ;i++){
             mDatas.remove(startIndex);
         }
-        notifyItemRangeRemoved(startIndex, count);
+        notifyItemRangeRemoved(startIndex + getHeaderSize(), count);
     }
 
     public void resetItems(List<T> items){
@@ -163,28 +227,52 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
             notifyDataSetChanged();
         }
     }
+    //====================== end items ========================//
 
     @Override
     public final int getItemViewType(int position) {
-        return getItemLayoutId(position, getItem(position));
+        if(mHeaderFooterManager!=null){
+            //in header or footer
+            if(mHeaderFooterManager.isInHeader(position) ||
+                    mHeaderFooterManager.isInFooter(position,mDatas.size()))
+                return position;
+
+            position -= mHeaderFooterManager.getHeaderViewSize();
+        }
+        int layoutId = getItemLayoutId(position, getItem(position));
+        if(mHeaderFooterManager != null)
+            mHeaderFooterManager.recordLayoutId(layoutId);
+        return layoutId;
     }
 
     @Override
     public final ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View root = LayoutInflater.from(parent.getContext()).inflate(viewType,parent,false);
-        return new ViewHolder(root);
+        if(mHeaderFooterManager == null || mHeaderFooterManager.isLayoutIdInRecord(viewType)){
+            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(viewType,parent,false));
+        }else{
+            return new ViewHolder(mHeaderFooterManager.findView(viewType,mDatas.size()));
+        }
     }
 
     @Override
     public final void onBindViewHolder(ViewHolder holder, int position) {
-        onBindData( holder.getContext() ,position, getItem(position), holder.mViewHelper);
+        if(mHeaderFooterManager!=null) {
+            if ( mHeaderFooterManager.isInHeader(position)
+                    || mHeaderFooterManager.isInFooter(position,mDatas.size())){
+                return ;
+            }
+            position -= mHeaderFooterManager.getHeaderViewSize();
+        }
+        //not in header or footer populate it
+        onBindData(holder.getContext(), position, getItem(position), holder.mViewHelper);
     }
 
     @Override
     public final int getItemCount() {
-        return mDatas.size();
+        return mHeaderFooterManager == null ? mDatas.size() :
+                mDatas.size() + mHeaderFooterManager.getHeaderViewSize() +
+                        mHeaderFooterManager.getFooterViewSize();
     }
-
     /** if you use multi item ,override this */
     protected int getItemLayoutId(int position,T t) {
         return mLayoutId;

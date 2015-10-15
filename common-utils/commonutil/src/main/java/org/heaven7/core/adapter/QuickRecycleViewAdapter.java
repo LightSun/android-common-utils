@@ -121,10 +121,22 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
     public final T getItem(int position){
         return mDatas!=null?mDatas.get(position):null;
     }
-    /** only support select mode = {@link ISelectable#SELECT_MODE_MULTI}**/
+    /**
+     * select the target position
+     * only support select mode = {@link ISelectable#SELECT_MODE_MULTI}**/
     public void addSelected(int selectPosition){
         mSelectHelper.addSelected(selectPosition);
     }
+
+    /**  un select the target position  .
+     * <li>only support select mode = {@link ISelectable#SELECT_MODE_MULTI}*/
+    public void addUnselected(int position){
+        mSelectHelper.addUnselected(position);
+    }
+
+    /**
+     * un select the all selected position.
+     * single or multi all supoorted*/
     public void clearAllSelected(){
         mSelectHelper.clearAllSelected();
     }
@@ -134,9 +146,24 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
     public void setSelected(int position){
         mSelectHelper.setSelected(position);
     }
+    /** un select the target position
+     * <li>only support select mode = {@link ISelectable#SELECT_MODE_SINGLE} */
+    public void setUnselected(int position){
+        mSelectHelper.setUnselected(position);
+    }
+
+    /** clear selected positions  . this just clear record. bu not notify item change
+     * <li> support select mode = {@link ISelectable#SELECT_MODE_SINGLE} or {@link ISelectable#SELECT_MODE_MULTI}*/
+    public void clearSelectedPositions(){
+        mSelectHelper.clearSelectedPositions();
+    }
 
     public T getSelectedData(){
        return mSelectHelper.getSelectedItem();
+    }
+
+    public List<T> getSelectedItems(){
+        return mSelectHelper.getSelectedItems();
     }
 
     public int getSelectedPosition(){

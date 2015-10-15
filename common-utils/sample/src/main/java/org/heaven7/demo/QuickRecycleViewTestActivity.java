@@ -50,6 +50,11 @@ public class QuickRecycleViewTestActivity extends BaseActivity {
                             }
                         });
             }
+
+            @Override
+            protected int getItemLayoutId(int position, Item item) {
+                return super.getItemLayoutId(position, item);
+            }
         });
     }
 

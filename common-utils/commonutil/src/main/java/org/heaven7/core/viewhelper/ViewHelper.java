@@ -33,7 +33,7 @@ import android.widget.ImageView;
 
 import com.android.volley.data.RequestManager;
 import com.android.volley.extra.ExpandNetworkImageView;
-import com.android.volley.extra.ImageParam;
+import com.android.volley.extra.RoundedBitmapBuilder;
 
 /**
  * for better use same view's method. cached it automatic for reuse.
@@ -61,7 +61,10 @@ public class ViewHelper {
 		mViewMap = new SparseArray<View>();
 		mImpl = new ViewHelperImpl(null);
 	}
-	
+	public ViewHelper setRootOnClickListener(View.OnClickListener l){
+		mRootView.setOnClickListener(l);
+		return this;
+	}
 	public View getRootView() {
 		return mRootView;
 	}
@@ -150,6 +153,14 @@ public class ViewHelper {
 	public ViewHelper setTextColor(int viewId, int textColor) {
 		return view(viewId).setTextColor(textColor).reverse(this);
 	}
+
+	/**
+	 * Sets the text color, size, style, hint color, and highlight color
+	 * from the specified TextAppearance resource.
+	 */
+	public ViewHelper setTextAppearance(int viewId, int resId) {
+		return view(viewId).setTextAppearance(resId).reverse(this);
+	}
 	/**
 	 * Will set text color of a TextView.
 	 * 
@@ -188,17 +199,16 @@ public class ViewHelper {
 	 * @return The ViewHelper for chaining.
 	 */
 	public ViewHelper setImageUrl(int viewId, String imageUrl,IImageLoader loader) {
-		return view(viewId).setImageUrl(imageUrl,loader).reverse(this);
+		return view(viewId).setImageUrl(imageUrl, loader).reverse(this);
 	}
 	/** use volley extra to load image（this support circle image and round）.
 	 * <li>@Note RequestManager must call {@link RequestManager#init(Context)} before this.
 	 * such as in {@link Application#onCreate()}
-	 * @param param  image param to control what bitmap to show!
+	 * @param builder  image param builder to control what bitmap to show!
 	 * @param viewId must be {@link ExpandNetworkImageView}
-	 * @see {@link ImageParam.Builder#circle()} and etc methods.
 	 * */
-	public ViewHelper setImageUrl(int viewId,String url,ImageParam param){
-		return view(viewId).setImageUrl(url,param).reverse(this);
+	public ViewHelper setImageUrl(int viewId,String url,RoundedBitmapBuilder builder){
+		return view(viewId).setImageUrl(url,builder).reverse(this);
 	}
 	
 	/**
@@ -230,6 +240,9 @@ public class ViewHelper {
 	 */
 	public ViewHelper setVisibility(int viewId, boolean visible) {
 		return view(viewId).setVisibility(visible).reverse(this);
+	}
+	public ViewHelper setVisibility(int viewId, int visibility) {
+		return view(viewId).setVisibility(visibility).reverse(this);
 	}
 
 	
@@ -357,7 +370,7 @@ public class ViewHelper {
 	 * @param viewId
 	 *            The view id.
 	 * @param key
-	 *            The key of tag;
+	 *            The value of tag;
 	 * @param tag
 	 *            The tag;
 	 * @return The ViewHelper for chaining.

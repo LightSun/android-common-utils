@@ -33,9 +33,8 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.android.volley.data.RequestManager;
 import com.android.volley.extra.ExpandNetworkImageView;
-import com.android.volley.extra.ImageParam;
+import com.android.volley.extra.RoundedBitmapBuilder;
 
 import org.heaven7.core.util.ViewCompatUtil;
 
@@ -82,9 +81,18 @@ public class ViewHelperImpl{
         v.setVisibility(visible ? View.VISIBLE : View.GONE);
         return this;
     }
+    public ViewHelperImpl setVisibility(int visibility){
+        v.setVisibility(visibility);
+        return this;
+    }
 
     public ViewHelperImpl setText(CharSequence text){
         ((TextView)v).setText(text);
+        return this;
+    }
+
+    public ViewHelperImpl setEnabled(boolean enable){
+        v.setEnabled(enable);
         return this;
     }
 
@@ -114,6 +122,10 @@ public class ViewHelperImpl{
         ViewCompatUtil.setBackgroundCompatible(v, d);
         return this;
     }
+    public ViewHelperImpl setTextAppearance( int redId){
+        ((TextView)v).setTextAppearance(v.getContext(),redId);
+        return this;
+    }
     public ViewHelperImpl setTextColor(int textColor) {
         ((TextView)v).setTextColor(textColor);
         return this;
@@ -138,10 +150,8 @@ public class ViewHelperImpl{
         loader.load(url, (ImageView) v);
         return this;
     }
-    public ViewHelperImpl setImageUrl(String url,ImageParam param) {
-        ExpandNetworkImageView view = (ExpandNetworkImageView) v;
-        view.setImageParam(param);
-        view.setImageUrl(url, RequestManager.getImageLoader());
+    public ViewHelperImpl setImageUrl(String url,RoundedBitmapBuilder builder) {
+        builder.url(url).into((ExpandNetworkImageView) v);
         return this;
     }
     public ViewHelperImpl setImageBitmap(Bitmap bitmap) {

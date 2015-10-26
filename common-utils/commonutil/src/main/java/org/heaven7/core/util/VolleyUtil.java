@@ -6,8 +6,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.data.ApiParams;
 import com.android.volley.data.RequestManager;
-import com.android.volley.extra.ExpandNetworkImageView;
-import com.android.volley.extra.ImageParam;
 import com.android.volley.toolbox.StringRequest;
 
 import java.util.Map;
@@ -35,10 +33,6 @@ public class VolleyUtil {
         public void post(final String url,ApiParams params,final VolleyUtil.HttpCallback callback){
             VolleyUtil.post(url, params, this, callback);
         }
-        public void loadImage(String url, ExpandNetworkImageView imageView, ImageParam param){
-            VolleyUtil.loadImage(url,imageView,param);
-        }
-
         public void cancelAll(){
             VolleyUtil.cancelAll(this);
         }
@@ -112,11 +106,6 @@ public class VolleyUtil {
                                    }
                                ) {
                        }, tag);
-    }
-
-    public static void loadImage(String url, ExpandNetworkImageView imageView, ImageParam param) {
-        imageView.setImageParam(param);
-        imageView.setImageUrl(url, RequestManager.getImageLoader());
     }
 
     private static void logIfNeed(String url, String response) {

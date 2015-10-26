@@ -3,14 +3,19 @@ package org.heaven7.demo;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 
-import com.android.volley.extra.ImageParam;
+import com.android.volley.extra.RoundedBitmapBuilder;
 
 import org.heaven7.core.adapter.ISelectable;
 import org.heaven7.core.adapter.QuickRecycleViewAdapter;
+import org.heaven7.core.save_state.BundleSupportType;
+import org.heaven7.core.save_state.SaveStateField;
 import org.heaven7.core.viewhelper.ViewHelper;
 
 import java.util.ArrayList;
@@ -19,6 +24,23 @@ import java.util.List;
 public class QuickRecycleViewTestActivity extends BaseActivity {
 
     RecyclerView mRecyclerView;
+
+    /**
+     * the follow types must assigned.
+     BundleSupportType.INTEGER_ARRAY_lIST:
+     BundleSupportType.STRING_ARRAY_LIST:
+     BundleSupportType.PARCELABLE_ARRAY_LIST:
+     BundleSupportType.PARCELABLE_LIST:
+     BundleSupportType.CHAR_SEQUENCE_ARRAY_LIST:
+     // SparseArray<? extends Parcelable>
+      BundleSupportType.SPARSE_PARCELABLE_ARRAY:
+     */
+    @SaveStateField(value = "mItems",flag = BundleSupportType.PARCELABLE_LIST)
+    List<Item> mItems;
+
+    @SaveStateField("mSelectUrl")
+    String mSelectUrl;
+
 
     @Override
     protected int getlayoutId() {
@@ -33,12 +55,13 @@ public class QuickRecycleViewTestActivity extends BaseActivity {
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-        List<Item> items = new ArrayList<>();
-        addTestData(items);
-        mRecyclerView.setAdapter(new QuickRecycleViewAdapter<Item>(R.layout.item_image, items) {
+        mItems = new ArrayList<>();
+        addTestData(mItems);
+        mRecyclerView.setAdapter(new QuickRecycleViewAdapter<Item>(R.layout.item_image, mItems) {
             @Override
-            protected void onBindData(Context ctx, final int position, Item item, ViewHelper helper) {
-                helper.setImageUrl(R.id.eniv, item.url, new ImageParam.Builder().create())
+            protected void onBindData(Context ctx, final int position, final Item item, ViewHelper helper) {
+                helper.setImageUrl(R.id.eniv, item.url, new RoundedBitmapBuilder()
+                        .scaleType(ImageView.ScaleType.CENTER_CROP))
                         .view(R.id.tv)
                         .setTextColor(item.isSelected() ? Color.RED : Color.BLACK)
                         .setText(item.url).reverse(helper)
@@ -46,6 +69,7 @@ public class QuickRecycleViewTestActivity extends BaseActivity {
                             @Override
                             public void onClick(View v) {
                                 showToast("select position is " + position);
+                                mSelectUrl = item.url;
                                 setSelected(position);
                             }
                         });
@@ -64,7 +88,7 @@ public class QuickRecycleViewTestActivity extends BaseActivity {
         }
     }
 
-    public static class Item implements ISelectable{
+    public static class Item implements ISelectable, Parcelable {
 
         public String url;
         private boolean selected;
@@ -82,5 +106,31 @@ public class QuickRecycleViewTestActivity extends BaseActivity {
         public boolean isSelected() {
             return selected;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.url);
+            dest.writeByte(selected ? (byte) 1 : (byte) 0);
+        }
+
+        private Item(Parcel in) {
+            this.url = in.readString();
+            this.selected = in.readByte() != 0;
+        }
+
+        public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
+            public Item createFromParcel(Parcel source) {
+                return new Item(source);
+            }
+
+            public Item[] newArray(int size) {
+                return new Item[size];
+            }
+        };
     }
 }

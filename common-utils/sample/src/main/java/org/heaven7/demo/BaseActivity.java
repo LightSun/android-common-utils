@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import org.heaven7.core.save_state.SaveStateHelper;
 import org.heaven7.core.util.Toaster;
 import org.heaven7.core.util.VolleyUtil;
 import org.heaven7.core.viewhelper.ViewHelper;
@@ -20,6 +22,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     private ViewHelper mViewHelper;
     private VolleyUtil.HttpExecutor mHttpExecutor ;
     private IntentExecutor mIntentExecutor;
+    private SaveStateHelper mSaveStateHelper;
 
     protected abstract int getlayoutId();
 
@@ -35,10 +38,23 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         mHttpExecutor = new VolleyUtil.HttpExecutor();
         mToaster = new Toaster(this);
         mViewHelper = new ViewHelper(getWindow().getDecorView());
+        mSaveStateHelper = new SaveStateHelper(this);
         setContentView(getlayoutId());
         initView();
         initData(savedInstanceState);
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        mSaveStateHelper.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mSaveStateHelper.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override

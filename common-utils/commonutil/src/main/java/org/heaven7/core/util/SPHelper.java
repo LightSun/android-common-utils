@@ -30,15 +30,20 @@ public class SPHelper {
 	//===============================//
 	
 	public static void putString(Context context,String key, String value) {
-		SharedPreferences.Editor editor = getSp(context).edit();
-		editor.putString(key, value);
-		editor.commit();
+		getSp(context).edit().putString(key, value).apply();
 	}
-	
-	public static void putBoolean(Context context, String key, Boolean value) {
-		SharedPreferences.Editor editor = getSp(context).edit();
-		editor.putBoolean(key, value);
-		editor.commit();
+	public static void putInt(Context context,String key, int value) {
+		getSp(context).edit().putInt(key, value).apply();
+	}
+	public static void putFloat(Context context,String key, float value) {
+		getSp(context).edit().putFloat(key, value).apply();
+	}
+
+	public static void putBoolean(Context context, String key, boolean value) {
+		getSp(context).edit().putBoolean(key, value).apply();
+	}
+	public static void putLong(Context context, String key,long value){
+		getSp(context).edit().putLong(key, value).apply();
 	}
 	// =========== begin  multi progress =================== //
 	public static String getStringByMulti(Context context,String key,String defValue){
@@ -89,7 +94,7 @@ public class SPHelper {
 	}	
 
 	public static void clear(Context context) {
-		getSp(context).edit().clear().commit();
+		getSp(context).edit().clear().apply();
 	}
 
 	public static Map<String,?> getAllByFileName(Context context){
@@ -100,7 +105,7 @@ public class SPHelper {
 		return new SPEditor(context);
 	}
 	/**
-	 * To improve efficiency for SharedPreferences while you put many key-values to it.
+	 * To improve efficiency for SharedPreferences while you put many value-values to it.
 	 * <p>you must call {@link #begin()} to begin edit,and {@link #commit()} to commit</p>
 	 * @author heaven
 	 */
@@ -151,7 +156,7 @@ public class SPHelper {
 		/**
 		 * @return true , if successed and the editor will be null, so you cann't continue to edit
 		 * (you must recall {@link #begin()} to edit it again). 
-		 * <li>But, if failed ,the Editor is still exist, so you can continue to put key-values
+		 * <li>But, if failed ,the Editor is still exist, so you can continue to put value-values
 		 * until {@link #commit()} successed.
 		 */
 		public boolean commit(){

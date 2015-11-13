@@ -17,6 +17,7 @@
 package org.heaven7.core.util;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
@@ -63,8 +64,11 @@ public class Toaster{
 	public static void show(Context ctx,int resId){
 		show(ctx, resId, false);
 	}
-	/** warning meas Toast.LENGTH_LONG */
 	public static void show(final Context ctx,final CharSequence msg,final boolean warn){
+		show(ctx,msg,warn, Gravity.CENTER);
+	}
+	/** warning meas Toast.LENGTH_LONG */
+	public static void show(final Context ctx,final CharSequence msg,final boolean warn, final int gravity){
 		MainWorker.post(new Runnable() {
 			public void run() {
 				if(sWeakToast!=null){
@@ -74,6 +78,7 @@ public class Toaster{
 				}
 				Toast toast = Toast.makeText(ctx, msg, warn?Toast.LENGTH_LONG:
 					Toast.LENGTH_SHORT);
+				toast.setGravity(gravity,0,0);
 				sWeakToast = new WeakReference<Toast>(toast);
 				toast.show();
 			}

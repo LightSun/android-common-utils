@@ -120,4 +120,11 @@ public abstract class QuickAdapter<T extends ISelectable> extends
 		}
 	}
 
+	@Override
+	public void replaceAll(List<T> elem) {
+		if(elem == null)
+			throw new NullPointerException();
+		mSelectHelper.initSelectPositions(elem);
+		super.replaceAll(elem);
+	}
 }

@@ -22,7 +22,9 @@ import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.text.TextWatcher;
 import android.text.util.Linkify;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
@@ -77,6 +79,11 @@ public class ViewHelperImpl{
         return v.getContext();
     }
 
+    public ViewHelperImpl addTextChangedListener(TextWatcher watcher){
+        ((TextView)v).addTextChangedListener(watcher);
+        return this;
+    }
+
     public ViewHelperImpl setVisibility(boolean visible){
         v.setVisibility(visible ? View.VISIBLE : View.GONE);
         return this;
@@ -123,7 +130,7 @@ public class ViewHelperImpl{
         return this;
     }
     public ViewHelperImpl setTextAppearance( int redId){
-        ((TextView)v).setTextAppearance(v.getContext(),redId);
+        ((TextView)v).setTextAppearance(v.getContext(), redId);
         return this;
     }
     public ViewHelperImpl setTextColor(int textColor) {
@@ -234,6 +241,18 @@ public class ViewHelperImpl{
         return this;
     }
 
+    public ViewHelperImpl setEnable(boolean enable) {
+        v.setEnabled(enable);
+        return this;
+    }
 
+    public ViewHelperImpl setTextSizeDp(float size) {
+        ((TextView)v).setTextSize(size);
+        return this;
+    }
+    public ViewHelperImpl setTextSize(float size) {
+        ((TextView)v).setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        return this;
+    }
 
 }

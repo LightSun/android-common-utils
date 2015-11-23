@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ReboundView">
+       <!-- <attr name="scrollableChild">
+            <enum name="list_view" value="1"/>
+            <enum name="scroll_view" value="2"/>
+            <enum name="recycler_view" value="3"/>
+            <enum name="view_pager" value="4"/>
+        </attr>-->
+        <attr name="viewPager_inner_scroll_view_id" format="reference"/>
+    </declare-styleable>
+</resources>

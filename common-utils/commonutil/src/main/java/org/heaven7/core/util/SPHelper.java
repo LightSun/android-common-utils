@@ -30,17 +30,15 @@ public class SPHelper {
 	//===============================//
 	
 	public static void putString(Context context,String key, String value) {
-		getSp(context).edit().putString(key, value).apply();
+		SharedPreferences.Editor editor = getSp(context).edit();
+		editor.putString(key, value);
+		editor.apply();
 	}
-	public static void putInt(Context context,String key, int value) {
-		getSp(context).edit().putInt(key, value).apply();
-	}
-	public static void putFloat(Context context,String key, float value) {
-		getSp(context).edit().putFloat(key, value).apply();
-	}
-
+	
 	public static void putBoolean(Context context, String key, boolean value) {
-		getSp(context).edit().putBoolean(key, value).apply();
+		SharedPreferences.Editor editor = getSp(context).edit();
+		editor.putBoolean(key, value);
+		editor.apply();
 	}
 	public static void putLong(Context context, String key,long value){
 		getSp(context).edit().putLong(key, value).apply();
@@ -93,10 +91,12 @@ public class SPHelper {
 		return context.getSharedPreferences(FILENAME, Context.MODE_MULTI_PROCESS);
 	}	
 
+	/** 清空*/
 	public static void clear(Context context) {
-		getSp(context).edit().clear().apply();
+		getSp(context).edit().clear().commit();
 	}
 
+	/** * 获得所有*/
 	public static Map<String,?> getAllByFileName(Context context){
 		return getSp(context).getAll();
 	}

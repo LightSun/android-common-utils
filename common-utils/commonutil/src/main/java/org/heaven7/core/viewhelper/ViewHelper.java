@@ -23,6 +23,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.text.TextWatcher;
 import android.text.util.Linkify;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -77,9 +78,17 @@ public class ViewHelper {
 	public LayoutInflater getLayoutInflater(){
 		return mInflater;
 	}
+
+	public ViewHelper addTextChangedListener(int viewId ,TextWatcher watcher){
+		return view(viewId).addTextChangedListener(watcher).reverse(this);
+	}
 	
 	public ViewHelper setText(int viewId,CharSequence text){
 		return view(viewId).setText(text).reverse(this);
+	}
+
+	public ViewHelper setEnable(int viewId, boolean enable) {
+		return view(viewId).setEnable(enable).reverse(this);
 	}
 	/**
 	 * toogle the visibility of the view.such as: VISIBLE to gone or gone to VISIBLE

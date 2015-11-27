@@ -66,6 +66,9 @@ public class ViewHelper {
 		mRootView.setOnClickListener(l);
 		return this;
 	}
+	public void clearCache(){
+		mViewMap.clear();
+	}
 	public View getRootView() {
 		return mRootView;
 	}
@@ -82,7 +85,13 @@ public class ViewHelper {
 	public ViewHelper addTextChangedListener(int viewId ,TextWatcher watcher){
 		return view(viewId).addTextChangedListener(watcher).reverse(this);
 	}
-	
+	public ViewHelper setTextSizeDp(int viewId ,float size){
+		return view(viewId).setTextSizeDp(size).reverse(this);
+	}
+	public ViewHelper setTextSize(int viewId ,float size){
+		return view(viewId).setTextSize(size).reverse(this);
+	}
+
 	public ViewHelper setText(int viewId,CharSequence text){
 		return view(viewId).setText(text).reverse(this);
 	}

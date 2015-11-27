@@ -106,7 +106,7 @@ public abstract class QuickExpandListAdapter<Group,Child> extends BaseExpandable
         return false;
     }
 
-    public static interface IExpandListItem<Group,Child>{
+    public interface IExpandListItem<Group,Child>{
         List<Child> getChildren();
         Group getGroup();
     }

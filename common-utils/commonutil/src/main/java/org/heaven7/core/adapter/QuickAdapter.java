@@ -74,15 +74,23 @@ public abstract class QuickAdapter<T extends ISelectable> extends
 
 	/**
 	 * default select mode is {@link ISelectable#SELECT_MODE_SINGLE}
+	 * @param data the data to populate
+	 * @param multiItemSupport the multi itemsupport
 	 */
 	public QuickAdapter(ArrayList<T> data,
 			MultiItemTypeSupport<T> multiItemSupport) {
 		this(data, multiItemSupport, ISelectable.SELECT_MODE_SINGLE);
 	}
+
+	/**
+	 * @param data the data to populate
+	 * @param multiItemSupport the multi itemsupport
+	 * @param selectMode  the select mode ,{@link ISelectable#SELECT_MODE_SINGLE} or {@link ISelectable#SELECT_MODE_MULTI}
+	 */
 	public QuickAdapter(ArrayList<T> data,
 			MultiItemTypeSupport<T> multiItemSupport,int selectMode) {
 		super(data, multiItemSupport);
-		init(selectMode,data);
+		init(selectMode, data);
 	}
 
 	public SelectHelper<T> getSelectHelper(){

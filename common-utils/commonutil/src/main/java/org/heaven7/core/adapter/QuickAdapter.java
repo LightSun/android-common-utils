@@ -49,7 +49,7 @@ public abstract class QuickAdapter<T extends ISelectable> extends
 	}
 	public QuickAdapter(int layoutResId, List<T> data,int selectMode) {
 		super(layoutResId, data);
-		init(selectMode,data);
+		init(selectMode, data);
 	}
 
 	private void init(int selectMode,List<T> list){
@@ -72,9 +72,17 @@ public abstract class QuickAdapter<T extends ISelectable> extends
 		mSelectHelper.initSelectPositions(list);
 	}
 
+	/**
+	 * default select mode is {@link ISelectable#SELECT_MODE_SINGLE}
+	 */
 	public QuickAdapter(ArrayList<T> data,
 			MultiItemTypeSupport<T> multiItemSupport) {
+		this(data, multiItemSupport, ISelectable.SELECT_MODE_SINGLE);
+	}
+	public QuickAdapter(ArrayList<T> data,
+			MultiItemTypeSupport<T> multiItemSupport,int selectMode) {
 		super(data, multiItemSupport);
+		init(selectMode,data);
 	}
 
 	public SelectHelper<T> getSelectHelper(){

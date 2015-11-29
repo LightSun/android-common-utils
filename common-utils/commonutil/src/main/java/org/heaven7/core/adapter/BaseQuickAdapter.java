@@ -41,8 +41,9 @@ import java.util.List;
 		BaseAdapter {
 
 	protected int layoutResId;
-	protected final List<T> data;
 	protected boolean displayIndeterminateProgress = false;
+
+	private final AdapterManager<T> mAdapterManager ;
 
 
 	/**
@@ -58,8 +59,27 @@ import java.util.List;
 		if(layoutResId <0 ){
 			throw new IllegalArgumentException("layoutId can't be negative ");
 		}
-		this.data = data == null ? new ArrayList<T>() : new ArrayList<T>(data);
 		this.layoutResId = layoutResId;
+		mAdapterManager =  createAdapterManager(data);
+	}
+
+	private AdapterManager<T> createAdapterManager(final List<T> data) {
+		return  new AdapterManager<T>(data) {
+			@Override
+			protected void notifyDataSetChangedImpl() {
+                BaseQuickAdapter.this.notifyDataSetChanged();
+			}
+
+			@Override
+			protected boolean isRecyclable() {
+				return false;
+			}
+
+			@Override
+			protected void beforeNotifyDataChanged() {
+				BaseQuickAdapter.this.beforeNotifyDataChanged();
+			}
+		};
 	}
 
 	protected MultiItemTypeSupport<T> mMultiItemSupport;
@@ -67,20 +87,24 @@ import java.util.List;
 	public BaseQuickAdapter(ArrayList<T> data,
 			MultiItemTypeSupport<T> multiItemSupport) {
 		this.mMultiItemSupport = multiItemSupport;
-		this.data = data == null ? new ArrayList<T>() : new ArrayList<T>(data);
+		mAdapterManager =  createAdapterManager(data);
+	}
+
+	public AdapterManager getAdapterManager(){
+		return mAdapterManager;
 	}
 
 	@Override
 	public int getCount() {
 		int extra = displayIndeterminateProgress ? 1 : 0;
-		return data.size() + extra;
+		return mAdapterManager.getItemSize() + extra;
 	}
 
 	@Override
 	public T getItem(int position) {
-		if (position >= data.size())
+		if (position >= mAdapterManager.getItemSize())
 			return null;
-		return data.get(position);
+		return mAdapterManager.getItems().get(position);
 	}
 
 	@Override
@@ -99,15 +123,15 @@ import java.util.List;
 	public int getItemViewType(int position) {
 		if (displayIndeterminateProgress) {
 			if (mMultiItemSupport != null)
-				return position >= data.size() ? 0 : mMultiItemSupport
-						.getItemViewType(position, data.get(position));
+				return position >= mAdapterManager.getItemSize() ? 0 : mMultiItemSupport
+						.getItemViewType(position, mAdapterManager.getItems().get(position));
 		} else {
 			if (mMultiItemSupport != null)
 				return mMultiItemSupport.getItemViewType(position,
-						data.get(position));
+						mAdapterManager.getItems().get(position));
 		}
 		// if no data. return 0
-		return position >= data.size() ? 0 : 1;
+		return position >= mAdapterManager.getItemSize() ? 0 : 1;
 
 	}
 
@@ -138,56 +162,7 @@ import java.util.List;
 
 	@Override
 	public boolean isEnabled(int position) {
-		return position < data.size();
-	}
-
-	public void add(T elem) {
-		data.add(elem);
-		notifyDataSetChanged();
-	}
-
-	public void addAll(List<T> elem) {
-		data.addAll(elem);
-		notifyDataSetChanged();
-	}
-
-	public void set(T oldElem, T newElem) {
-		set(data.indexOf(oldElem), newElem);
-	}
-
-	public void set(int index, T elem) {
-		data.set(index, elem);
-		notifyDataSetChanged();
-	}
-
-	public List<T> getItems(){
-		return data;
-	}
-
-	public void remove(T elem) {
-		data.remove(elem);
-		notifyDataSetChanged();
-	}
-
-	public void remove(int index) {
-		data.remove(index);
-		notifyDataSetChanged();
-	}
-
-	public void replaceAll(List<T> elem) {
-		data.clear();
-		data.addAll(elem);
-		notifyDataSetChanged();
-	}
-
-	public boolean contains(T elem) {
-		return data.contains(elem);
-	}
-
-	/** Clear data list */
-	public void clear() {
-		data.clear();
-		notifyDataSetChanged();
+		return position < mAdapterManager.getItemSize();
 	}
 
 	public void showIndeterminateProgress(boolean display) {
@@ -234,5 +209,10 @@ import java.util.List;
 	 */
 	protected abstract void onBindData(Context context, int position, ViewHelper helper,
 									   int itemLayoutId, T item);
+
+	/** this is callled before data chaned */
+	protected void beforeNotifyDataChanged(){
+
+	}
 
 }

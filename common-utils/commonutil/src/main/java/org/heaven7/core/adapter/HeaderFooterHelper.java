@@ -9,7 +9,7 @@ import java.util.List;
  *
  * Created by heaven7 on 2015/10/10.
  */
-public class HeaderFooterManager {
+public class HeaderFooterHelper {
 
     private List<View> mHeaders ;
     private List<View> mFooter ;

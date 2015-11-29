@@ -53,6 +53,7 @@ public abstract class SelectHelper<T extends ISelectable>{
         }else
             notifyAllChanged();
     }
+    /** {@link ISelectable#SELECT_MODE_MULTI} and {@link ISelectable#SELECT_MODE_SINGLE} both support */
     public void unselect(int position){
         if(mSelectMode == ISelectable.SELECT_MODE_MULTI){
             addUnselected(position);

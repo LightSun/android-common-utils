@@ -129,18 +129,11 @@ public abstract class QuickAdapter<T extends ISelectable> extends
 			return BaseAdapterHelper.get(
 					convertView,
 					parent,
-					mMultiItemSupport.getLayoutId(position, data.get(position)),
+					mMultiItemSupport.getLayoutId(position, (T) getAdapterManager().getItems().get(position)),
 					position);
 		} else {
 			return BaseAdapterHelper.get(convertView, parent, layoutResId, position);
 		}
 	}
 
-	@Override
-	public void replaceAll(List<T> elem) {
-		if(elem == null)
-			throw new NullPointerException();
-		mSelectHelper.initSelectPositions(elem);
-		super.replaceAll(elem);
-	}
 }

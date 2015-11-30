@@ -32,7 +32,7 @@ import java.util.List;
  */
 public abstract class QuickRecycleViewAdapter<T extends ISelectable>
         extends RecyclerView.Adapter<QuickRecycleViewAdapter.ViewHolder>
-        implements AdapterManager.IAdapterManagerCallback{
+        implements AdapterManager.IAdapterManagerCallback, AdapterManager.IHeaderFooterManager{
 
     private int mLayoutId = 0;
     private HeaderFooterHelper mHeaderFooterHelper;
@@ -121,46 +121,8 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
             }
 
             @Override
-            public boolean isHeaderFooterSupport() {
-                return true;
-            }
-
-            @Override
-            protected IHeaderFooterManager createHeaderFooterManager() {
-               return QuickRecycleViewAdapter.this.createHeaderFooterManager();
-            }
-        };
-    }
-    private AdapterManager.IHeaderFooterManager createHeaderFooterManager() {
-        return new AdapterManager.IHeaderFooterManager() {
-            @Override
-            public void addHeaderView(View v) {
-                QuickRecycleViewAdapter.this.addHeaderView(v);
-            }
-
-            @Override
-            public void removeHeaderView(View v) {
-                QuickRecycleViewAdapter.this.removeHeaderView(v);
-            }
-
-            @Override
-            public void addFooterView(View v) {
-                QuickRecycleViewAdapter.this.addFooterView(v);
-            }
-
-            @Override
-            public void removeFooterView(View v) {
-                QuickRecycleViewAdapter.this.removeFooterView(v);
-            }
-
-            @Override
-            public int getHeaderSize() {
-                return  QuickRecycleViewAdapter.this.getHeaderSize();
-            }
-
-            @Override
-            public int getFooterSize() {
-                return  QuickRecycleViewAdapter.this.getFooterSize();
+            public IHeaderFooterManager getHeaderFooterManager() {
+                return  QuickRecycleViewAdapter.this;
             }
         };
     }
@@ -179,6 +141,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
     }
 
     //=================== start header footer view ======================= //
+    @Override
     public void addHeaderView(View v){
         if(mHeaderFooterHelper == null)
             mHeaderFooterHelper = new HeaderFooterHelper();
@@ -186,6 +149,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
         mHeaderFooterHelper.addHeaderView(v);
         notifyItemInserted(headerSize);
     }
+    @Override
     public void removeHeaderView(View v){
         if(mHeaderFooterHelper !=null){
             int index = mHeaderFooterHelper.removeHeaderView(v);
@@ -194,6 +158,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
             }
         }
     }
+    @Override
     public void addFooterView(View v){
         if(mHeaderFooterHelper ==null)
             mHeaderFooterHelper = new HeaderFooterHelper();
@@ -201,6 +166,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
         mHeaderFooterHelper.addFooterView(v);
         notifyItemInserted(itemCount);
     }
+    @Override
     public void removeFooterView(View v){
         if(mHeaderFooterHelper !=null){
             int index = mHeaderFooterHelper.removeFooterView(v);
@@ -209,9 +175,11 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
             }
         }
     }
+    @Override
     public int getHeaderSize() {
         return mHeaderFooterHelper ==null ? 0 : mHeaderFooterHelper.getHeaderViewSize();
     }
+    @Override
     public int getFooterSize() {
         return mHeaderFooterHelper ==null ? 0 : mHeaderFooterHelper.getFooterViewSize();
     }

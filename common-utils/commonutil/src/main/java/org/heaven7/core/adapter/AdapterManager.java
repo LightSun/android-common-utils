@@ -70,12 +70,12 @@ public abstract class AdapterManager<T extends ISelectable> {
     public void addItem(T item){
         mDatas.add(item);
         if( isRecyclable()){
-            notifyItemInserted(mDatas.size() - 1 + (isHeaderFooterSupport() ?
-                    getHeaderFooterManager().getHeaderSize() : 0));
-        }else {
+            notifyItemInserted(mDatas.size() - 1 + getHeaderSize());
+        } else {
             notifyDataSetChanged();
         }
     }
+
     public void addItems(T...items){
         if( items == null || items.length ==0)
             return;
@@ -85,9 +85,8 @@ public abstract class AdapterManager<T extends ISelectable> {
         final int preSize = mDatas.size();
         mDatas.addAll(items);
         if(isRecyclable()){
-            notifyItemRangeInserted(preSize + (isHeaderFooterSupport() ?
-                    getHeaderFooterManager().getHeaderSize() : 0), items.size());
-        }else {
+            notifyItemRangeInserted(preSize + getHeaderSize(), items.size());
+        } else {
             notifyDataSetChanged();
         }
     }
@@ -96,15 +95,15 @@ public abstract class AdapterManager<T extends ISelectable> {
         setItem(mDatas.indexOf(oldItem), newItem);
     }
 
-    public void setItem(int index, T newItem){
+    public void setItem(int index, T newItem) {
         mDatas.set(index, newItem);
         if(isRecyclable()){
-            notifyItemChanged(index + (isHeaderFooterSupport() ?
-                    getHeaderFooterManager().getHeaderSize() : 0));
-        }else {
+            notifyItemChanged(index + getHeaderSize());
+        } else {
             notifyDataSetChanged();
         }
     }
+
     public void removeItem(T item){
        removeItem(mDatas.indexOf(item));
     }
@@ -112,8 +111,7 @@ public abstract class AdapterManager<T extends ISelectable> {
     public void removeItem(int index){
         mDatas.remove(index);
         if(isRecyclable()){
-            notifyItemRemoved(index + (isHeaderFooterSupport() ?
-                    getHeaderFooterManager().getHeaderSize() : 0));
+            notifyItemRemoved(index + getHeaderSize());
         }else {
             notifyDataSetChanged();
         }
@@ -242,19 +240,8 @@ public abstract class AdapterManager<T extends ISelectable> {
 
     //================== ========================//
 
-    protected IHeaderFooterManager createHeaderFooterManager() {
-        return null;
-    }
-
-    /** default false */
-    public boolean isHeaderFooterSupport(){
-        return false;
-    }
     public IHeaderFooterManager getHeaderFooterManager(){
-        if(!isHeaderFooterSupport())
-            throw new UnsupportedOperationException();
-        return mHeaderFooterManager != null ? mHeaderFooterManager : (mHeaderFooterManager =
-                createHeaderFooterManager() );
+        throw new UnsupportedOperationException();
     }
 
     public int getItemSize() {

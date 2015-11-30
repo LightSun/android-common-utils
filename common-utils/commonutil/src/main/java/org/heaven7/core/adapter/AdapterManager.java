@@ -48,11 +48,7 @@ public abstract class AdapterManager<T extends ISelectable> {
             }
             @Override
             protected void notifyItemChanged(int itemPosition) {
-                if(isRecyclable()){
-                    AdapterManager.this.notifyItemChanged(itemPosition);
-                }else {
-                    throw new UnsupportedOperationException("only recycleview support");
-                }
+                AdapterManager.this.notifyItemChanged(itemPosition);
             }
             @Override
             protected T getSelectedItemAtPosition(int position) {

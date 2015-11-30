@@ -74,37 +74,37 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
             }
 
             @Override
-            public void notifyItemInserted(int position) {
+            public void notifyItemInsertedImpl(int position) {
                 QuickRecycleViewAdapter.this.notifyItemInserted(position);
             }
 
             @Override
-            public void notifyItemChanged(int position) {
+            public void notifyItemChangedImpl(int position) {
                 QuickRecycleViewAdapter.this.notifyItemChanged(position);
             }
 
             @Override
-            public void notifyItemMoved(int fromPosition, int toPosition) {
+            public void notifyItemMovedImpl(int fromPosition, int toPosition) {
                 QuickRecycleViewAdapter.this.notifyItemMoved(fromPosition, toPosition);
             }
 
             @Override
-            public void notifyItemRemoved(int position) {
+            public void notifyItemRemovedImpl(int position) {
                 QuickRecycleViewAdapter.this.notifyItemRemoved(position);
             }
 
             @Override
-            public void notifyItemRangeChanged(int positionStart, int itemCount) {
+            public void notifyItemRangeChangedImpl(int positionStart, int itemCount) {
                 QuickRecycleViewAdapter.this.notifyItemRangeChanged(positionStart, itemCount);
             }
 
             @Override
-            public void notifyItemRangeInserted(int positionStart, int itemCount) {
+            public void notifyItemRangeInsertedImpl(int positionStart, int itemCount) {
                 QuickRecycleViewAdapter.this.notifyItemRangeInserted(positionStart, itemCount);
             }
 
             @Override
-            public void notifyItemRangeRemoved(int positionStart, int itemCount) {
+            public void notifyItemRangeRemovedImpl(int positionStart, int itemCount) {
                 QuickRecycleViewAdapter.this.notifyItemRangeRemoved(positionStart, itemCount);
             }
 

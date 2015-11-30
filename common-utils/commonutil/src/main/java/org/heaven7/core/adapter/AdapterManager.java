@@ -49,7 +49,7 @@ public abstract class AdapterManager<T extends ISelectable> {
             @Override
             protected void notifyItemChanged(int itemPosition) {
                 if(isRecyclable()){
-                    AdapterManager.this.notifyItemChanged(itemPosition + getHeaderSize());
+                    AdapterManager.this.notifyItemChanged(itemPosition);
                 }else {
                     throw new UnsupportedOperationException("only recycleview support");
                 }
@@ -103,7 +103,7 @@ public abstract class AdapterManager<T extends ISelectable> {
     public void setItem(int index, T newItem){
         mDatas.set(index, newItem);
         if(isRecyclable()){
-            notifyItemChanged(index + (isHeaderFooterSupport()?
+            notifyItemChanged(index + (isHeaderFooterSupport() ?
                     getHeaderFooterManager().getHeaderSize() : 0));
         }else {
             notifyDataSetChanged();
@@ -116,7 +116,7 @@ public abstract class AdapterManager<T extends ISelectable> {
     public void removeItem(int index){
         mDatas.remove(index);
         if(isRecyclable()){
-            notifyItemRemoved(index + (isHeaderFooterSupport()?
+            notifyItemRemoved(index + (isHeaderFooterSupport() ?
                     getHeaderFooterManager().getHeaderSize() : 0));
         }else {
             notifyDataSetChanged();
@@ -167,40 +167,83 @@ public abstract class AdapterManager<T extends ISelectable> {
         notifyDataSetChangedImpl();
     }
 
+    // =========== begin recycleview ==============//
+    private void checkIfSupport() {
+        if(!isRecyclable()){
+            throw new UnsupportedOperationException("only recycle view support");
+        }
+    }
+
+    public final void notifyItemInserted(int position) {
+        checkIfSupport();
+        position += getHeaderSize();
+        notifyItemInsertedImpl(position);
+    }
+    public final void notifyItemChanged(int position) {
+        checkIfSupport();
+        position += getHeaderSize();
+        notifyItemChangedImpl(position);
+    }
+    public final void notifyItemRemoved(int position) {
+        checkIfSupport();
+        position += getHeaderSize();
+        notifyItemRemovedImpl(position);
+    }
+
+    public final void notifyItemMoved(int fromPosition, int toPosition){
+        checkIfSupport();
+        fromPosition += getHeaderSize();
+        toPosition += getHeaderSize();
+        notifyItemMovedImpl(fromPosition, toPosition);
+    }
+
+    public final void notifyItemRangeChanged(int positionStart, int itemCount) {
+        checkIfSupport();
+        positionStart += getHeaderSize();
+        notifyItemRangeChangedImpl(positionStart, itemCount);
+    }
+
+    public final void notifyItemRangeInserted(int positionStart, int itemCount){
+        checkIfSupport();
+        positionStart += getHeaderSize();
+        notifyItemRangeInsertedImpl(positionStart, itemCount);
+    }
+
+    public final void notifyItemRangeRemoved(int positionStart, int itemCount) {
+        checkIfSupport();
+        positionStart += getHeaderSize();
+        notifyItemRangeRemovedImpl(positionStart, itemCount);
+    }
+
+    //================== ========================//
+
+    protected void notifyItemInsertedImpl(int position) {}
+
+    protected void notifyItemChangedImpl(int position) {}
+
+    protected void notifyItemRemovedImpl(int position) {}
+
+    protected void notifyItemMovedImpl(int fromPosition, int toPosition){}
+
+    protected void notifyItemRangeChangedImpl(int positionStart, int itemCount){}
+
+    protected void notifyItemRangeInsertedImpl(int positionStart, int itemCount){}
+
+    protected void notifyItemRangeRemovedImpl(int positionStart, int itemCount){}
+
     protected abstract void notifyDataSetChangedImpl();
+
     protected abstract boolean isRecyclable();
 
     /** this called before {@link #notifyDataSetChangedImpl()}, default is empty implements */
     protected abstract void beforeNotifyDataChanged();
 
+    //================== ========================//
+
     protected IHeaderFooterManager createHeaderFooterManager() {
         return null;
     }
 
-    // =========== begin recycleview ==============//
-
-    public void notifyItemInserted(int position) {
-         throw new UnsupportedOperationException("only recycle view support");
-    }
-    public void notifyItemChanged(int position) {
-        throw new UnsupportedOperationException("only recycle view support");
-    }
-    public void notifyItemRemoved(int position) {
-        throw new UnsupportedOperationException("only recycle view support");
-    }
-    public void notifyItemMoved(int fromPosition, int toPosition){
-        throw new UnsupportedOperationException("only recycle view support");
-    }
-
-    public void notifyItemRangeChanged(int positionStart, int itemCount) {
-        throw new UnsupportedOperationException("only recycle view support");
-    }
-    public void notifyItemRangeInserted(int positionStart, int itemCount){
-        throw new UnsupportedOperationException("only recycle view support");
-    }
-    public void notifyItemRangeRemoved(int positionStart, int itemCount) {
-        throw new UnsupportedOperationException("only recycle view support");
-    }
     /** default false */
     public boolean isHeaderFooterSupport(){
         return false;

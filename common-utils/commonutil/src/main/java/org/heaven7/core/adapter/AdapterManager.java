@@ -161,9 +161,11 @@ public abstract class AdapterManager<T extends ISelectable> {
     public final void notifyDataSetChanged(){
         beforeNotifyDataChanged();
         notifyDataSetChangedImpl();
+        afterNotifyDataChanged();
     }
 
     // =========== begin recycleview ==============//
+
     private void checkIfSupport() {
         if(!isRecyclable()){
             throw new UnsupportedOperationException("only recycle view support");
@@ -227,12 +229,16 @@ public abstract class AdapterManager<T extends ISelectable> {
 
     protected void notifyItemRangeRemovedImpl(int positionStart, int itemCount){}
 
+    // =========== end recycleview ==============//
+
     protected abstract void notifyDataSetChangedImpl();
 
     protected abstract boolean isRecyclable();
 
-    /** this called before {@link #notifyDataSetChangedImpl()}, default is empty implements */
+    /** this called before {@link #notifyDataSetChangedImpl()} */
     protected abstract void beforeNotifyDataChanged();
+    /** this called after {@link #notifyDataSetChangedImpl()} */
+    protected abstract void afterNotifyDataChanged();
 
     //================== ========================//
 
@@ -261,8 +267,6 @@ public abstract class AdapterManager<T extends ISelectable> {
     public SelectHelper<T> getSelectHelper(){
         return mSelectHelper;
     }
-    //============ end recycleview ===============//
-
 
     /**
      * ths supporter of header and footer, call any method will automatic call {@link QuickRecycleViewAdapter#notifyDataSetChanged()}.

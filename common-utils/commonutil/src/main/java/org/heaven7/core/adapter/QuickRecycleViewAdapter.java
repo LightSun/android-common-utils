@@ -59,6 +59,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
        }
         this.mLayoutId = layoutId;
         mAdapterManager = createAdapterManager(mDatas,selectMode);
+        onFinalInit();
     }
 
     private AdapterManager<T> createAdapterManager(List<T> mDatas, int selectMode) {
@@ -114,6 +115,11 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
             }
 
             @Override
+            protected void afterNotifyDataChanged() {
+                QuickRecycleViewAdapter.this.afterNotifyDataChanged();
+            }
+
+            @Override
             public boolean isHeaderFooterSupport() {
                 return true;
             }
@@ -158,8 +164,16 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
         };
     }
 
-    /** called before {@link AdapterManager#notifyDataSetChanged()} */
+    /** called before {@link #notifyDataSetChanged()} */
     protected void beforeNotifyDataChanged() {
+
+    }
+    /** this is callled after data {@link #notifyDataSetChanged()} */
+    protected void afterNotifyDataChanged(){
+
+    }
+    /** the init operation of the last, called in constructor */
+    protected void onFinalInit() {
 
     }
 

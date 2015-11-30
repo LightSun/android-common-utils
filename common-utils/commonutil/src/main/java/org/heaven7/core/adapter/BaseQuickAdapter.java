@@ -61,6 +61,7 @@ import java.util.List;
 		}
 		this.layoutResId = layoutResId;
 		mAdapterManager =  createAdapterManager(data,selectMode);
+		onFinalInit();
 	}
 
 	private AdapterManager<T> createAdapterManager(final List<T> data, int selectMode) {
@@ -79,6 +80,11 @@ import java.util.List;
 			protected void beforeNotifyDataChanged() {
 				BaseQuickAdapter.this.beforeNotifyDataChanged();
 			}
+
+			@Override
+			protected void afterNotifyDataChanged() {
+				BaseQuickAdapter.this.afterNotifyDataChanged();
+			}
 		};
 	}
 
@@ -88,6 +94,7 @@ import java.util.List;
 			MultiItemTypeSupport<T> multiItemSupport,int selectMode) {
 		this.mMultiItemSupport = multiItemSupport;
 		mAdapterManager =  createAdapterManager(data, selectMode);
+		onFinalInit();
 	}
 
 	public AdapterManager<T> getAdapterManager(){
@@ -210,8 +217,16 @@ import java.util.List;
 	protected abstract void onBindData(Context context, int position, ViewHelper helper,
 									   int itemLayoutId, T item);
 
-	/** this is callled before data chaned */
+	/** this is callled before data changed */
 	protected void beforeNotifyDataChanged(){
+
+	}
+	/** this is callled after data changed */
+	protected void afterNotifyDataChanged(){
+
+	}
+	/** the init operation of the last, called in constructor */
+	protected void onFinalInit() {
 
 	}
 

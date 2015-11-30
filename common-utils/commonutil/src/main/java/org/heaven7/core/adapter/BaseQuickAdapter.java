@@ -37,8 +37,8 @@ import java.util.List;
  * @param <T>
  *            The type of the items in the list.
  */
-/*public*/ abstract class BaseQuickAdapter<T, H extends BaseAdapterHelper> extends
-		BaseAdapter {
+/*public*/ abstract class BaseQuickAdapter<T extends ISelectable, H extends BaseAdapterHelper>
+		extends BaseAdapter {
 
 	protected int layoutResId;
 	protected boolean displayIndeterminateProgress = false;
@@ -55,16 +55,16 @@ import java.util.List;
 	 * @param data
 	 *            A new list is created out of this one to avoid mutable list
 	 */
-	public BaseQuickAdapter(int layoutResId, List<T> data) {
+	public BaseQuickAdapter(int layoutResId, List<T> data,int selectMode) {
 		if(layoutResId <0 ){
 			throw new IllegalArgumentException("layoutId can't be negative ");
 		}
 		this.layoutResId = layoutResId;
-		mAdapterManager =  createAdapterManager(data);
+		mAdapterManager =  createAdapterManager(data,selectMode);
 	}
 
-	private AdapterManager<T> createAdapterManager(final List<T> data) {
-		return  new AdapterManager<T>(data) {
+	private AdapterManager<T> createAdapterManager(final List<T> data, int selectMode) {
+		return  new AdapterManager<T>(data,selectMode) {
 			@Override
 			protected void notifyDataSetChangedImpl() {
                 BaseQuickAdapter.this.notifyDataSetChanged();
@@ -85,12 +85,12 @@ import java.util.List;
 	protected MultiItemTypeSupport<T> mMultiItemSupport;
 
 	public BaseQuickAdapter(ArrayList<T> data,
-			MultiItemTypeSupport<T> multiItemSupport) {
+			MultiItemTypeSupport<T> multiItemSupport,int selectMode) {
 		this.mMultiItemSupport = multiItemSupport;
-		mAdapterManager =  createAdapterManager(data);
+		mAdapterManager =  createAdapterManager(data, selectMode);
 	}
 
-	public AdapterManager getAdapterManager(){
+	public AdapterManager<T> getAdapterManager(){
 		return mAdapterManager;
 	}
 
@@ -124,7 +124,7 @@ import java.util.List;
 		if (displayIndeterminateProgress) {
 			if (mMultiItemSupport != null)
 				return position >= mAdapterManager.getItemSize() ? 0 : mMultiItemSupport
-						.getItemViewType(position, mAdapterManager.getItems().get(position));
+						.getItemViewType(position, mAdapterManager.getItemAt(position));
 		} else {
 			if (mMultiItemSupport != null)
 				return mMultiItemSupport.getItemViewType(position,

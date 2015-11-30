@@ -34,7 +34,6 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
         extends RecyclerView.Adapter<QuickRecycleViewAdapter.ViewHolder> {
 
     private int mLayoutId = 0;
-    private SelectHelper<T> mSelectHelper;
     private HeaderFooterHelper mHeaderFooterHelper;
     private AdapterManager<T> mAdapterManager;
 
@@ -59,12 +58,11 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
            throw new IllegalArgumentException("layoutId can't be negative ");
        }
         this.mLayoutId = layoutId;
-        init(selectMode, mDatas);
-        mAdapterManager = createAdapterManager(mDatas);
+        mAdapterManager = createAdapterManager(mDatas,selectMode);
     }
 
-    private AdapterManager<T> createAdapterManager(List<T> mDatas) {
-        return new AdapterManager<T>(mDatas) {
+    private AdapterManager<T> createAdapterManager(List<T> mDatas, int selectMode) {
+        return new AdapterManager<T>(mDatas,selectMode) {
             @Override
             protected void notifyDataSetChangedImpl() {
                 QuickRecycleViewAdapter.this.notifyDataSetChanged();
@@ -165,33 +163,6 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
 
     }
 
-    private void init(int selectMode,List<T> list){
-        mSelectHelper = new SelectHelper<T>(selectMode) {
-            @Override
-            protected boolean isRecyclable() {
-                return true;
-            }
-
-            @Override
-            protected void notifyAllChanged() {
-                notifyDataSetChanged();
-            }
-
-            @Override
-            protected void notifyItemChanged(int itemPosition) {
-                if(mHeaderFooterHelper !=null)
-                    itemPosition += mHeaderFooterHelper.getHeaderViewSize();
-                QuickRecycleViewAdapter.this.notifyItemChanged(itemPosition);
-            }
-
-            @Override
-            protected T getSelectedItemAtPosition(int position) {
-                return getItem(position);
-            }
-        };
-        mSelectHelper.initSelectPositions(list);
-    }
-
     //=================== start header footer view ======================= //
     public void addHeaderView(View v){
         if(mHeaderFooterHelper == null)
@@ -232,7 +203,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
     // =================== end header footer view ======================= //
 
     public SelectHelper<T> getSelectHelper(){
-        return mSelectHelper;
+        return getAdapterManager().getSelectHelper();
     }
 
     public final T getItem(int position){
@@ -242,49 +213,49 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
      * select the target position
      * only support select mode = {@link ISelectable#SELECT_MODE_MULTI}**/
     public void addSelected(int selectPosition){
-        mSelectHelper.addSelected(selectPosition);
+        getSelectHelper().addSelected(selectPosition);
     }
 
     /**  un select the target position  .
      * <li>only support select mode = {@link ISelectable#SELECT_MODE_MULTI}*/
     public void addUnselected(int position){
-        mSelectHelper.addUnselected(position);
+        getSelectHelper().addUnselected(position);
     }
 
     /**
      * un select the all selected position.
      * mode single or multi all supoorted */
     public void clearAllSelected(){
-        mSelectHelper.clearAllSelected();
+        getSelectHelper().clearAllSelected();
     }
     /**
      * select the target position with notify data.if currentPosition  == position.ignore it.
      * <li></>only support select mode = {@link ISelectable#SELECT_MODE_SINGLE} ,this will auto update**/
     public void setSelected(int position){
-        mSelectHelper.setSelected(position);
+        getSelectHelper().setSelected(position);
     }
     /** un select the target position
      * <li>only support select mode = {@link ISelectable#SELECT_MODE_SINGLE} */
     public void setUnselected(int position){
-        mSelectHelper.setUnselected(position);
+        getSelectHelper().setUnselected(position);
     }
 
     /** clear selected positions  . this just clear record. bu not notify item change
      * <li> support select mode = {@link ISelectable#SELECT_MODE_SINGLE} or {@link ISelectable#SELECT_MODE_MULTI}*/
     public void clearSelectedPositions(){
-        mSelectHelper.clearSelectedPositions();
+        getSelectHelper().clearSelectedPositions();
     }
 
     public T getSelectedData(){
-       return mSelectHelper.getSelectedItem();
+       return getSelectHelper().getSelectedItem();
     }
 
     public List<T> getSelectedItems(){
-        return mSelectHelper.getSelectedItems();
+        return getSelectHelper().getSelectedItems();
     }
 
     public int getSelectedPosition(){
-        return mSelectHelper.getSelectedPosition() ;
+        return getSelectHelper().getSelectedPosition() ;
     }
 
     //====================== begin items ========================//

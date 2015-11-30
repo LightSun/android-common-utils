@@ -33,8 +33,6 @@ import java.util.List;
 public abstract class QuickAdapter<T extends ISelectable> extends
 		BaseQuickAdapter<T, BaseAdapterHelper> {
 
-	private SelectHelper<T> mSelectHelper;
-
 	/**
 	 * Same as QuickAdapter#QuickAdapter(Context,int) but with some
 	 * initialization data.
@@ -48,28 +46,7 @@ public abstract class QuickAdapter<T extends ISelectable> extends
 		this(layoutResId, data, ISelectable.SELECT_MODE_SINGLE);
 	}
 	public QuickAdapter(int layoutResId, List<T> data,int selectMode) {
-		super(layoutResId, data);
-		init(selectMode, data);
-	}
-
-	private void init(int selectMode,List<T> list){
-		mSelectHelper = new SelectHelper<T>(selectMode) {
-			@Override
-			protected void notifyAllChanged() {
-				notifyDataSetChanged();
-			}
-
-			@Override
-			protected void notifyItemChanged(int itemPosition) {
-				throw new UnsupportedOperationException();
-			}
-
-			@Override
-			protected T getSelectedItemAtPosition(int position) {
-				return getItem(position);
-			}
-		};
-		mSelectHelper.initSelectPositions(list);
+		super(layoutResId, data, selectMode);
 	}
 
 	/**
@@ -89,36 +66,35 @@ public abstract class QuickAdapter<T extends ISelectable> extends
 	 */
 	public QuickAdapter(ArrayList<T> data,
 			MultiItemTypeSupport<T> multiItemSupport,int selectMode) {
-		super(data, multiItemSupport);
-		init(selectMode, data);
+		super(data, multiItemSupport, selectMode);
 	}
 
 	public SelectHelper<T> getSelectHelper(){
-		return mSelectHelper;
+		return getAdapterManager().getSelectHelper();
 	}
 
 	/**
 	 * select the target position with notify data.if currentPosition  == position.ignore it.
 	 * <li></>only support select mode = {@link ISelectable#SELECT_MODE_SINGLE} ,this will auto update**/
 	public void setSelected(int position){
-		mSelectHelper.setSelected(position);
+		getSelectHelper().setSelected(position);
 	}
 
 	/** only support select mode = {@link ISelectable#SELECT_MODE_MULTI}**/
 	public void addSelected(int selectPosition){
-		mSelectHelper.addSelected(selectPosition);
+		getSelectHelper().addSelected(selectPosition);
 	}
 
 	public void clearAllSelected(){
-		mSelectHelper.clearAllSelected();
+		getSelectHelper().clearAllSelected();
 	}
 
 	public T getSelectedData(){
-		return mSelectHelper.getSelectedItem();
+		return getSelectHelper().getSelectedItem();
 	}
 
 	public int getSelectedPosition(){
-		return mSelectHelper.getSelectedPosition() ;
+		return getSelectHelper().getSelectedPosition() ;
 	}
 
 	@Override
@@ -129,7 +105,7 @@ public abstract class QuickAdapter<T extends ISelectable> extends
 			return BaseAdapterHelper.get(
 					convertView,
 					parent,
-					mMultiItemSupport.getLayoutId(position, (T) getAdapterManager().getItems().get(position)),
+					mMultiItemSupport.getLayoutId(position, getAdapterManager().getItems().get(position)),
 					position);
 		} else {
 			return BaseAdapterHelper.get(convertView, parent, layoutResId, position);

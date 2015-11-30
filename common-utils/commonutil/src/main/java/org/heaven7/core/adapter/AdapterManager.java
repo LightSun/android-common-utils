@@ -26,13 +26,49 @@ import java.util.List;
 /**
  * Created by heaven7 on 2015/11/29.
  */
-public abstract class AdapterManager<T> {
+public abstract class AdapterManager<T extends ISelectable> {
 
     private List<T> mDatas;
     private IHeaderFooterManager mHeaderFooterManager;
+    private final SelectHelper<T> mSelectHelper;
 
-    public AdapterManager(List<T> data) {
+    /**
+     * @param selectMode  see {@link ISelectable#SELECT_MODE_MULTI} or {@link ISelectable#SELECT_MODE_MULTI}
+     */
+    public AdapterManager(List<T> data,int selectMode) {
         this.mDatas = data == null ? new ArrayList<T>() : new ArrayList<T>(data);
+        mSelectHelper = createSelectHelper(selectMode, data);
+    }
+
+    private SelectHelper<T> createSelectHelper(int selectMode,List<T> list){
+        SelectHelper<T> selectHelper = new SelectHelper<T>(selectMode) {
+            @Override
+            protected void notifyAllChanged() {
+                notifyDataSetChanged();
+            }
+            @Override
+            protected void notifyItemChanged(int itemPosition) {
+                if(isRecyclable()){
+                    AdapterManager.this.notifyItemChanged(itemPosition + getHeaderSize());
+                }else {
+                    throw new UnsupportedOperationException("only recycleview support");
+                }
+            }
+            @Override
+            protected T getSelectedItemAtPosition(int position) {
+                return getItemAt(position); //in recyclerView position is handled
+            }
+
+            @Override
+            protected boolean isRecyclable() {
+                return AdapterManager.this.isRecyclable();
+            }
+        };
+        selectHelper.initSelectPositions(list);
+        return selectHelper;
+    }
+    protected int getHeaderSize(){
+        return  mHeaderFooterManager!=null ? mHeaderFooterManager.getHeaderSize() :0;
     }
 
     public void addItem(T item){
@@ -110,6 +146,7 @@ public abstract class AdapterManager<T> {
     public void replaceAllItems(List<T> items) {
         mDatas.clear();
         mDatas.addAll(items);
+        mSelectHelper.initSelectPositions(items);
         notifyDataSetChanged();
     }
 
@@ -134,9 +171,8 @@ public abstract class AdapterManager<T> {
     protected abstract boolean isRecyclable();
 
     /** this called before {@link #notifyDataSetChangedImpl()}, default is empty implements */
-    protected void beforeNotifyDataChanged(){
+    protected abstract void beforeNotifyDataChanged();
 
-    }
     protected IHeaderFooterManager createHeaderFooterManager() {
         return null;
     }
@@ -181,6 +217,10 @@ public abstract class AdapterManager<T> {
     }
     public T getItemAt(int index){
         return mDatas.get(index);
+    }
+
+    public SelectHelper<T> getSelectHelper(){
+        return mSelectHelper;
     }
     //============ end recycleview ===============//
 

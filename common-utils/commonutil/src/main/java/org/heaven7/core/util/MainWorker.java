@@ -33,7 +33,10 @@ public class MainWorker {
 			MainHandler.post(r);
 		}
 	}
-	
+	public static void postAtfront(Runnable r){
+		MainHandler.postAtFrontOfQueue(r);
+	}
+
 	public static boolean currentIsMainThread(){
 		return Thread.currentThread() == Looper.getMainLooper().getThread();
 	}
@@ -44,5 +47,14 @@ public class MainWorker {
 	
 	public static void postDelay(long delay,Runnable r){
 		MainHandler.postDelayed(r, delay);
+	}
+
+	public static void removePreviousAndPost(Runnable r){
+		MainHandler.removeCallbacks(r);
+		MainHandler.post(r);
+	}
+	public static void removePreviousAndPostDelay(long delayMills,Runnable r){
+		MainHandler.removeCallbacks(r);
+		MainHandler.postDelayed(r,delayMills);
 	}
 }

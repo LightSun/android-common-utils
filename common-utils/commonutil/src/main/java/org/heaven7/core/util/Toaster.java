@@ -27,23 +27,28 @@ import java.lang.ref.WeakReference;
  * @author heaven7
  *
  */
-public class Toaster{
+public class Toaster {
 	
 	private static final String TAG = "Toaster";
 	private final WeakReference<Context> mWrfContext;
 	private static WeakReference<Toast> sWeakToast;
+	private final int mGravity;
 	
 	public Toaster(Context ctx) {
-		mWrfContext = new WeakReference<Context>(ctx.getApplicationContext());
+		this(ctx,Gravity.BOTTOM);
 	}
-	
+	public Toaster(Context ctx, int gravity) {
+		mWrfContext = new WeakReference<Context>(ctx.getApplicationContext());
+		this.mGravity = gravity;
+	}
+
 	public boolean show(String msg){
 		Context ctx = mWrfContext.get();
 		if(ctx == null){
 			Logger.w(TAG, "Toaster_show", "Context == null! , msg = " + msg);
 			return false;
 		}
-		show(ctx, msg);
+		show(ctx, msg,mGravity);
 		return true;
 	}
 	public boolean show(int resid){
@@ -52,7 +57,7 @@ public class Toaster{
 			Logger.w(TAG, "show", "Context == null");
 			return false;
 		}
-		show(ctx, resid);
+		show(ctx, resid,mGravity);
 		return true;
 	}
 	
@@ -61,33 +66,52 @@ public class Toaster{
 		show(ctx, msg, false);
 	}
 	/**Toast.LENGTH_SHORT */
-	public static void show(Context ctx,int resId){
-		show(ctx, resId, false);
+	public static void show(Context ctx,int resId,int gravity){
+		show(ctx, resId, false,gravity);
 	}
-	public static void show(final Context ctx,final CharSequence msg,final boolean warn){
-		show(ctx,msg,warn, Gravity.CENTER);
+	/**Toast.LENGTH_SHORT */
+	public static void show(Context ctx,String msg,int toastLaction){
+		show(ctx, msg, true,toastLaction);
 	}
 	/** warning meas Toast.LENGTH_LONG */
-	public static void show(final Context ctx,final CharSequence msg,final boolean warn, final int gravity){
+	public static void show(final Context ctx,final CharSequence msg,final boolean warn){
 		MainWorker.post(new Runnable() {
 			public void run() {
-				if(sWeakToast!=null){
+				if (sWeakToast != null) {
 					Toast toast = sWeakToast.get();
-					if(toast!=null)
+					if (toast != null)
 						toast.cancel();
 				}
-				Toast toast = Toast.makeText(ctx, msg, warn?Toast.LENGTH_LONG:
-					Toast.LENGTH_SHORT);
-				toast.setGravity(gravity,0,0);
+				Toast toast = Toast.makeText(ctx, msg, warn ? Toast.LENGTH_LONG :
+						Toast.LENGTH_SHORT);
 				sWeakToast = new WeakReference<Toast>(toast);
 				toast.show();
 			}
 		});
 	}
 	/** warning meas Toast.LENGTH_LONG */
-	public static void show(final Context ctx,final int resId,final boolean warn){
+	public static void show(final Context ctx,final int resId,final boolean warn, int gravity){
 		CharSequence msg = ctx.getResources().getText(resId);
-		show(ctx, msg, warn);
+		show(ctx, msg, warn,gravity);
+	}
+
+
+	/** warning meas Toast.LENGTH_LONG */
+	public static void show(final Context ctx,final CharSequence msg,final boolean warn, final int gravity){
+		MainWorker.post(new Runnable() {
+			public void run() {
+				if (sWeakToast != null) {
+					Toast toast = sWeakToast.get();
+					if (toast != null)
+						toast.cancel();
+				}
+				Toast toast = Toast.makeText(ctx, msg, warn ? Toast.LENGTH_LONG :
+						Toast.LENGTH_SHORT);
+				toast.setGravity(gravity,0,0);
+				sWeakToast = new WeakReference<Toast>(toast);
+				toast.show();
+			}
+		});
 	}
 	
 }

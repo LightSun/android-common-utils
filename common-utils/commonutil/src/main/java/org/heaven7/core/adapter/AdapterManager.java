@@ -281,4 +281,9 @@ public abstract class AdapterManager<T extends ISelectable> {
         int getFooterSize();
     }
 
+    public interface IAdapterManagerCallback<T extends ISelectable>{
+
+        AdapterManager<T> getAdapterManager();
+    }
+
 }

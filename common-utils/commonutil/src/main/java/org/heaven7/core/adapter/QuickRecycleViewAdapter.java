@@ -31,7 +31,8 @@ import java.util.List;
  * @param <T>  the data
  */
 public abstract class QuickRecycleViewAdapter<T extends ISelectable>
-        extends RecyclerView.Adapter<QuickRecycleViewAdapter.ViewHolder> {
+        extends RecyclerView.Adapter<QuickRecycleViewAdapter.ViewHolder>
+        implements AdapterManager.IAdapterManagerCallback{
 
     private int mLayoutId = 0;
     private HeaderFooterHelper mHeaderFooterHelper;
@@ -274,6 +275,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
 
     //====================== begin items ========================//
 
+    @Override
     public AdapterManager<T> getAdapterManager() {
         return mAdapterManager;
     }

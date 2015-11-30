@@ -38,7 +38,7 @@ import java.util.List;
  *            The type of the items in the list.
  */
 /*public*/ abstract class BaseQuickAdapter<T extends ISelectable, H extends BaseAdapterHelper>
-		extends BaseAdapter {
+		extends BaseAdapter implements AdapterManager.IAdapterManagerCallback{
 
 	protected int layoutResId;
 	protected boolean displayIndeterminateProgress = false;
@@ -97,6 +97,7 @@ import java.util.List;
 		onFinalInit();
 	}
 
+	@Override
 	public AdapterManager<T> getAdapterManager(){
 		return mAdapterManager;
 	}

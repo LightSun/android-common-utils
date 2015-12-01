@@ -29,7 +29,6 @@ import java.util.List;
 public abstract class AdapterManager<T extends ISelectable> {
 
     private List<T> mDatas;
-    private IHeaderFooterManager mHeaderFooterManager;
     private final SelectHelper<T> mSelectHelper;
 
     /**
@@ -64,7 +63,7 @@ public abstract class AdapterManager<T extends ISelectable> {
         return selectHelper;
     }
     protected int getHeaderSize(){
-        return  mHeaderFooterManager!=null ? mHeaderFooterManager.getHeaderSize() :0;
+        return  getHeaderFooterManager()!=null ? getHeaderFooterManager().getHeaderSize() :0;
     }
 
     public void addItem(T item){

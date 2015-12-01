@@ -150,7 +150,7 @@ import java.util.List;
 		}
 		final H helper = getAdapterHelper(position, convertView, parent);
 		T item = getItem(position);
-		onBindData(parent.getContext(), position, helper.getViewHelper(), helper.getLayoutId(), item);
+		onBindData(parent.getContext(), position,item,helper.getLayoutId(), helper.getViewHelper());
 		return helper.getViewHelper().getRootView();
 
 	}
@@ -208,15 +208,15 @@ import java.util.List;
 	 *
 	 * Implement this method and use the helper to adapt the view to the given
 	 * item.
-	 * @param context
+	 * @param context the context
 	 * @param position the postion of adapterview. such as: listView
 	 * @param helper the helper of view help you to fast set view's property
      * @param itemLayoutId  the layout id of item, this is useful if you use muity item.
      *                      {@link MultiItemTypeSupport}
 	 * @param item the data
 	 */
-	protected abstract void onBindData(Context context, int position, ViewHelper helper,
-									   int itemLayoutId, T item);
+	protected abstract void onBindData(Context context, int position,  T item,
+									   int itemLayoutId, ViewHelper helper);
 
 	/** this is callled before data changed */
 	protected void beforeNotifyDataChanged(){

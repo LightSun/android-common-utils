@@ -58,8 +58,10 @@ public class QuickRecycleViewTestActivity extends BaseActivity {
         mItems = new ArrayList<>();
         addTestData(mItems);
         mRecyclerView.setAdapter(new QuickRecycleViewAdapter<Item>(R.layout.item_image, mItems) {
+
             @Override
-            protected void onBindData(Context ctx, final int position, final Item item, ViewHelper helper) {
+            protected void onBindData(Context context, final int position, final Item item,
+                                      int itemLayoutId, ViewHelper helper) {
                 helper.setImageUrl(R.id.eniv, item.url, new RoundedBitmapBuilder()
                         .scaleType(ImageView.ScaleType.CENTER_CROP))
                         .view(R.id.tv)

@@ -269,7 +269,8 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
     @Override
     public final ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(mHeaderFooterHelper == null || mHeaderFooterHelper.isLayoutIdInRecord(viewType)){
-            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(viewType,parent,false));
+            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(
+                    viewType,parent,false), viewType);
         }else{
             return new ViewHolder(mHeaderFooterHelper.findView(viewType,mAdapterManager.getItemSize()));
         }
@@ -285,7 +286,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
             position -= mHeaderFooterHelper.getHeaderViewSize();
         }
         //not in header or footer populate it
-        onBindData(holder.getContext(), position, getItem(position), holder.mViewHelper);
+        onBindData(holder.getContext(), position,getItem(position),  holder.mLayoutId,holder.mViewHelper);
     }
 
     @Override
@@ -299,15 +300,23 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
         return mLayoutId;
     }
 
-    protected abstract void onBindData(Context ctx,int position, T t, ViewHelper helper);
+    protected abstract void onBindData(Context context, int position,  T item,
+                                       int itemLayoutId, ViewHelper helper);
 
     /*public*/ static class ViewHolder extends RecyclerView.ViewHolder{
 
         public final ViewHelper mViewHelper;
+        /** if is in header or footer ,mLayoutId = 0 */
+        public final int mLayoutId;
+
+        public ViewHolder(View itemView,int layoutId){
+            super(itemView);
+            this.mLayoutId = layoutId;
+            this.mViewHelper = new ViewHelper(itemView);
+        }
 
         public ViewHolder(View itemView) {
-            super(itemView);
-            mViewHelper = new ViewHelper(itemView);
+            this(itemView, 0);
         }
         public Context getContext(){
             return mViewHelper.getContext();

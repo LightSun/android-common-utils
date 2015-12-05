@@ -155,6 +155,25 @@ public abstract class SelectHelper<T extends ISelectable>{
         }
     }
 
+    public void toogleSelected(int position){
+        if(position < 0){
+            throw new IllegalArgumentException(" position can't be negative !");
+        }
+        if(mSelectMode == ISelectable.SELECT_MODE_MULTI) {
+            if(mSelectedPositions.contains(position)){
+                addUnselected(position);
+            }else{
+                addSelected(position);
+            }
+        }else{
+            if( mSelectedPosition == position){
+                setUnselected(position);
+            }else{
+                setSelected(position);
+            }
+        }
+    }
+
     public  T getSelectedItem(){
         if(mSelectedPosition == ISelectable.INVALID_POSITION)
             return null;

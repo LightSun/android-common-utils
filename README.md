@@ -6,6 +6,7 @@ this is a common utils of android (used to fast develop). contains QuickAdapter 
 dependencies {
      compile 'org.heaven7.core:commonutil:1.7.2'
 }
+```
 
 
 ## License

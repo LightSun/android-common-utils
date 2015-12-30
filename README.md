@@ -1,6 +1,35 @@
 # android-common-utils
 this is a common utils of android (used to fast develop). contains QuickAdapter of ListView,RecyclerView.ExpandListView. and so on.
 
+## sample code 
+``` java
+   mRecyclerView_room.setAdapter(mRoomAdapter = new QuickRecycleViewAdapter<RoomItem>(
+                        R.layout.item_ktv_detail_room, dateItems) {
+                    @Override
+                    protected void onBindData(Context ctx, final int position, final RoomItem roomItem, ViewHelper helper) {
+                        if (roomItem.isSelected()) {
+                            helper.setBackgroundRes(R.id.fl_room, mRoomSelectDrawableId)
+                                    .setTextColor(R.id.tv_room_title, mRoomSelectedColor)
+                                    .setVisibility(R.id.iv_room_subscript, true);
+                        } else {
+                            helper.setBackgroundRes(R.id.fl_room, 0)
+                                    .setTextColor(R.id.tv_room_title, mRoomUnselectColor)
+                                    .setVisibility(R.id.iv_room_subscript, false);
+                        }
+                        helper.setText(R.id.tv_room_title, roomItem.text)
+                                .setOnClickListener(R.id.fl_room, new View.OnClickListener() {
+                                    public void onClick(View v) {
+                                        if (getSelectedPosition() != position) {
+                                            setRoomFragment(roomItem.roomInfos);
+                                        }
+                                        setSelected(position);
+                                    }
+                                });
+                    }
+                }
+        );
+```
+
 ## How to use ? 
 ``` java
 dependencies {

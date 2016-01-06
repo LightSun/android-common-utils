@@ -28,6 +28,10 @@
             android:name=".QuickRecycleViewTestActivity"
             >
         </activity>
+        <activity
+            android:name=".RecyclerViewDecorationTestActivity"
+            >
+        </activity>
     </application>
 
 </manifest>

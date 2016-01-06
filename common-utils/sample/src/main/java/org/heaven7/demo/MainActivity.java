@@ -11,6 +11,7 @@ public class MainActivity extends ListActivity {
 
     public static final String[] options = {
             "QuickRecycleAdapterTest",
+            "RecyclerViewDecorationTest",
     };
 
     @Override
@@ -26,6 +27,9 @@ public class MainActivity extends ListActivity {
         switch (position) {
             case 0:
                 intent = new Intent(this, QuickRecycleViewTestActivity.class);
+                break;
+            case 1:
+                intent = new Intent(this, RecyclerViewDecorationTestActivity.class);
                 break;
             default:
                 throw new UnsupportedOperationException();

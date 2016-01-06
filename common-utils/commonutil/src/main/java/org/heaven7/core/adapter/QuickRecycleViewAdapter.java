@@ -295,6 +295,13 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
                 mAdapterManager.getItemSize() + mHeaderFooterHelper.getHeaderViewSize() +
                         mHeaderFooterHelper.getFooterViewSize();
     }
+
+   /* @Override
+    public void onViewDetachedFromWindow(ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        holder.mViewHelper.getRootView().clearAnimation();
+    }*/
+
     /** if you use multi item ,override this */
     protected int getItemLayoutId(int position,T t) {
         return mLayoutId;

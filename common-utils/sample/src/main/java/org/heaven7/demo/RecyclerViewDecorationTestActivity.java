@@ -5,8 +5,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -14,7 +14,7 @@ import com.android.volley.extra.RoundedBitmapBuilder;
 
 import org.heaven7.core.adapter.ISelectable;
 import org.heaven7.core.adapter.QuickRecycleViewAdapter;
-import org.heaven7.core.item.decoration.DividerItemDecoration;
+import org.heaven7.core.item.decoration.DividerGridItemDecoration;
 import org.heaven7.core.save_state.BundleSupportType;
 import org.heaven7.core.save_state.SaveStateField;
 import org.heaven7.core.viewhelper.ViewHelper;
@@ -22,7 +22,7 @@ import org.heaven7.core.viewhelper.ViewHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuickRecycleViewTestActivity extends BaseActivity {
+public class RecyclerViewDecorationTestActivity extends BaseActivity {
 
     RecyclerView mRecyclerView;
 
@@ -51,15 +51,20 @@ public class QuickRecycleViewTestActivity extends BaseActivity {
     @Override
     protected void initView() {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
+      //  mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+       // mRecyclerView.setLayoutManager(new GridLayoutManager(this,3, LinearLayoutManager.HORIZONTAL,false));
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
+
+        final DividerGridItemDecoration decoration = new DividerGridItemDecoration(this);
+        decoration.getDividerManager().setDivider(Color.RED, 10, 10);
+        mRecyclerView.addItemDecoration(decoration);
     }
 
     @Override
     protected void initData(Bundle savedInstanceState) {
         mItems = new ArrayList<>();
         addTestData(mItems);
-        mRecyclerView.setAdapter(new QuickRecycleViewAdapter<Item>(R.layout.item_image, mItems) {
+        mRecyclerView.setAdapter(new QuickRecycleViewAdapter<Item>(R.layout.item_image_narrow, mItems) {
 
             @Override
             protected void onBindData(Context context, final int position, final Item item,
@@ -90,6 +95,7 @@ public class QuickRecycleViewTestActivity extends BaseActivity {
         for(int i=0 ,size = Test.URLS.length ; i<size ;i++){
             items.add(new Item(Test.URLS[i]));
         }
+        items.add(new Item(Test.URLS[0]));
     }
 
     public static class Item implements ISelectable, Parcelable {
@@ -127,7 +133,7 @@ public class QuickRecycleViewTestActivity extends BaseActivity {
             this.selected = in.readByte() != 0;
         }
 
-        public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
+        public static final Creator<Item> CREATOR = new Creator<Item>() {
             public Item createFromParcel(Parcel source) {
                 return new Item(source);
             }

@@ -33,7 +33,7 @@ this is a common utils of android (used to fast develop). contains QuickAdapter 
 ## How to use ? 
 ``` java
 dependencies {
-     compile 'org.heaven7.core:commonutil:1.7.3'
+     compile 'org.heaven7.core:commonutil:1.7.4'
 }
 ```
 

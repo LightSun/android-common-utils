@@ -53,7 +53,7 @@ public class RecyclerViewDecorationTestActivity extends BaseActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
       //  mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
        // mRecyclerView.setLayoutManager(new GridLayoutManager(this,3, LinearLayoutManager.HORIZONTAL,false));
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.HORIZONTAL));
 
         final DividerGridItemDecoration decoration = new DividerGridItemDecoration(this);
         decoration.getDividerManager().setDivider(Color.RED, 10, 10);

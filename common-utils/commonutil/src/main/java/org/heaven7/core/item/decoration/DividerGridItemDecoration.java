@@ -68,7 +68,7 @@ public class DividerGridItemDecoration extends AbstractDividerItemDecoration {
         final Drawable mDivider = this.getDividerManager().getDivider();
 
         for (int i = 0; i < childCount; i++) {
-            if( mHorizontalExcludePositions.contains(i) ){
+            if(mHorizontalExcludePositions!=null && mHorizontalExcludePositions.contains(i) ){
                 continue ;
             }
             final View child = parent.getChildAt(i);
@@ -90,7 +90,7 @@ public class DividerGridItemDecoration extends AbstractDividerItemDecoration {
         final Drawable mDivider = this.getDividerManager().getDivider();
 
         for (int i = 0; i < childCount; i++) {
-            if( mVerticalExcludePositions.contains(i) ){
+            if( mVerticalExcludePositions!=null && mVerticalExcludePositions.contains(i) ){
                 continue ;
             }
             final View child = parent.getChildAt(i);

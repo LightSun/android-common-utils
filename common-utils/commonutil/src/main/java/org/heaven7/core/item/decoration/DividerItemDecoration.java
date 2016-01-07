@@ -21,10 +21,16 @@ public class DividerItemDecoration extends AbstractDividerItemDecoration {
             android.R.attr.listDivider
     };
 
-    public static final int HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
-    public static final int VERTICAL_LIST   = LinearLayoutManager.VERTICAL;
+    public static final int HORIZONTAL_LIST ;
+    public static final int VERTICAL_LIST   ;
 
     private int mOrientation;
+
+    static{
+        //必须在这里写，否则 bintrayUpload上传不上去
+        HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
+        VERTICAL_LIST   = LinearLayoutManager.VERTICAL;
+    }
 
     public DividerItemDecoration(Context context, int orientation) {
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
@@ -41,7 +47,7 @@ public class DividerItemDecoration extends AbstractDividerItemDecoration {
         mOrientation = orientation;
     }
 
-    @Override
+    @Override //called before child draw, and onDrawOver(...) called after child draw
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
        // super.onDraw(c, parent, state);
       //  Logger.v("recyclerview - itemdecoration", "onDraw()");

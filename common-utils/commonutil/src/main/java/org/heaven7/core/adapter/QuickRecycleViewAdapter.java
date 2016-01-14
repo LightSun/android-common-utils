@@ -32,7 +32,8 @@ import java.util.List;
  */
 public abstract class QuickRecycleViewAdapter<T extends ISelectable>
         extends RecyclerView.Adapter<QuickRecycleViewAdapter.ViewHolder>
-        implements AdapterManager.IAdapterManagerCallback, AdapterManager.IHeaderFooterManager{
+        implements AdapterManager.IAdapterManagerCallback, AdapterManager.IHeaderFooterManager ,
+        AdapterManager.IAdapterManagerCallback2{
 
     private int mLayoutId = 0;
     private HeaderFooterHelper mHeaderFooterHelper;
@@ -59,80 +60,20 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
            throw new IllegalArgumentException("layoutId can't be negative ");
        }
         this.mLayoutId = layoutId;
-        mAdapterManager = createAdapterManager(mDatas,selectMode);
+       // mAdapterManager = createAdapterManager(mDatas,selectMode);
+        mAdapterManager = new AdapterManager<T>(mDatas,selectMode,this) ;
         onFinalInit();
     }
 
-    private AdapterManager<T> createAdapterManager(List<T> mDatas, int selectMode) {
-        return new AdapterManager<T>(mDatas,selectMode) {
-            @Override
-            protected void notifyDataSetChangedImpl() {
-                QuickRecycleViewAdapter.this.notifyDataSetChanged();
-            }
-
-            @Override
-            protected boolean isRecyclable() {
-                return true;
-            }
-
-            @Override
-            public void notifyItemInsertedImpl(int position) {
-                QuickRecycleViewAdapter.this.notifyItemInserted(position);
-            }
-
-            @Override
-            public void notifyItemChangedImpl(int position) {
-                QuickRecycleViewAdapter.this.notifyItemChanged(position);
-            }
-
-            @Override
-            public void notifyItemMovedImpl(int fromPosition, int toPosition) {
-                QuickRecycleViewAdapter.this.notifyItemMoved(fromPosition, toPosition);
-            }
-
-            @Override
-            public void notifyItemRemovedImpl(int position) {
-                QuickRecycleViewAdapter.this.notifyItemRemoved(position);
-            }
-
-            @Override
-            public void notifyItemRangeChangedImpl(int positionStart, int itemCount) {
-                QuickRecycleViewAdapter.this.notifyItemRangeChanged(positionStart, itemCount);
-            }
-
-            @Override
-            public void notifyItemRangeInsertedImpl(int positionStart, int itemCount) {
-                QuickRecycleViewAdapter.this.notifyItemRangeInserted(positionStart, itemCount);
-            }
-
-            @Override
-            public void notifyItemRangeRemovedImpl(int positionStart, int itemCount) {
-                QuickRecycleViewAdapter.this.notifyItemRangeRemoved(positionStart, itemCount);
-            }
-
-            @Override
-            protected void beforeNotifyDataChanged() {
-                QuickRecycleViewAdapter.this.beforeNotifyDataChanged();
-            }
-
-            @Override
-            protected void afterNotifyDataChanged() {
-                QuickRecycleViewAdapter.this.afterNotifyDataChanged();
-            }
-
-            @Override
-            public IHeaderFooterManager getHeaderFooterManager() {
-                return  QuickRecycleViewAdapter.this;
-            }
-        };
-    }
 
     /** called before {@link #notifyDataSetChanged()} */
-    protected void beforeNotifyDataChanged() {
+    @Override
+    public void beforeNotifyDataChanged() {
 
     }
     /** this is callled after data {@link #notifyDataSetChanged()} */
-    protected void afterNotifyDataChanged(){
+    @Override
+    public void afterNotifyDataChanged(){
 
     }
     /** the init operation of the last, called in constructor */
@@ -184,6 +125,12 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
         return mHeaderFooterHelper ==null ? 0 : mHeaderFooterHelper.getFooterViewSize();
     }
     // =================== end header footer view ======================= //
+
+
+    @Override
+    public final boolean isRecyclable() {
+        return true;
+    }
 
     public SelectHelper<T> getSelectHelper(){
         return getAdapterManager().getSelectHelper();
@@ -277,7 +224,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
     }
 
     @Override
-    public final void onBindViewHolder(ViewHolder holder, int position) {
+    public final void onBindViewHolder(ViewHolder holder,int position) {
         if(mHeaderFooterHelper !=null) {
             if ( mHeaderFooterHelper.isInHeader(position)
                     || mHeaderFooterHelper.isInFooter(position,mAdapterManager.getItemSize())){
@@ -286,7 +233,23 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
             position -= mHeaderFooterHelper.getHeaderViewSize();
         }
         //not in header or footer populate it
-        onBindData(holder.getContext(), position,getItem(position),  holder.mLayoutId,holder.mViewHelper);
+        final T item = getItem(position);
+        final int layoutId = holder.mLayoutId;
+        final ViewHelper helper = holder.mViewHelper;
+        onBindData(holder.getContext(), position, item,  holder.mLayoutId, holder.mViewHelper);
+
+        if(getAdapterManager().getPostRunnableCallbacks() != null){
+            final int pos = position;
+            for(final AdapterManager.IPostRunnableCallback<T> callback : getAdapterManager()
+                    .getPostRunnableCallbacks()){
+                holder.itemView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onPostCallback(pos, item, layoutId , helper);
+                    }
+                });
+            }
+        }
     }
 
     @Override
@@ -296,11 +259,12 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
                         mHeaderFooterHelper.getFooterViewSize();
     }
 
-   /* @Override
+    // may use
+    @Override
     public void onViewDetachedFromWindow(ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
         holder.mViewHelper.getRootView().clearAnimation();
-    }*/
+    }
 
     /** if you use multi item ,override this */
     protected int getItemLayoutId(int position,T t) {

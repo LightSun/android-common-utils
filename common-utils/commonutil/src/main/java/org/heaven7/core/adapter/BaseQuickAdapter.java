@@ -45,6 +45,26 @@ import java.util.List;
 
 	private final AdapterManager<T> mAdapterManager ;
 
+	private final AdapterManager.IAdapterManagerCallback2 mCallback2Impl = new
+			AdapterManager.SimpleAdapterManagerCallback2(){
+				@Override
+				public void notifyDataSetChanged() {
+					BaseQuickAdapter.this.notifyDataSetChanged();
+				}
+				@Override
+				public boolean isRecyclable() {
+					return false;
+				}
+				@Override
+				public void beforeNotifyDataChanged() {
+					BaseQuickAdapter.this.beforeNotifyDataChanged();
+				}
+				@Override
+				public void afterNotifyDataChanged() {
+					BaseQuickAdapter.this.afterNotifyDataChanged();
+				}
+			};
+
 
 	/**
 	 * Same as QuickAdapter#QuickAdapter(Context,int) but with some
@@ -60,32 +80,8 @@ import java.util.List;
 			throw new IllegalArgumentException("layoutId can't be negative ");
 		}
 		this.layoutResId = layoutResId;
-		mAdapterManager =  createAdapterManager(data,selectMode);
+		mAdapterManager = new AdapterManager<>(data,selectMode,mCallback2Impl);
 		onFinalInit();
-	}
-
-	private AdapterManager<T> createAdapterManager(final List<T> data, int selectMode) {
-		return  new AdapterManager<T>(data,selectMode) {
-			@Override
-			protected void notifyDataSetChangedImpl() {
-                BaseQuickAdapter.this.notifyDataSetChanged();
-			}
-
-			@Override
-			protected boolean isRecyclable() {
-				return false;
-			}
-
-			@Override
-			protected void beforeNotifyDataChanged() {
-				BaseQuickAdapter.this.beforeNotifyDataChanged();
-			}
-
-			@Override
-			protected void afterNotifyDataChanged() {
-				BaseQuickAdapter.this.afterNotifyDataChanged();
-			}
-		};
 	}
 
 	protected MultiItemTypeSupport<T> mMultiItemSupport;
@@ -93,7 +89,7 @@ import java.util.List;
 	public BaseQuickAdapter(ArrayList<T> data,
 			MultiItemTypeSupport<T> multiItemSupport,int selectMode) {
 		this.mMultiItemSupport = multiItemSupport;
-		mAdapterManager =  createAdapterManager(data, selectMode);
+		mAdapterManager = new AdapterManager<>(data,selectMode,mCallback2Impl);
 		onFinalInit();
 	}
 
@@ -144,13 +140,24 @@ import java.util.List;
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		if (getItemViewType(position) == 0) {
 			return createIndeterminateProgressView(convertView, parent);
 		}
 		final H helper = getAdapterHelper(position, convertView, parent);
-		T item = getItem(position);
+		final T item = getItem(position);
 		onBindData(parent.getContext(), position,item,helper.getLayoutId(), helper.getViewHelper());
+		if(getAdapterManager().getPostRunnableCallbacks() != null){
+			for(final AdapterManager.IPostRunnableCallback<T> callback : getAdapterManager()
+					.getPostRunnableCallbacks()){
+				helper.getViewHelper().getRootView().post(new Runnable() {
+					@Override
+					public void run() {
+						callback.onPostCallback(position,item,helper.getLayoutId(),helper.getViewHelper());
+					}
+				});
+			}
+		}
 		return helper.getViewHelper().getRootView();
 
 	}

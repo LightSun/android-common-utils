@@ -8,18 +8,19 @@ import java.util.List;
 /**
  * Created by heaven7 on 2015/9/3.
  */
-public abstract class SelectHelper<T extends ISelectable>{
+public class SelectHelper<T extends ISelectable>{
 
     private static final String TAG = "SelectHelper";
-    private int mSelectMode;
+    private final int mSelectMode;
 
     private List<Integer> mSelectedPositions;
     private List<Integer> mTempPositions;
     private int mSelectedPosition = -1;
 
     private List<T> mSelectDatas;
+    private Callback<T> mCallback;
 
-    public SelectHelper(int selectMode) {
+    private SelectHelper(int selectMode) {
         if(selectMode == ISelectable.SELECT_MODE_MULTI)
             this.mSelectedPositions = new ArrayList<>();
         if(selectMode!= ISelectable.SELECT_MODE_SINGLE &&
@@ -27,6 +28,11 @@ public abstract class SelectHelper<T extends ISelectable>{
             throw new IllegalArgumentException("invalid select mode = " +selectMode);
         }
         this.mSelectMode = selectMode;
+    }
+    /** @since 1.7.5 */
+    /*public*/ SelectHelper(int selectMode,Callback<T> callback) {
+        this(selectMode);
+        this.mCallback = callback;
     }
 
     /**
@@ -40,18 +46,19 @@ public abstract class SelectHelper<T extends ISelectable>{
         }
         if(position < 0)
             throw new IllegalArgumentException();
+        final Callback<T> mCallback = this.mCallback;
         if(mSelectedPosition!= ISelectable.INVALID_POSITION){
-            getSelectedItemAtPosition(mSelectedPosition).setSelected(false);
-            if(isRecyclable()){
-                notifyItemChanged(mSelectedPosition);
+            mCallback.getSelectedItemAtPosition(mSelectedPosition).setSelected(false);
+            if(mCallback.isRecyclable()){
+                mCallback.notifyItemChanged(mSelectedPosition);
             }
         }
         mSelectedPosition = position;
-        getSelectedItemAtPosition(position).setSelected(true);
-        if(isRecyclable()){
-            notifyItemChanged(position);
+        mCallback.getSelectedItemAtPosition(position).setSelected(true);
+        if(mCallback.isRecyclable()){
+            mCallback.notifyItemChanged(position);
         }else
-            notifyAllChanged();
+            mCallback.notifyDataSetChanged();
     }
     /** {@link ISelectable#SELECT_MODE_MULTI} and {@link ISelectable#SELECT_MODE_SINGLE} both support */
     public void unselect(int position){
@@ -75,12 +82,13 @@ public abstract class SelectHelper<T extends ISelectable>{
         if(position < 0)
             throw new IllegalArgumentException();
 
-        getSelectedItemAtPosition(position).setSelected(false);
+        final Callback<T> mCallback = this.mCallback;
+        mCallback.getSelectedItemAtPosition(position).setSelected(false);
         mSelectedPosition = ISelectable.INVALID_POSITION;
-        if(isRecyclable()){
-            notifyItemChanged(position);
+        if(mCallback.isRecyclable()){
+            mCallback.notifyItemChanged(position);
         }else{
-            notifyAllChanged();
+            mCallback.notifyDataSetChanged();
         }
     }
     /** only support select mode = {@link ISelectable#SELECT_MODE_MULTI}**/
@@ -93,11 +101,13 @@ public abstract class SelectHelper<T extends ISelectable>{
             return ; //not selected
         }
         mSelectedPositions.remove(Integer.valueOf(position));
-        getSelectedItemAtPosition(position).setSelected(false);
-        if(isRecyclable()){
-            notifyItemChanged(position);
+
+        final Callback<T> mCallback = this.mCallback;
+        mCallback.getSelectedItemAtPosition(position).setSelected(false);
+        if(mCallback.isRecyclable()){
+            mCallback.notifyItemChanged(position);
         }else
-            notifyAllChanged();
+            mCallback.notifyDataSetChanged();
     }
 
     /** only support select mode = {@link ISelectable#SELECT_MODE_MULTI}**/
@@ -111,12 +121,15 @@ public abstract class SelectHelper<T extends ISelectable>{
             return ;
         }
         mSelectedPositions.add(selectPosition);
-        getSelectedItemAtPosition(selectPosition).setSelected(true);
-        if(isRecyclable()){
-            notifyItemChanged(selectPosition);
+
+        final Callback<T> mCallback = this.mCallback;
+        mCallback.getSelectedItemAtPosition(selectPosition).setSelected(true);
+        if(mCallback.isRecyclable()){
+            mCallback.notifyItemChanged(selectPosition);
         }else
-            notifyAllChanged();
+            mCallback.notifyDataSetChanged();
     }
+    /** clear the select state but not notify data changed. */
     public void clearSelectedPositions(){
         if(mSelectMode == ISelectable.SELECT_MODE_MULTI){
             mSelectedPositions.clear();
@@ -125,36 +138,39 @@ public abstract class SelectHelper<T extends ISelectable>{
         }
     }
 
+    /** clear the all selected state  and notify data change. */
     public void clearAllSelected(){
-        final boolean recyclable = isRecyclable();
+        final Callback<T> mCallback = this.mCallback;
+        final boolean recyclable = mCallback.isRecyclable();
         if(mSelectMode == ISelectable.SELECT_MODE_MULTI) {
             int pos;
             final List<Integer> mSelectedPositions =this.mSelectedPositions;
             for (int i = 0, size = mSelectedPositions.size(); i < size; i++) {
                 pos = mSelectedPositions.get(i);
-                getSelectedItemAtPosition(pos).setSelected(false);
+                mCallback.getSelectedItemAtPosition(pos).setSelected(false);
                 if(recyclable){
-                    notifyItemChanged(pos);
+                    mCallback.notifyItemChanged(pos);
                 }
             }
             mSelectedPositions.clear();
             if(!recyclable) {
-                notifyAllChanged();
+                mCallback.notifyDataSetChanged();
             }
         }else{
             if(mSelectedPosition!= ISelectable.INVALID_POSITION){
                 int preSelectPos = mSelectedPosition;
                 mSelectedPosition = ISelectable.INVALID_POSITION;
-                getSelectedItemAtPosition(preSelectPos).setSelected(false);
+                mCallback.getSelectedItemAtPosition(preSelectPos).setSelected(false);
                 if(recyclable){
-                    notifyItemChanged(preSelectPos);
+                    mCallback.notifyItemChanged(preSelectPos);
                 }else{
-                    notifyAllChanged();
+                    mCallback.notifyDataSetChanged();
                 }
             }
         }
     }
 
+    /** toogle the all selected state and notify data change. */
     public void toogleSelected(int position){
         if(position < 0){
             throw new IllegalArgumentException(" position can't be negative !");
@@ -177,7 +193,7 @@ public abstract class SelectHelper<T extends ISelectable>{
     public  T getSelectedItem(){
         if(mSelectedPosition == ISelectable.INVALID_POSITION)
             return null;
-        return getSelectedItemAtPosition(mSelectedPosition);
+        return mCallback.getSelectedItemAtPosition(mSelectedPosition);
     }
 
     public int getSelectedPosition(){
@@ -203,8 +219,9 @@ public abstract class SelectHelper<T extends ISelectable>{
         final List<Integer> mSelectedPositions = this.mSelectedPositions;
 
         mSelectDatas.clear();
+        final Callback<T> mCallback = this.mCallback;
         for(int i=0,size= mSelectedPositions.size() ; i<size ;i++){
-            mSelectDatas.add(getSelectedItemAtPosition(mSelectedPositions.get(i)));
+            mSelectDatas.add(mCallback.getSelectedItemAtPosition(mSelectedPositions.get(i)));
         }
         return mSelectDatas;
     }
@@ -235,15 +252,31 @@ public abstract class SelectHelper<T extends ISelectable>{
         }
     }
     /** indicate it use BaseAdapter/BaseExpandableListAdapter or QuickRecycleViewAdapter */
-    protected boolean isRecyclable(){
+   /* protected boolean isRecyclable(){
         return false;
-    }
+    }*/
     /** update the datas of adapter ,eg: notifyDataSetChanged*/
-    protected abstract void notifyAllChanged();
+  //  protected abstract void notifyAllChanged();
 
     /** only used for  RecycleViewAdapter  */
-    protected abstract void notifyItemChanged(int itemPosition);
+   // protected abstract void notifyItemChanged(int itemPosition);
 
-    protected abstract T getSelectedItemAtPosition(int position);
+ //   protected abstract T getSelectedItemAtPosition(int position);
+
+    /**
+     * @since 1.7.5
+     * @param <T>
+     */
+    /*public*/ interface Callback<T>{
+        /** indicate it use BaseAdapter/BaseExpandableListAdapter or QuickRecycleViewAdapter */
+         boolean isRecyclable();
+        /** update the datas of adapter */
+        void notifyDataSetChanged();
+
+        /** only used for  RecycleViewAdapter  */
+        void notifyItemChanged(int itemPosition);
+
+        T getSelectedItemAtPosition(int position);
+    }
 
 }

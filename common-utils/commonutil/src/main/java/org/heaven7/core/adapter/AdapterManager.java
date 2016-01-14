@@ -18,6 +18,9 @@ package org.heaven7.core.adapter;
 
 import android.view.View;
 
+import org.heaven7.core.anno.Hide;
+import org.heaven7.core.viewhelper.ViewHelper;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,45 +29,68 @@ import java.util.List;
 /**
  * Created by heaven7 on 2015/11/29.
  */
-public abstract class AdapterManager<T extends ISelectable> {
+public class AdapterManager<T extends ISelectable> implements SelectHelper.Callback<T> {
 
-    private List<T> mDatas;
+    private final IAdapterManagerCallback2 mCallback2;
     private final SelectHelper<T> mSelectHelper;
+    private List<T> mDatas;
+    private ArrayList<IPostRunnableCallback<T>> mPostCallbacks;
 
     /**
      * @param selectMode  see {@link ISelectable#SELECT_MODE_MULTI} or {@link ISelectable#SELECT_MODE_MULTI}
      */
-    public AdapterManager(List<T> data,int selectMode) {
+    /*public*/ AdapterManager(List<T> data,int selectMode,IAdapterManagerCallback2 callback2) {
         this.mDatas = data == null ? new ArrayList<T>() : new ArrayList<T>(data);
-        mSelectHelper = createSelectHelper(selectMode, data);
+        mSelectHelper = new SelectHelper<T>(selectMode,this);
+        mSelectHelper.initSelectPositions(data);
+        this.mCallback2 = callback2;
     }
 
-    private SelectHelper<T> createSelectHelper(int selectMode,List<T> list){
-        SelectHelper<T> selectHelper = new SelectHelper<T>(selectMode) {
-            @Override
-            protected void notifyAllChanged() {
-                notifyDataSetChanged();
-            }
-            @Override
-            protected void notifyItemChanged(int itemPosition) {
-                AdapterManager.this.notifyItemChanged(itemPosition);
-            }
-            @Override
-            protected T getSelectedItemAtPosition(int position) {
-                return getItemAt(position); //in recyclerView position is handled
-            }
-
-            @Override
-            protected boolean isRecyclable() {
-                return AdapterManager.this.isRecyclable();
-            }
-        };
-        selectHelper.initSelectPositions(list);
-        return selectHelper;
-    }
     protected int getHeaderSize(){
         return  getHeaderFooterManager()!=null ? getHeaderFooterManager().getHeaderSize() :0;
     }
+
+    //=====================  post callback  ================
+
+    /***
+     * the callbacks of IPostRunnableCallback.
+     * @since 1.7.5
+     */
+    ArrayList<IPostRunnableCallback<T>> getPostRunnableCallbacks() {
+        return mPostCallbacks;
+    }
+
+    /**
+     * add a IPostRunnableCallback to run the last of bind adapter data.
+     * @param callback the post callback
+     * @since 1.7.5
+     */
+    public void addPostRunnableCallback(IPostRunnableCallback<T> callback) {
+        if(mPostCallbacks == null){
+            mPostCallbacks = new ArrayList<>(4);
+        }
+        this.mPostCallbacks.add(callback);
+    }
+    /**
+     * remove a IPostRunnableCallback to run the last of bind adapter data.
+     * @param callback the post callback
+     * @since 1.7.5
+     */
+    public void removePostRunnableCallback(IPostRunnableCallback<T> callback){
+        if(mPostCallbacks!=null){
+            mPostCallbacks.remove(callback);
+        }
+    }
+    /**
+     * clear the array of  IPostRunnableCallback
+     * @since 1.7.5
+     */
+    public void clearPostRunnableCallbacks(){
+        if(mPostCallbacks!=null){
+            mPostCallbacks.clear();
+        }
+    }
+    //============================================
 
     public void addItem(T item){
         mDatas.add(item);
@@ -155,10 +181,11 @@ public abstract class AdapterManager<T extends ISelectable> {
         return mDatas.contains(item);
     }
 
+    @Override
     public final void notifyDataSetChanged(){
-        beforeNotifyDataChanged();
-        notifyDataSetChangedImpl();
-        afterNotifyDataChanged();
+        mCallback2.beforeNotifyDataChanged();
+        mCallback2.notifyDataSetChanged();
+        mCallback2.afterNotifyDataChanged();
     }
 
     // =========== begin recycleview ==============//
@@ -172,70 +199,56 @@ public abstract class AdapterManager<T extends ISelectable> {
     public final void notifyItemInserted(int position) {
         checkIfSupport();
         position += getHeaderSize();
-        notifyItemInsertedImpl(position);
+        mCallback2.notifyItemInserted(position);
     }
+    @Override
     public final void notifyItemChanged(int position) {
         checkIfSupport();
         position += getHeaderSize();
-        notifyItemChangedImpl(position);
+        mCallback2.notifyItemChanged(position);
     }
     public final void notifyItemRemoved(int position) {
         checkIfSupport();
         position += getHeaderSize();
-        notifyItemRemovedImpl(position);
+        mCallback2.notifyItemRemoved(position);
     }
 
     public final void notifyItemMoved(int fromPosition, int toPosition){
         checkIfSupport();
         fromPosition += getHeaderSize();
         toPosition += getHeaderSize();
-        notifyItemMovedImpl(fromPosition, toPosition);
+        mCallback2.notifyItemMoved(fromPosition, toPosition);
     }
 
     public final void notifyItemRangeChanged(int positionStart, int itemCount) {
         checkIfSupport();
         positionStart += getHeaderSize();
-        notifyItemRangeChangedImpl(positionStart, itemCount);
+        mCallback2.notifyItemRangeChanged(positionStart, itemCount);
     }
 
     public final void notifyItemRangeInserted(int positionStart, int itemCount){
         checkIfSupport();
         positionStart += getHeaderSize();
-        notifyItemRangeInsertedImpl(positionStart, itemCount);
+        mCallback2.notifyItemRangeInserted(positionStart, itemCount);
     }
 
     public final void notifyItemRangeRemoved(int positionStart, int itemCount) {
         checkIfSupport();
         positionStart += getHeaderSize();
-        notifyItemRangeRemovedImpl(positionStart, itemCount);
+        mCallback2.notifyItemRangeRemoved(positionStart, itemCount);
     }
 
-    //================== ========================//
+    @Hide
+    @Override
+    public boolean isRecyclable(){
+        return mCallback2.isRecyclable();
+    }
 
-    protected void notifyItemInsertedImpl(int position) {}
 
-    protected void notifyItemChangedImpl(int position) {}
-
-    protected void notifyItemRemovedImpl(int position) {}
-
-    protected void notifyItemMovedImpl(int fromPosition, int toPosition){}
-
-    protected void notifyItemRangeChangedImpl(int positionStart, int itemCount){}
-
-    protected void notifyItemRangeInsertedImpl(int positionStart, int itemCount){}
-
-    protected void notifyItemRangeRemovedImpl(int positionStart, int itemCount){}
-
-    // =========== end recycleview ==============//
-
-    protected abstract void notifyDataSetChangedImpl();
-
-    protected abstract boolean isRecyclable();
-
-    /** this called before {@link #notifyDataSetChangedImpl()} */
-    protected abstract void beforeNotifyDataChanged();
-    /** this called after {@link #notifyDataSetChangedImpl()} */
-    protected abstract void afterNotifyDataChanged();
+    @Override
+    public T getSelectedItemAtPosition(int position) {
+        return getItemAt(position);
+    }
 
     //================== ========================//
 
@@ -270,6 +283,62 @@ public abstract class AdapterManager<T extends ISelectable> {
     public interface IAdapterManagerCallback<T extends ISelectable>{
 
         AdapterManager<T> getAdapterManager();
+    }
+
+    /**
+     * a callback will run after quickAdapter.onBindData(...) and in Runnable .
+     * this is useful when you need post a runnable at last of bind adapter data in every position.
+     * @param <T>
+     */
+    public interface IPostRunnableCallback<T extends ISelectable>{
+
+        /** called in every position's bind data. */
+        void onPostCallback(int position,  T item, int itemLayoutId, ViewHelper helper);
+    }
+
+    interface IAdapterManagerCallback2{
+         void notifyItemInserted(int position);
+
+         void notifyItemChanged(int position);
+
+         void notifyItemRemoved(int position);
+
+         void notifyItemMoved(int fromPosition, int toPosition);
+
+         void notifyItemRangeChanged(int positionStart, int itemCount);
+
+         void notifyItemRangeInserted(int positionStart, int itemCount);
+
+         void notifyItemRangeRemoved(int positionStart, int itemCount);
+
+        // =========== end recycleview ==============//
+
+        void notifyDataSetChanged();
+
+         boolean isRecyclable();
+
+        /** this called before {@link #notifyDataSetChanged()} */
+         void beforeNotifyDataChanged();
+        /** this called after {@link #notifyDataSetChanged()} */
+         void afterNotifyDataChanged();
+    }
+
+    static abstract class SimpleAdapterManagerCallback2 implements IAdapterManagerCallback2{
+
+        public void notifyItemInserted(int position) {}
+
+        public void notifyItemChanged(int position) {}
+
+        public void notifyItemRemoved(int position) {}
+
+        public void notifyItemMoved(int fromPosition, int toPosition){}
+
+        public void notifyItemRangeChanged(int positionStart, int itemCount){}
+
+        public void notifyItemRangeInserted(int positionStart, int itemCount){}
+
+        public void notifyItemRangeRemoved(int positionStart, int itemCount){}
+
     }
 
 }

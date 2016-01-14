@@ -2,19 +2,24 @@ package org.heaven7.demo;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.android.volley.extra.RoundedBitmapBuilder;
 
+import org.heaven7.core.adapter.AdapterManager;
 import org.heaven7.core.adapter.ISelectable;
 import org.heaven7.core.adapter.QuickRecycleViewAdapter;
 import org.heaven7.core.item.decoration.DividerGridItemDecoration;
+import org.heaven7.core.layoutmanager.FullyGridLayoutManager;
 import org.heaven7.core.save_state.BundleSupportType;
 import org.heaven7.core.save_state.SaveStateField;
 import org.heaven7.core.viewhelper.ViewHelper;
@@ -43,37 +48,50 @@ public class RecyclerViewDecorationTestActivity extends BaseActivity {
     String mSelectUrl;
 
 
+    QuickRecycleViewAdapter<Item> mAdapter;
+
+
     @Override
     protected int getlayoutId() {
-        return R.layout.activity_recycle;
+        return R.layout.activity_recycle2;
     }
 
     @Override
     protected void initView() {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
       //  mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-       // mRecyclerView.setLayoutManager(new GridLayoutManager(this,3, LinearLayoutManager.HORIZONTAL,false));
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.HORIZONTAL));
+      //  mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL));
+        final GridLayoutManager lm = new FullyGridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(lm);
+
+      //  mRecyclerView.offsetChildrenVertical(10);
 
         final DividerGridItemDecoration decoration = new DividerGridItemDecoration(this);
         decoration.getDividerManager().setDivider(Color.RED, 10, 10);
+        if(Build.VERSION.SDK_INT >= 21) {
+            mRecyclerView.setNestedScrollingEnabled(false);
+        }
+        mRecyclerView.setHasFixedSize(false);
         mRecyclerView.addItemDecoration(decoration);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
     @Override
     protected void initData(Bundle savedInstanceState) {
         mItems = new ArrayList<>();
         addTestData(mItems);
-        mRecyclerView.setAdapter(new QuickRecycleViewAdapter<Item>(R.layout.item_image_narrow, mItems) {
+        mRecyclerView.setAdapter(mAdapter = new QuickRecycleViewAdapter<Item>(
+                R.layout.item_image_narrow, mItems) {
 
             @Override
             protected void onBindData(Context context, final int position, final Item item,
                                       int itemLayoutId, ViewHelper helper) {
                 helper.setImageUrl(R.id.eniv, item.url, new RoundedBitmapBuilder()
-                        .scaleType(ImageView.ScaleType.CENTER_CROP))
+                                .scaleType(ImageView.ScaleType.CENTER_CROP)
+                )
                         .view(R.id.tv)
                         .setTextColor(item.isSelected() ? Color.RED : Color.BLACK)
-                        .setText(item.url).reverse(helper)
+                        .setText("item.url").reverse(helper)
                         .setOnClickListener(R.id.ll, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -89,9 +107,19 @@ public class RecyclerViewDecorationTestActivity extends BaseActivity {
                 return super.getItemLayoutId(position, item);
             }
         });
+        mAdapter.getAdapterManager().addPostRunnableCallback(new AdapterManager.IPostRunnableCallback<Item>() {
+            @Override
+            public void onPostCallback(int position, Item item, int itemLayoutId, ViewHelper helper) {
+                System.out.println("post callback: position = " + position);
+            }
+        });
     }
 
     private void addTestData(List<Item> items) {
+        for(int i=0 ,size = Test.URLS.length ; i<size ;i++){
+            items.add(new Item(Test.URLS[i]));
+        }
+        items.add(new Item(Test.URLS[0]));
         for(int i=0 ,size = Test.URLS.length ; i<size ;i++){
             items.add(new Item(Test.URLS[i]));
         }

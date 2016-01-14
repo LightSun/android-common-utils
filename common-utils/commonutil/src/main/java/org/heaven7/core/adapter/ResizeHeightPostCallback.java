@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  * Created by heaven7 on 2016/1/14.
  * @since 1.7.5
  */
-public class ResizeHeightPostCallback implements AdapterManager.IPostRunnableCallback{
+public class ResizeHeightPostCallback<T extends ISelectable> implements AdapterManager.IPostRunnableCallback<T>{
 
     private final SparseIntArray mSizeMap = new SparseIntArray();
     private final WeakReference<RecyclerView> mWeakRecyclerView;
@@ -29,7 +29,7 @@ public class ResizeHeightPostCallback implements AdapterManager.IPostRunnableCal
 
 
     @Override
-    public void onPostCallback(int position, ISelectable item, int itemLayoutId, ViewHelper helper) {
+    public void onPostCallback(int position, T item, int itemLayoutId, ViewHelper helper) {
         RecyclerView rv ;
         if( ( rv = mWeakRecyclerView.get()) == null){
             return;

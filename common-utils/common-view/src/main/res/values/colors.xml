@@ -15,7 +15,7 @@
 -->
 <resources>
 
-    <color name="default_ev_border_color">#CCCCCC</color>
-    <color name="default_ev_password_color">#CCCCCC</color>
+    <color name="piv_default_border_color">#CCCCCC</color>
+    <color name="piv_default_password_color">#CCCCCC</color>
 
 </resources>

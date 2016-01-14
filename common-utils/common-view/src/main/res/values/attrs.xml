@@ -2,13 +2,19 @@
 <resources>
 
     <declare-styleable name="PasswordInputView">
-        <attr name="borderWidth" format="dimension"/>
-        <attr name="borderColor" format="color"/>
-        <attr name="borderRadius" format="dimension"/>
-        <attr name="passwordLength" format="integer"/>
-        <attr name="passwordWidth" format="dimension"/>
-        <attr name="passwordColor" format="color"/>
-        <attr name="passwordColor2" format="color"/>
-        <attr name="passwordRadius" format="dimension"/>
+        <attr name="piv_borderWidth" format="dimension"/>
+        <attr name="piv_borderColor" format="color"/>
+        <attr name="piv_borderRadius" format="dimension"/>
+        <attr name="piv_passwordLength" format="integer"/>
+        <attr name="piv_passwordWidth" format="dimension"/>
+        <attr name="piv_passwordColor" format="color"/>
+        <attr name="piv_passwordColor2" format="color"/>
+        <attr name="piv_passwordRadius" format="dimension"/>
+    </declare-styleable>
+
+    <declare-styleable name="EasyProgressAttr">
+        <attr name="ep_arcColor"  format="reference|color"/>
+        <attr name="ep_borderWidth"  format="reference|dimension"/>
+        <attr name="ep_duration"  format="reference|integer"/>
     </declare-styleable>
 </resources>

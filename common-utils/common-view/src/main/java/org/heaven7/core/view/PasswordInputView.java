@@ -28,11 +28,11 @@ import static android.graphics.Paint.ANTI_ALIAS_FLAG;
  android:cursorVisible="false"
  android:padding="0dp"
  android:maxLength="6"
- app:borderRadius="@dimen/custom_ev_border_radius"
- app:borderWidth="0.5dp"
- app:passwordLength="6"
- app:passwordColor="@color/mublack"
- app:passwordWidth="@dimen/custom_ev_password_width"
+ app:piv_borderRadius="@dimen/custom_ev_border_radius"
+ app:piv_borderWidth="0.5dp"
+ app:piv_passwordLength="6"
+ app:piv_passwordColor="@color/mublack"
+ app:piv_passwordWidth="@dimen/custom_ev_password_width"
  />
  </pre>
  */
@@ -66,26 +66,26 @@ public class PasswordInputView extends EditText {
         super(context, attrs);
         final Resources res = getResources();
 
-        final int defaultBorderColor = res.getColor(R.color.default_ev_border_color);
-        final int defaultPasswordColor = res.getColor(R.color.default_ev_password_color);
+        final int defaultBorderColor = res.getColor(R.color.piv_default_border_color);
+        final int defaultPasswordColor = res.getColor(R.color.piv_default_password_color);
 
-        final float defaultBorderWidth = res.getDimension(R.dimen.default_ev_border_width);
-        final float defaultBorderRadius = res.getDimension(R.dimen.default_ev_border_radius);
-        final int defaultPasswordLength = res.getInteger(R.integer.default_ev_password_length);
-        final float defaultPasswordWidth = res.getDimension(R.dimen.default_ev_password_width);
-        final float defaultPasswordRadius = res.getDimension(R.dimen.default_ev_password_radius);
+        final float defaultBorderWidth = res.getDimension(R.dimen.piv_default_border_width);
+        final float defaultBorderRadius = res.getDimension(R.dimen.piv_default_border_radius);
+        final int defaultPasswordLength = res.getInteger(R.integer.piv_default_password_length);
+        final float defaultPasswordWidth = res.getDimension(R.dimen.piv_default_password_width);
+        final float defaultPasswordRadius = res.getDimension(R.dimen.piv_default_password_radius);
 
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.PasswordInputView, 0, 0);
         try {
            //passwordColorTwo = getResources().getColor(R.color.white_two);
-            borderColor = a.getColor(R.styleable.PasswordInputView_borderColor, defaultBorderColor);
-            borderWidth = a.getDimension(R.styleable.PasswordInputView_borderWidth, defaultBorderWidth);
-            borderRadius = a.getDimension(R.styleable.PasswordInputView_borderRadius, defaultBorderRadius);
-            passwordLength = a.getInt(R.styleable.PasswordInputView_passwordLength, defaultPasswordLength);
-            passwordColor = a.getColor(R.styleable.PasswordInputView_passwordColor, defaultPasswordColor);
-            passwordColorTwo = a.getColor(R.styleable.PasswordInputView_passwordColor2, defaultPasswordColor);
-            passwordWidth = a.getDimension(R.styleable.PasswordInputView_passwordWidth, defaultPasswordWidth);
-            passwordRadius = a.getDimension(R.styleable.PasswordInputView_passwordRadius, defaultPasswordRadius);
+            borderColor = a.getColor(R.styleable.PasswordInputView_piv_borderColor, defaultBorderColor);
+            borderWidth = a.getDimension(R.styleable.PasswordInputView_piv_borderWidth, defaultBorderWidth);
+            borderRadius = a.getDimension(R.styleable.PasswordInputView_piv_borderRadius, defaultBorderRadius);
+            passwordLength = a.getInt(R.styleable.PasswordInputView_piv_passwordLength, defaultPasswordLength);
+            passwordColor = a.getColor(R.styleable.PasswordInputView_piv_passwordColor, defaultPasswordColor);
+            passwordColorTwo = a.getColor(R.styleable.PasswordInputView_piv_passwordColor2, defaultPasswordColor);
+            passwordWidth = a.getDimension(R.styleable.PasswordInputView_piv_passwordWidth, defaultPasswordWidth);
+            passwordRadius = a.getDimension(R.styleable.PasswordInputView_piv_passwordRadius, defaultPasswordRadius);
         } finally {
             a.recycle();
         }

@@ -26,8 +26,6 @@ import android.widget.TextView;
 /**
  * A simple text label view that can be applied as a "badge" to any given {@link View}.
  * This class is intended to be instantiated at runtime rather than included in XML layouts.
- * 
- * @author Jeff Gilfelt
  */
 public class BadgeView extends TextView {
 

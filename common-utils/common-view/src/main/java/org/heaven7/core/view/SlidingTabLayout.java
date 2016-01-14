@@ -443,4 +443,51 @@ public class SlidingTabLayout extends HorizontalScrollView {
         /** return true  while init title  success! */
        boolean onInitTitle(int position, TextView title);
     }
+    /*
+     *
+     private void initSlidingTabLayout() {
+     final Resources res = getResources();
+     mSlidingTabLayout.setOnInitTitleListener(new SlidingTabLayout.OnInitTitleListener() {
+    @Override
+    public boolean onInitTitle(int position, TextView title) {
+
+    switch (position) {
+    case 0:
+    title.setTextColor(title.getContext().getResources().getColor(R.color.c_333333));
+    title.setText(getString(R.string.commodity));
+    break;
+    case 1:
+    title.setTextColor(title.getContext().getResources().getColor(R.color.c_666666));
+    title.setText(getString(R.string.detail));
+    break;
+    case 2:
+    title.setTextColor(title.getContext().getResources().getColor(R.color.c_666666));
+    title.setText(getString(R.string.comment));
+    break;
+    }
+    return true;
+    }
+    });
+     mSlidingTabLayout.setSelectIndicatorHeight(res.getDimensionPixelSize(R.dimen.common_indicator_height));
+     mSlidingTabLayout.setSplitWidthEquality(false);
+     mSlidingTabLayout.setSelectRelativeTextColorsRes(R.color.c_333333, R.color.c_666666);
+     mSlidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.AbsTabColorizer(this) {
+    @Override
+    protected int getIndicatorColorRes(int position) {
+    return R.color.c_333333;
+    }
+
+    @Override
+    protected int getDividerColorRes(int position) {
+    return R.color.c_ff9e1f;
+    }
+    });
+     mSlidingTabLayout.setOnPageChangeListener(new BasePageChangeListener() {
+    @Override
+    public void onPageSelected(int position) {
+    onSelect(position);
+    }
+    });
+     }
+     */
 }

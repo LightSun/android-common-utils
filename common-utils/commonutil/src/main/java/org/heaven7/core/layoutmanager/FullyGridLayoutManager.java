@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- GridLayoutManager和ScrollView进行嵌套
+ * GridLayoutManager和ScrollView进行嵌套
  */
 public class FullyGridLayoutManager extends GridLayoutManager {
     public FullyGridLayoutManager(Context context, int spanCount) {
@@ -67,29 +67,57 @@ public class FullyGridLayoutManager extends GridLayoutManager {
             case View.MeasureSpec.AT_MOST:
             case View.MeasureSpec.UNSPECIFIED:
         }
-
         setMeasuredDimension(width, height);
     }
 
     private void measureScrapChild(RecyclerView.Recycler recycler, int position, int widthSpec,
                                    int heightSpec, int[] measuredDimension) {
+
         if (position < getItemCount()) {
             try {
-                View view = recycler.getViewForPosition(0);//fix 动态添加时报IndexOutOfBoundsException
-                if (view != null) {
-                    RecyclerView.LayoutParams p = (RecyclerView.LayoutParams) view.getLayoutParams();
-                    int childWidthSpec = ViewGroup.getChildMeasureSpec(widthSpec,
-                            getPaddingLeft() + getPaddingRight(), p.width);
-                    int childHeightSpec = ViewGroup.getChildMeasureSpec(heightSpec,
-                            getPaddingTop() + getPaddingBottom(), p.height);
-                    view.measure(childWidthSpec, childHeightSpec);
-                    measuredDimension[0] = view.getMeasuredWidth() + p.leftMargin + p.rightMargin;
-                    measuredDimension[1] = view.getMeasuredHeight() + p.bottomMargin + p.topMargin;
-                    recycler.recycleView(view);
+                View view = recycler.getViewForPosition(position); //fix 动态添加时报IndexOutOfBoundsException
+                if (view.getVisibility() == View.GONE) {
+                    measuredDimension[0] = 0;
+                    measuredDimension[1] = 0;
+                    return;
                 }
+                RecyclerView.LayoutParams p = (RecyclerView.LayoutParams) view.getLayoutParams();
+                // For adding Item Decor Insets to view
+                super.measureChildWithMargins(view, 0, 0);
+                  /*  全部 0
+                  final int l = getLeftDecorationWidth(view);
+                    final int r = getRightDecorationWidth(view);
+                    final int t = getTopDecorationHeight(view);
+                    final int b = getBottomDecorationHeight(view);
+                    System.out.println("measureScrapChild  Decoration [ position_"+position+"]:  left = "
+                            + l +" ,right = " + r +" ,top = " + t +" ,bottom = " + b);*/
+                //  measureChild(view, widthSpec, heightSpec);
+                // measureChildWithMargins(view,0,0);
+                int childWidthSpec = ViewGroup.getChildMeasureSpec(widthSpec,
+                        getPaddingLeft() + getPaddingRight()
+                        + getLeftDecorationWidth(view) + getRightDecorationWidth(view)
+                        , p.width
+                );
+                int childHeightSpec = ViewGroup.getChildMeasureSpec(heightSpec,
+                        getPaddingTop() + getPaddingBottom()
+                        + getTopDecorationHeight(view) + getBottomDecorationHeight(view)
+                        , p.height
+                );
+                view.measure(childWidthSpec, childHeightSpec);
+
+                measuredDimension[0] = getDecoratedMeasuredWidth(view)  + p.leftMargin + p.rightMargin;
+                measuredDimension[1] = getDecoratedMeasuredHeight(view) + p.bottomMargin + p.topMargin;
+               // measuredDimension[0] = view.getMeasuredWidth() + p.leftMargin + p.rightMargin;
+               // measuredDimension[1] = view.getMeasuredHeight() + p.bottomMargin + p.topMargin;
+                recycler.recycleView(view);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+        super.onLayoutChildren(recycler, state);
     }
 }

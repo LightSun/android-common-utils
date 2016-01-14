@@ -19,6 +19,7 @@ import java.util.ArrayList;
  * <li>RecyclerView.addItemDecoration must call after RecyclerView.setLayoutManager</li>
  * <li>ps: 主要适用于GridLayoutManager,不适用于不均匀的 StaggeredGridLayoutManager </li>
  */
+//@Deprecated //bug
 public class DividerGridItemDecoration extends AbstractDividerItemDecoration {
 
    // private static final String TAG = "DividerGridItemDecoration";

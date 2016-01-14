@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+<!-- 密码输入框-->
+    <dimen name="default_ev_border_width">1dp</dimen>
+    <dimen name="default_ev_border_radius">1dp</dimen>
+    <dimen name="default_ev_password_width">10dp</dimen>
+    <dimen name="default_ev_password_radius">1dp</dimen>
+    <integer name="default_ev_password_length">6</integer>
+
+
+</resources>

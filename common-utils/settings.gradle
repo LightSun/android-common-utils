@@ -1,1 +1,1 @@
-include ':sample', ':commonutil'
+include ':sample', ':commonutil', ':common-view'

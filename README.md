@@ -31,12 +31,20 @@ this is a common utils of android (used to fast develop). contains QuickAdapter 
 ```
 
 ## How to use ? 
+
+common-util
 ``` java
 dependencies {
-     compile 'org.heaven7.core:commonutil:1.7.4'
+     compile 'org.heaven7.core:commonutil:1.7.7'
 }
 ```
+view lib -> common-view
 
+``` java
+dependencies {
+     compile 'org.heaven7.core.view:common-view:1.0.0'
+}
+```
 
 ## License
 

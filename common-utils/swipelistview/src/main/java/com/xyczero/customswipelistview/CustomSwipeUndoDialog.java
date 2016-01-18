@@ -24,6 +24,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.xyczero.customswipelistview.extra.R;
+
 /**
  * Control the initialization,showing and closing of an inner class UndoDialog.
  *

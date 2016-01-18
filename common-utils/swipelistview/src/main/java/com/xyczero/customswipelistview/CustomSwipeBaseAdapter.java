@@ -25,6 +25,8 @@ import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 
+import com.xyczero.customswipelistview.extra.R;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -114,10 +114,10 @@ public class CustomSwipeUndoDialog {
         private TextView mUndoMessage;
 
         public UndoDialog(Context context) {
-            super(context, R.style.CommonDialog);
+            super(context, R.style.swipe_listview_CommonDialog);
             setContentView(R.layout.customswipe_undodialog_view);
             getWindow().setGravity(Gravity.BOTTOM);
-            getWindow().setWindowAnimations(R.style.dialog_inout_anim);
+            getWindow().setWindowAnimations(R.style.swipe_listview_dialog_inout_anim);
 
             // TODO:To be optimized provide custom interface.
             // Custom the location and size of the dialog.

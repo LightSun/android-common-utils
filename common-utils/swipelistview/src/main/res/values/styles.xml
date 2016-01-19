@@ -6,7 +6,7 @@
     </style>
 
     <!-- Common Dialog Style-->
-    <style name="CommonDialog" parent="@android:style/Theme.Holo.Light.Dialog.NoActionBar">
+    <style name="swipe_listview_CommonDialog" parent="@android:style/Theme.Holo.Light.Dialog.NoActionBar">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
@@ -18,9 +18,9 @@
     </style>
 
     <!-- Common Dialog Animation-->
-    <style name="dialog_inout_anim" parent="android:Animation">
-        <item name="@android:windowEnterAnimation">@anim/undodialog_enter</item>
-        <item name="@android:windowExitAnimation">@anim/undodialog_exit</item>
+    <style name="swipe_listview_dialog_inout_anim" parent="android:Animation">
+        <item name="@android:windowEnterAnimation">@anim/swipe_listview_undodialog_enter</item>
+        <item name="@android:windowExitAnimation">@anim/swipe_listview_undodialog_exit</item>
     </style>
 
 </resources>

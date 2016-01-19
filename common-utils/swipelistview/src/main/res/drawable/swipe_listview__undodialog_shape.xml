@@ -4,6 +4,6 @@
 
     <corners android:radius="3dp" />
 
-    <solid android:color="@color/dark_gray" />
+    <solid android:color="@color/swipe_listview_dark_gray" />
 
 </shape>

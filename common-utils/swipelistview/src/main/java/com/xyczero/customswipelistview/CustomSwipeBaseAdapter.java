@@ -136,7 +136,7 @@ public abstract class CustomSwipeBaseAdapter<T> extends BaseAdapter implements
     private void setItemUndoActionAnimation(View itemView, int undoPosition) {
         if (undoPosition == mHasDeletedPosition && undoAnimationEnable) {
             itemView.startAnimation(AnimationUtils.loadAnimation(mContext,
-                    R.anim.undodialog_push_right_in));
+                    R.anim.swipe_listview_undodialog_push_right_in));
             clearDeletedObject();
         } else {
             itemView.clearAnimation();

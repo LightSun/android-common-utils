@@ -2,6 +2,6 @@
 <resources>
 
     <!-- undoDialog -->
-    <string name="undodialog_undo_action_str">撤销</string>
+    <string name="swipe_listview_undodialog_undo_action_str">撤销</string>
 
 </resources>

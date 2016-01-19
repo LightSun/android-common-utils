@@ -267,7 +267,7 @@ public class SelectHelper<T extends ISelectable>{
      * @since 1.7.5
      * @param <T>
      */
-    /*public*/ interface Callback<T>{
+    public interface Callback<T>{
         /** indicate it use BaseAdapter/BaseExpandableListAdapter or QuickRecycleViewAdapter */
          boolean isRecyclable();
         /** update the datas of adapter */

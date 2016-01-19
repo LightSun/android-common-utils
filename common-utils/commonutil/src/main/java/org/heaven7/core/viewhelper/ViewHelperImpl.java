@@ -22,6 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
 import android.util.TypedValue;
@@ -238,6 +239,10 @@ public class ViewHelperImpl{
     }
     public ViewHelperImpl setAdapter(Adapter adapter) {
         ((AdapterView)v).setAdapter(adapter);
+        return this;
+    }
+    public ViewHelperImpl setRecyclerAdapter(RecyclerView.Adapter adapter) {
+        ((RecyclerView)v).setAdapter(adapter);
         return this;
     }
 

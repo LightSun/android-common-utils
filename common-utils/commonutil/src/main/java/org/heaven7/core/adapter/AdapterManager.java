@@ -268,7 +268,9 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
     }
 
     /**
-     * ths supporter of header and footer, call any method will automatic call {@link QuickRecycleViewAdapter#notifyDataSetChanged()}.
+     * ths supporter of header and footer, call any method will automatic call
+     * {@link QuickRecycleViewAdapter#notifyDataSetChanged()}.
+     * in recyclerView .this is only can be used by LinearLayoutManager
      */
     public interface IHeaderFooterManager{
 

@@ -61,7 +61,12 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
        }
         this.mLayoutId = layoutId;
        // mAdapterManager = createAdapterManager(mDatas,selectMode);
-        mAdapterManager = new AdapterManager<T>(mDatas,selectMode,this) ;
+        mAdapterManager = new AdapterManager<T>(mDatas,selectMode,this){
+            @Override
+            public IHeaderFooterManager getHeaderFooterManager() {
+                return QuickRecycleViewAdapter.this;
+            }
+        };
         onFinalInit();
     }
 

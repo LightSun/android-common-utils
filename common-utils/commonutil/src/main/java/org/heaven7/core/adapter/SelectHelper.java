@@ -30,7 +30,7 @@ public class SelectHelper<T extends ISelectable>{
         this.mSelectMode = selectMode;
     }
     /** @since 1.7.5 */
-    /*public*/ SelectHelper(int selectMode,Callback<T> callback) {
+    public SelectHelper(int selectMode,Callback<T> callback) {
         this(selectMode);
         this.mCallback = callback;
     }
@@ -251,17 +251,6 @@ public class SelectHelper<T extends ISelectable>{
             throw new RuntimeException();
         }
     }
-    /** indicate it use BaseAdapter/BaseExpandableListAdapter or QuickRecycleViewAdapter */
-   /* protected boolean isRecyclable(){
-        return false;
-    }*/
-    /** update the datas of adapter ,eg: notifyDataSetChanged*/
-  //  protected abstract void notifyAllChanged();
-
-    /** only used for  RecycleViewAdapter  */
-   // protected abstract void notifyItemChanged(int itemPosition);
-
- //   protected abstract T getSelectedItemAtPosition(int position);
 
     /**
      * @since 1.7.5

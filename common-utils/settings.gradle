@@ -1,1 +1,1 @@
-include ':sample', ':commonutil', ':common-view'
+include ':sample', ':commonutil', ':common-view', ':swipelistview', ':pulltorefresh-swipe'

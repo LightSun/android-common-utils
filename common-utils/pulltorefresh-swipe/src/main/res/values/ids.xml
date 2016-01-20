@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="heaven7_pulltofresh_swipe_content_view"/>
+    <item type="id" name="heaven7_pulltofresh_swipe_menu_view"/>
+</resources>

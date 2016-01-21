@@ -96,9 +96,9 @@ public class PullToRefreshListFooter extends LinearLayout {
        addView(moreView);
         moreView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 
-       mContentView = moreView.findViewById(R.id.xlistview_footer_content);
+        mContentView = moreView.findViewById(R.id.xlistview_footer_content);
         mProgressBar = moreView.findViewById(R.id.xlistview_footer_progressbar);
-       mHintView = (TextView) moreView.findViewById(R.id.xlistview_footer_hint_textview);
+        mHintView = (TextView) moreView.findViewById(R.id.xlistview_footer_hint_textview);
     }
 
 }

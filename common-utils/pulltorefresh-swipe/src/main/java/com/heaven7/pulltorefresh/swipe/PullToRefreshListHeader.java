@@ -89,11 +89,11 @@ public class PullToRefreshListHeader extends LinearLayout {
             if (mState != STATE_READY) {
                 mArrowImageView.clearAnimation();
                 mArrowImageView.startAnimation(mRotateUpAnim);
-                mHintTextView.setText(R.string.xlistview_header_hint_ready);
+                mHintTextView.setText(R.string.heaven7_xlistview_header_hint_ready);
             }
             break;
         case STATE_REFRESHING:
-            mHintTextView.setText(R.string.xlistview_header_hint_loading);
+            mHintTextView.setText(R.string.heaven7_xlistview_header_hint_loading);
             break;
         default:
         }

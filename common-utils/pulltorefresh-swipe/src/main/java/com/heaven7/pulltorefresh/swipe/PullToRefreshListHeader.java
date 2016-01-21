@@ -44,7 +44,7 @@ public class PullToRefreshListHeader extends LinearLayout {
 
     private void initView(Context context) {
         LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, 0);
-        mContainer = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.xlistview_header, null);
+        mContainer = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.heaven7_xlistview_header, null);
         addView(mContainer, lp);
         setGravity(Gravity.BOTTOM);
 
@@ -83,7 +83,7 @@ public class PullToRefreshListHeader extends LinearLayout {
             if (mState == STATE_REFRESHING) {
                 mArrowImageView.clearAnimation();
             }
-            mHintTextView.setText(R.string.xlistview_header_hint_normal);
+            mHintTextView.setText(R.string.heaven7_xlistview_header_hint_normal);
             break;
         case STATE_READY:
             if (mState != STATE_READY) {

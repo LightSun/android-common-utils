@@ -2,6 +2,8 @@ package com.heaven7.pulltorefresh.swipe;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.v4.widget.ScrollerCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -14,7 +16,6 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Scroller;
 import android.widget.TextView;
 
 public class PullToRefreshSwipeMenuListView extends ListView implements OnScrollListener {
@@ -38,7 +39,7 @@ public class PullToRefreshSwipeMenuListView extends ListView implements OnScroll
 	private Interpolator mOpenInterpolator;
 
 	private float mLastY = -1; // save event y
-	private Scroller mScroller; // used for scroll back
+	private ScrollerCompat mScroller; // used for scroll back
 	private OnScrollListener mScrollListener; // user's scroll listener
 
 	// the interface to trigger refresh and load more.
@@ -86,7 +87,8 @@ public class PullToRefreshSwipeMenuListView extends ListView implements OnScroll
 	}
 	
 	private void init(Context context) {
-		mScroller = new Scroller(context, new DecelerateInterpolator());
+		//mScroller = new Scroller(context, new DecelerateInterpolator());
+		mScroller = ScrollerCompat.create(context,new DecelerateInterpolator());
 		super.setOnScrollListener(this);
 		// init header view
 		mHeaderView = new PullToRefreshListHeader(context);
@@ -99,10 +101,15 @@ public class PullToRefreshSwipeMenuListView extends ListView implements OnScroll
 
 		// init header height
 		mHeaderView.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+			@SuppressWarnings("deprecation")
 			@Override
 			public void onGlobalLayout() {
 				mHeaderViewHeight = mHeaderViewContent.getHeight();
-				getViewTreeObserver().removeGlobalOnLayoutListener(this);
+				if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+					getViewTreeObserver().removeOnGlobalLayoutListener(this);
+				}else{
+					getViewTreeObserver().removeGlobalOnLayoutListener(this);
+				}
 			}
 		});
 		MAX_X = dp2px(MAX_X);
@@ -121,7 +128,7 @@ public class PullToRefreshSwipeMenuListView extends ListView implements OnScroll
 
 	@Override
 	public void setAdapter(ListAdapter adapter) {
-		if (mIsFooterReady == false) {
+		if (!mIsFooterReady) {
 			mIsFooterReady = true;
 			addFooterView(mFooterView);
 		}
@@ -517,15 +524,14 @@ public class PullToRefreshSwipeMenuListView extends ListView implements OnScroll
 	 * onXScrolling when header/footer scroll back.
 	 */
 	public interface OnXScrollListener extends OnScrollListener {
-		public void onXScrolling(View view);
+		 void onXScrolling(View view);
 	}
 
 	/**
 	 * implements this interface to get refresh/load more event.
 	 */
 	public interface IXListViewListener {
-		public void onRefresh();
-
-		public void onLoadMore();
+		 void onRefresh();
+		 void onLoadMore();
 	}
 }

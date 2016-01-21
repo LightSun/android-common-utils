@@ -127,6 +127,12 @@ public class PulltorefreshSwipeTest extends BaseActivity implements
         // other setting
         // listView.setCloseInterpolator(new BounceInterpolator());
 
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(), position + " click", Toast.LENGTH_SHORT).show();
+            }
+        });
         // test item long click
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 

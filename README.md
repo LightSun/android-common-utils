@@ -45,6 +45,12 @@ dependencies {
      compile 'org.heaven7.core.view:common-view:1.0.0'
 }
 ```
+expand volley lib - > volley_with_extra
+``` java
+dependencies {
+    compile 'com.heaven7.volley:volley_with_extra:1.0'
+}
+```
 
 ## License
 

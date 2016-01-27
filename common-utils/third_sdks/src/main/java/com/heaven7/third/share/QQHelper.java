@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.heaven7.core.SdkFactory;
+import com.heaven7.third.core.SdkFactory;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.common.Constants;
 import com.tencent.connect.share.QQShare;

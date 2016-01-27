@@ -9,7 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Xml;
 
-import com.heaven7.core.SdkFactory;
+import com.heaven7.third.core.SdkFactory;
 
 import junit.framework.Assert;
 

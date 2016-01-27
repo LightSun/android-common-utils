@@ -7,11 +7,12 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.heaven7.core.AsyncTask2;
-import com.heaven7.core.IResetable;
-import com.heaven7.core.ITaskManager;
-import com.heaven7.core.SdkFactory;
-import com.heaven7.core.internal.TaskManagerImpl;
+import com.heaven7.third.core.AsyncTask2;
+import com.heaven7.third.core.IResetable;
+import com.heaven7.third.core.ITaskManager;
+import com.heaven7.third.core.SdkFactory;
+import com.heaven7.third.core.internal.SdkConfig;
+import com.heaven7.third.core.internal.TaskManagerImpl;
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
@@ -31,7 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 微信支付
  * Created by heaven7 on 2015/9/20.
  * */
-public class WeixinPayHelper implements IResetable{
+public class WeixinPayHelper implements IResetable {
     private static final String TAG = "WeixinPay";
     private static final boolean sDebug = true;
 
@@ -56,7 +57,7 @@ public class WeixinPayHelper implements IResetable{
     private WeakReference<Activity> mWeakActivity;
     private final AtomicBoolean mProcessing = new AtomicBoolean(false);
 
-    private final  ITaskManager mTaskManager = new TaskManagerImpl();
+    private final ITaskManager mTaskManager = new TaskManagerImpl();
 
     public WeixinPayHelper() {
     }
@@ -196,7 +197,7 @@ public class WeixinPayHelper implements IResetable{
         @Override
         protected Map<String, String> doInBackground(String... params) {
             String entity = params[0];
-            String url = com.heaven7.core.internal.SdkConfig.URL_WEIXIN_PAY_CLOSE_ORDER;
+            String url = SdkConfig.URL_WEIXIN_PAY_CLOSE_ORDER;
             logIfNeed("entity = " + entity);
 
             byte[] buf = WeixinUtil.httpPost(url, entity);
@@ -262,7 +263,7 @@ public class WeixinPayHelper implements IResetable{
         @Override
         protected Map<String, String> doInBackground(String... params) {
 
-            String url = com.heaven7.core.internal.SdkConfig.URL_WEIXIN_PAY_GET_PREPARED_ID;
+            String url = SdkConfig.URL_WEIXIN_PAY_GET_PREPARED_ID;
             String entity = params[0];
 
             logIfNeed("entity = " + entity);

@@ -1,4 +1,4 @@
-package com.heaven7.core.internal;
+package com.heaven7.third.core.internal;
 
 /**
  * Created by heaven7 on 2015/9/15.

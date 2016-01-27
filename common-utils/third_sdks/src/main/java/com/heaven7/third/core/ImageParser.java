@@ -1,4 +1,4 @@
-package com.heaven7.core;
+package com.heaven7.third.core;
 
 import android.content.Context;
 import android.content.res.Resources;

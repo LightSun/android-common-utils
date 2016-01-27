@@ -6,11 +6,11 @@ import android.support.v4.os.AsyncTaskCompat;
 import android.text.TextUtils;
 
 import com.alipay.sdk.app.PayTask;
-import com.heaven7.core.AsyncTask2;
-import com.heaven7.core.IResetable;
-import com.heaven7.core.ITaskManager;
-import com.heaven7.core.SdkFactory;
-import com.heaven7.core.internal.TaskManagerImpl;
+import com.heaven7.third.core.AsyncTask2;
+import com.heaven7.third.core.IResetable;
+import com.heaven7.third.core.ITaskManager;
+import com.heaven7.third.core.SdkFactory;
+import com.heaven7.third.core.internal.TaskManagerImpl;
 
 import java.lang.ref.WeakReference;
 import java.security.KeyFactory;
@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 支付宝支付
  * Created by heaven7 on 2015/9/21.
  */
-public class ZhifubaoHelper implements IResetable{
+public class ZhifubaoHelper implements IResetable {
 
     private IZhifubaoPayCallback mCallback ;
     private WeakReference<Activity> mWeakActivity;

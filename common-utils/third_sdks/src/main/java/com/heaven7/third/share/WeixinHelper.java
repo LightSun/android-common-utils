@@ -11,13 +11,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.data.ApiParams;
 import com.android.volley.extra.util.VolleyUtil;
 import com.heaven.appframework.core.lib.json.JsonParser;
-import com.heaven7.core.AsyncTask2;
-import com.heaven7.core.IResetable;
-import com.heaven7.core.ITaskManager;
-import com.heaven7.core.ImageParser;
-import com.heaven7.core.SdkFactory;
-import com.heaven7.core.internal.SdkConfig;
-import com.heaven7.core.internal.TaskManagerImpl;
+import com.heaven7.third.core.AsyncTask2;
+import com.heaven7.third.core.IResetable;
+import com.heaven7.third.core.ITaskManager;
+import com.heaven7.third.core.ImageParser;
+import com.heaven7.third.core.SdkFactory;
+import com.heaven7.third.core.internal.SdkConfig;
+import com.heaven7.third.core.internal.TaskManagerImpl;
 import com.heaven7.third.pay.IoUtil;
 import com.heaven7.third.share.weixin.AccessTokenResult;
 import com.heaven7.third.share.weixin.UserInfoResult;
@@ -42,7 +42,7 @@ import java.net.URL;
  * 用于微信登陆和分享
  * Created by heaven7 on 2015/9/15.
  */
-public class WeixinHelper implements IResetable{
+public class WeixinHelper implements IResetable {
 
     private static final int THUMB_SIZE = 150;
 

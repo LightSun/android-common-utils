@@ -1,15 +1,15 @@
-package com.heaven7.core.internal;
+package com.heaven7.third.core.internal;
 
 import android.os.AsyncTask;
 
-import com.heaven7.core.ITaskManager;
+import com.heaven7.third.core.ITaskManager;
 
 import java.util.ArrayList;
 
 /**
  * Created by heaven7 on 2016/1/27.
  */
-public class TaskManagerImpl implements ITaskManager{
+public class TaskManagerImpl implements ITaskManager {
 
     private final ArrayList<AsyncTask> mTasks;
 

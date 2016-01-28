@@ -52,6 +52,14 @@ dependencies {
 }
 ```
 
+third sdk lib - > third_sdks (jcenter审核中)
+``` java
+dependencies {
+    compile 'com.heaven7.third_sdks:third_sdks:1.0'
+}
+```
+
+
 ## License
 
     Copyright 2015   

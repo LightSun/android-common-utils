@@ -29,7 +29,17 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * 微信支付
+ * 微信支付: 必须配置
+ *   <activity android:name=".activity.PayActivity"
+ android:screenOrientation="portrait"
+ android:theme="@style/Theme.common.background"
+ >
+ <intent-filter>
+ <action android:name="android.intent.action.VIEW"/>
+ <category android:name="android.intent.category.DEFAULT"/>
+ <data android:scheme="wx04b6a1a9282dc734"/> <!--微信id,支付必须配置-->
+ </intent-filter>
+ </activity>
  * Created by heaven7 on 2015/9/20.
  * */
 public class WeixinPayHelper implements IResetable {

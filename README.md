@@ -177,7 +177,7 @@ dependencies {
 ```
 
 ## thanks
- [szpnygo]("https://github.com/szpnygo/android-SwipeRecyclerView")
+ szpnygo's [SwipeRecyclerView](https://github.com/szpnygo/android-SwipeRecyclerView)
 
 ## License
 

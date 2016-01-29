@@ -1,1 +1,1 @@
-include ':sample', ':commonutil', ':common-view', ':swipelistview', ':pulltorefresh-swipe'
+include ':sample', ':commonutil', ':common-view', ':swipelistview', ':pulltorefresh-swipe', ':third_sdks', ':volley_with_extra'

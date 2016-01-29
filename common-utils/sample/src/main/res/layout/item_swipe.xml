@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/ll"
+    >
+
+    <com.android.volley.extra.ExpandNetworkImageView
+        android:id="@+id/eniv"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_launcher"
+        />
+
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:background="@android:color/white"
+        android:textColor="#88ff0000"
+        android:textSize="18sp"
+        android:padding="10dp"
+        android:text="@string/action_settings"
+        />
+
+</LinearLayout>

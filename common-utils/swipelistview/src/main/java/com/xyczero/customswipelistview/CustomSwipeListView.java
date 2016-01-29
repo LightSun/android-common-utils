@@ -18,7 +18,6 @@ package com.xyczero.customswipelistview;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.v4.widget.ScrollerCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -26,6 +25,7 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.ListView;
+import android.widget.Scroller;
 
 /**
  * A view that shows items in a vertically scrolling list. The items come from
@@ -33,6 +33,7 @@ import android.widget.ListView;
  *
  * @author xyczero
  */
+@Deprecated //use pulltorefresh-swipe instead
 public class CustomSwipeListView extends ListView {
     private static final String TAG = "CustomSwipeListView";
 
@@ -71,7 +72,7 @@ public class CustomSwipeListView extends ListView {
      */
     private Rect mTouchFrame;
 
-    private ScrollerCompat mScroller;
+    private Scroller mScroller;
 
     private int mScreenWidth;
 
@@ -221,7 +222,8 @@ public class CustomSwipeListView extends ListView {
         mMinimumVelocity = CustomSwipeUtils
                 .convertDptoPx(context, MIN_VELOCITY);
         mScreenWidth = CustomSwipeUtils.getScreenWidth(context);
-        mScroller = ScrollerCompat.create(context);
+       // mScroller = ScrollerCompat.create(context);
+        mScroller = new Scroller(context);
         initSwipeItemTriggerDeltaX();
 
         // set default value.
@@ -424,9 +426,9 @@ public class CustomSwipeListView extends ListView {
         if (isSwiping && mLastSelectedPosition != INVALID_POSITION) {
             if (mScroller.computeScrollOffset()) {
 
-                mLastItemMainView.scrollTo(mLastItemSwipeView.getMeasuredWidth(),0);
-                //below bug caused: mLastItemMainView not move to left.
-               // mLastItemMainView.scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+                mLastItemMainView.scrollTo(mLastItemSwipeView.getWidth(),0);
+                // ?? below bug caused: mLastItemMainView may not move to left.
+                // mLastItemMainView.scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
                 postInvalidate();
 
                 //when triggering the action_down,AbListview will call the abortAnimation function.
@@ -441,13 +443,10 @@ public class CustomSwipeListView extends ListView {
                             isItemSwipeViewVisible = true;
                             break;
                         case TOUCH_SWIPE_RIGHT:
-                            if (mRemoveItemCustomSwipeListener == null) {
-                                throw new NullPointerException(
-                                        "RemoveItemCustomSwipeListener is null, we should called setRemoveItemCustomSwipeListener()");
-                            }
                             // Callback
-                            mRemoveItemCustomSwipeListener
-                                    .onRemoveItemListener(mLastSelectedPosition);
+                            if (mEnableSwipeItemRight && mRemoveItemCustomSwipeListener != null) {
+                                mRemoveItemCustomSwipeListener.onRemoveItemListener(mLastSelectedPosition);
+                            }
 
                             // Before the view in the selected position is
                             // deleted,it needs to return to original state because

@@ -94,7 +94,7 @@ public class PullToRefreshListFooter extends LinearLayout {
         mContext = context;
        LinearLayout moreView = (LinearLayout) LayoutInflater.from(mContext).inflate(R.layout.heaven7_xlistview_footer, null);
        addView(moreView);
-        moreView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        moreView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
         mContentView = moreView.findViewById(R.id.xlistview_footer_content);
         mProgressBar = moreView.findViewById(R.id.xlistview_footer_progressbar);

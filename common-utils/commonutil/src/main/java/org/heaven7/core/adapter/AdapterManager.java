@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * the AdapterManager help you manage the adapter.like data, header,footer,IPostRunnableCallback.
  * Created by heaven7 on 2015/11/29.
  */
 public class AdapterManager<T extends ISelectable> implements SelectHelper.Callback<T> {

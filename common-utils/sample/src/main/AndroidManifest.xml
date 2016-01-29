@@ -36,6 +36,14 @@
             android:name=".PulltorefreshSwipeTest"
             >
         </activity>
+        <activity
+            android:name=".QuickSwipeRecycleAdapterTestActivity"
+            >
+        </activity>
+        <activity
+            android:name=".QuickSwipeListViewAdapterTestActivity"
+            >
+        </activity>
     </application>
 
 </manifest>

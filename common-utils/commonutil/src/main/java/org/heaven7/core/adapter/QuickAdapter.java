@@ -112,5 +112,4 @@ public abstract class QuickAdapter<T extends ISelectable> extends
 		}
 	}
 
-
 }

@@ -43,7 +43,7 @@ public class PullToRefreshListHeader extends LinearLayout {
     }
 
     private void initView(Context context) {
-        LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, 0);
+        LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, 0);
         mContainer = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.heaven7_xlistview_header, null);
         addView(mContainer, lp);
         setGravity(Gravity.BOTTOM);

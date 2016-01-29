@@ -16,9 +16,6 @@ import android.widget.FrameLayout;
 
 public class SwipeMenuLayout extends FrameLayout {
 
-    private static final int CONTENT_VIEW_ID = 1;
-    private static final int MENU_VIEW_ID = 2;
-
     private static final int STATE_CLOSE = 0;
     private static final int STATE_OPEN = 1;
 
@@ -105,10 +102,10 @@ public class SwipeMenuLayout extends FrameLayout {
         LayoutParams contentParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         mContentView.setLayoutParams(contentParams);
         if (mContentView.getId() < 1) {
-            mContentView.setId(CONTENT_VIEW_ID);
+            mContentView.setId(R.id.heaven7_pulltofresh_swipe_content_view);
         }
 
-        mMenuView.setId(MENU_VIEW_ID);
+        mMenuView.setId(R.id.heaven7_pulltofresh_swipe_menu_view);
         mMenuView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
         addView(mContentView);

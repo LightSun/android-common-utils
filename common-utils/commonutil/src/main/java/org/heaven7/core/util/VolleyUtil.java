@@ -21,6 +21,7 @@ import java.util.Map;
 /**
  * Created by heaven7 on 2015/8/12.
  */
+@Deprecated  //this is moved to module/lib: volley_with_eatra
 public class VolleyUtil {
 
     private static final String TAG = "VolleyUtil";

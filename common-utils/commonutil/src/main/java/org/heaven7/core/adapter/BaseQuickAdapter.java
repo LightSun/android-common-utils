@@ -146,7 +146,9 @@ import java.util.List;
 		}
 		final H helper = getAdapterHelper(position, convertView, parent);
 		final T item = getItem(position);
-		onBindData(parent.getContext(), position,item,helper.getLayoutId(), helper.getViewHelper());
+
+		bindDataImpl(parent, position, item, helper);
+
 		if(getAdapterManager().getPostRunnableCallbacks() != null){
 			for(final AdapterManager.IPostRunnableCallback<T> callback : getAdapterManager()
 					.getPostRunnableCallbacks()){
@@ -162,7 +164,11 @@ import java.util.List;
 
 	}
 
-	protected static View createIndeterminateProgressView(View convertView,
+	protected void bindDataImpl(ViewGroup parent, int position, T item, H helper) {
+		onBindData(parent.getContext(), position,item, helper.getLayoutId(), helper.getViewHelper());
+	}
+
+	static View createIndeterminateProgressView(View convertView,
 			ViewGroup parent) {
 		if (convertView == null) {
 			Context context = parent.getContext();
@@ -224,6 +230,7 @@ import java.util.List;
 	 */
 	protected abstract void onBindData(Context context, int position,  T item,
 									   int itemLayoutId, ViewHelper helper);
+
 
 	/** this is callled before data changed */
 	protected void beforeNotifyDataChanged(){

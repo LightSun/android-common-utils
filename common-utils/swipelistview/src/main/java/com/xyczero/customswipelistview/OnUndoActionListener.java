@@ -22,6 +22,7 @@ package com.xyczero.customswipelistview;
  * @author xyczero
  * 
  */
+@Deprecated //use pulltorefresh-swipe instead
 public interface OnUndoActionListener {
 
 	/**

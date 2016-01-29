@@ -3,18 +3,14 @@ package org.heaven7.demo;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.android.volley.extra.RoundedBitmapBuilder;
 
-import org.heaven7.core.adapter.ISelectable;
-import org.heaven7.core.adapter.QuickRecycleViewAdapter;
+import org.heaven7.core.adapter.QuickRecycleViewSwipeAdapter;
 import org.heaven7.core.item.decoration.DividerItemDecoration;
 import org.heaven7.core.save_state.BundleSupportType;
 import org.heaven7.core.save_state.SaveStateField;
@@ -23,7 +19,9 @@ import org.heaven7.core.viewhelper.ViewHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuickRecycleViewTestActivity extends BaseActivity {
+import static org.heaven7.demo.QuickRecycleViewTestActivity.Item;
+
+public class QuickSwipeRecycleAdapterTestActivity extends BaseActivity {
 
     RecyclerView mRecyclerView;
 
@@ -43,7 +41,7 @@ public class QuickRecycleViewTestActivity extends BaseActivity {
     @SaveStateField("mSelectUrl")
     String mSelectUrl;
 
-    QuickRecycleViewAdapter<Item> mAdapter;
+    QuickRecycleViewSwipeAdapter<Item> mAdapter;
 
     @Override
     protected int getlayoutId() {
@@ -55,39 +53,34 @@ public class QuickRecycleViewTestActivity extends BaseActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
-        /**
-         * 瀑布流用
-         GridLayoutManager manager = new GridLayoutManager(this, 3);
-         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-        @Override
-        public int getSpanSize(int position) {
-        return (3 - position % 3);
-        }
-        });
-         */
     }
 
     @Override
     protected void initData(Bundle savedInstanceState) {
         mItems = new ArrayList<>();
         addTestData(mItems);
-        mRecyclerView.setAdapter(mAdapter = new QuickRecycleViewAdapter<Item>(
-                R.layout.item_image, mItems) {
+        mRecyclerView.setAdapter(mAdapter = new QuickRecycleViewSwipeAdapter<Item>(
+                R.layout.item_swipe, R.layout.item_menu, mItems) {
 
             @Override
             protected void onBindData(Context context, final int position, final Item item,
-                                      int itemLayoutId, ViewHelper helper) {
+                                      int itemLayoutId, int menuLayoutId, ViewHelper helper) {
                 helper.setImageUrl(R.id.eniv, item.url, new RoundedBitmapBuilder()
-                        .scaleType(ImageView.ScaleType.CENTER_CROP))
+                        .scaleType(ImageView.ScaleType.CENTER_CROP)
+                        .placeholder(R.drawable.ic_launcher))
                         .view(R.id.tv)
                         .setTextColor(item.isSelected() ? Color.RED : Color.BLACK)
                         .setText(item.url).reverse(helper)
                         .setOnClickListener(R.id.ll, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                showToast("select position is " + position);
-                                mSelectUrl = item.url;
-                                setSelected(position);
+                                if(shouldIgnoreTouchEvent()){
+                                    showToast("if have a item that opened the swipe , the item is closed swipe now.");
+                                }else {
+                                    showToast("select position is " + position);
+                                    mSelectUrl = item.url;
+                                    setSelected(position);
+                                }
                             }
                         });
             }
@@ -96,9 +89,19 @@ public class QuickRecycleViewTestActivity extends BaseActivity {
             protected int getItemLayoutId(int position, Item item) {
                 return super.getItemLayoutId(position, item);
             }
+
+            @Override
+            protected int getItemMenuLayoutId(int position, int itemLayoutId, Item item) {
+                return super.getItemMenuLayoutId(position, itemLayoutId, item);
+            }
+
+            @Override
+            protected int getTrackingEdge() {
+                return super.getTrackingEdge();
+            }
         });
-        mAdapter.addFooterView(LayoutInflater.from(this).inflate(
-                R.layout.footer_item,mRecyclerView,false));
+       /* mAdapter.addFooterView(LayoutInflater.from(this).inflate(
+                R.layout.footer_item, mRecyclerView, false));*/
     }
 
     private void addTestData(List<Item> items) {
@@ -107,49 +110,4 @@ public class QuickRecycleViewTestActivity extends BaseActivity {
         }
     }
 
-    public static class Item implements ISelectable, Parcelable {
-
-        public String url;
-        private boolean selected;
-
-        public Item(String url) {
-            this.url = url;
-        }
-
-        @Override
-        public void setSelected(boolean selected) {
-            this.selected = selected;
-        }
-
-        @Override
-        public boolean isSelected() {
-            return selected;
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(this.url);
-            dest.writeByte(selected ? (byte) 1 : (byte) 0);
-        }
-
-        private Item(Parcel in) {
-            this.url = in.readString();
-            this.selected = in.readByte() != 0;
-        }
-
-        public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
-            public Item createFromParcel(Parcel source) {
-                return new Item(source);
-            }
-
-            public Item[] newArray(int size) {
-                return new Item[size];
-            }
-        };
-    }
 }

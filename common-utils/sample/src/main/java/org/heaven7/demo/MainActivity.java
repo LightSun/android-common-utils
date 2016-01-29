@@ -13,6 +13,8 @@ public class MainActivity extends ListActivity {
             "QuickRecycleAdapterTest",
             "RecyclerViewDecorationTest",
             "PulltofreshSwipeTest",
+            "QuickRecycleSwipeAdapterTest",
+            "QuickListViewSwipeAdapterTest",
     };
 
     @Override
@@ -34,6 +36,12 @@ public class MainActivity extends ListActivity {
                 break;
             case 2:
                 intent = new Intent(this, PulltorefreshSwipeTest.class);
+                break;
+            case 3:
+                intent = new Intent(this, QuickSwipeRecycleAdapterTestActivity.class);
+                break;
+            case 4:
+                intent = new Intent(this, QuickSwipeListViewAdapterTestActivity.class);
                 break;
             default:
                 throw new UnsupportedOperationException();

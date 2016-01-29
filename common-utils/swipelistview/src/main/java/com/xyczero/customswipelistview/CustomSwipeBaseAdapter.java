@@ -17,6 +17,7 @@
 package com.xyczero.customswipelistview;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import android.widget.RelativeLayout;
 
 import com.xyczero.customswipelistview.extra.R;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +40,7 @@ import java.util.List;
  * @param <T> The data type which is to be shown.
  * @author xyczero
  */
+@Deprecated //use pulltorefresh-swipe instead
 public abstract class CustomSwipeBaseAdapter<T> extends BaseAdapter implements
         OnUndoActionListener {
 
@@ -239,8 +242,7 @@ public abstract class CustomSwipeBaseAdapter<T> extends BaseAdapter implements
         itemSwipeLeftLayout.setLayoutParams(new AbsListView.LayoutParams(
                 itemView.getLayoutParams().width, itemView.getLayoutParams().height));
         itemSwipeLeftLayout.setHorizontalGravity(Gravity.END);
-        itemSwipeLeftLayout.setBackgroundColor(mContext.getResources()
-                .getColor(android.R.color.transparent));
+        itemSwipeLeftLayout.setBackgroundColor(Color.TRANSPARENT);
         itemSwipeLeftLayout.addView(swipeLeftView);
         itemLayout.addView(itemSwipeLeftLayout);
         return itemLayout;
@@ -258,6 +260,7 @@ public abstract class CustomSwipeBaseAdapter<T> extends BaseAdapter implements
         // must ensure that the height of the CustemListview is a certain
         // value(like wrap_content is forbidden),otherwise the undo animation
         // will appear unexpectedly.
+        v.post(new ResizeSwipeHeightRunnable(v));
         setItemUndoActionAnimation(v, position);
         return v;
     }
@@ -283,6 +286,29 @@ public abstract class CustomSwipeBaseAdapter<T> extends BaseAdapter implements
             mObjects.add(mHasDeletedPosition, mObjectDeleted);
             undoAnimationEnable = true;
             notifyDataSetChanged();
+        }
+    }
+    private static class ResizeSwipeHeightRunnable implements Runnable{
+
+        final WeakReference<View> mWeakView;
+
+        public ResizeSwipeHeightRunnable(View view) {
+            this.mWeakView = new WeakReference<View>(view);
+        }
+
+        @Override
+        public void run() {
+            View v;
+            if( (v = mWeakView.get())==null){
+                return;
+            }
+            View itemView = v.findViewWithTag(CustomSwipeListView.ITEMMAIN_LAYOUT_TAG);
+            View swipeView = v.findViewWithTag(CustomSwipeListView.ITEMSWIPE_LAYOUT_TAG);
+            if(swipeView.getHeight() != itemView.getHeight()) {
+                swipeView.getLayoutParams().height = itemView.getHeight();
+                swipeView.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                v.requestLayout();
+            }
         }
     }
 }

@@ -31,6 +31,7 @@ import com.xyczero.customswipelistview.extra.R;
  *
  * @author xyczero
  */
+@Deprecated //use pulltorefresh-swipe instead
 public class CustomSwipeUndoDialog {
 
     private Context mContext;

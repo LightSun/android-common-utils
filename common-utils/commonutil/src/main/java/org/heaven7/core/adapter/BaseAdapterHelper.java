@@ -31,7 +31,7 @@ import org.heaven7.core.viewhelper.ViewHelper;
  */
 /*public*/ class BaseAdapterHelper {
 
-	private int   position;
+	public int   position;
 	private int   layoutId;
 	private ViewHelper mViewHelper;
 
@@ -44,7 +44,13 @@ import org.heaven7.core.viewhelper.ViewHelper;
 		root.setTag(this);
 		mViewHelper = new ViewHelper(root);
 	}
-	
+	public BaseAdapterHelper(View item,int mPosition) {
+		super();
+		this.position = mPosition;
+		item.setTag(this);
+		mViewHelper = new ViewHelper(item);
+	}
+
 	public Context getContext(){
 		return mViewHelper.getContext();
 	}
@@ -54,7 +60,20 @@ import org.heaven7.core.viewhelper.ViewHelper;
 	public int getLayoutId(){
 		return layoutId;
 	}
-	
+
+	/**
+	 * @since 1.8.0
+	 */
+	public int getMenuLayoutId(){
+		return 0;
+	}
+
+	public ViewHelper getViewHelper(){
+		return mViewHelper;
+	}
+
+	// ================================================== //
+
 	public static BaseAdapterHelper get(View convertView,
 			ViewGroup parent, int layoutId){
 		return get(convertView, parent, layoutId, -1);
@@ -76,10 +95,6 @@ import org.heaven7.core.viewhelper.ViewHelper;
 		// RatingBar
 		existingHelper.position = position;
 		return existingHelper;
-	}
-	
-	public ViewHelper getViewHelper(){
-		return mViewHelper;
 	}
 	
 }

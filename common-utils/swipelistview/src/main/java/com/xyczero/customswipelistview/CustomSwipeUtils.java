@@ -23,6 +23,7 @@ import android.content.Context;
  * @author xyczero
  * 
  */
+@Deprecated //use pulltorefresh-swipe instead
 public class CustomSwipeUtils {
 
 	/**

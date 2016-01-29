@@ -78,6 +78,18 @@ public class QuickSwipeListViewAdapterTestActivity extends BaseActivity {
                                     setSelected(position);
                                 }
                             }
+                        })
+                        .setOnClickListener(R.id.tv_delete, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showToast("delete is clicked!");
+                            }
+                        })
+                        .setOnClickListener(R.id.tv_closeMenu, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                shouldIgnoreTouchEvent();
+                            }
                         });
             }
             @Override

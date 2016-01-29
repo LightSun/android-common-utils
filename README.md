@@ -4,7 +4,7 @@ this is a common utils of android (used to fast develop). contains QuickAdapter 
  <img src="/images/swipe_adapter_1.gif" alt="Demo Screen Capture" width="300px" />
 
 ## New Features
-  support swipe operation of ListView/RecyclerView adapter named swipe   adapter(QuickSwipeAdapter/QuickRecycleViewSwipeAdapter). 
+  support swipe (左滑或者右滑)  operation of ListView/RecyclerView adapter named swipe     adapter(QuickSwipeAdapter/QuickRecycleViewSwipeAdapter). 
   see it below or demo.
   
 ## Swipe adapter: sample code.

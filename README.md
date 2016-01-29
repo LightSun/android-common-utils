@@ -1,7 +1,7 @@
 # android-common-utils
 this is a common utils of android (used to fast develop). contains QuickAdapter of ListView,RecyclerView.ExpandListView. and so on.
 
- <img src="/images.gif" alt="Demo Screen Capture" width="300px" />
+ <img src="/images/swipe_adapter_1.gif" alt="Demo Screen Capture" width="300px" />
 
 ## New Features
   support swipe operate of ListView/RecyclerView adapter. see it demo.

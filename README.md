@@ -40,7 +40,7 @@ this is a common utils of android (used to fast develop). contains QuickAdapter 
 common-util
 ``` java
 dependencies {
-     compile 'org.heaven7.core:commonutil:1.7.7'
+     compile 'org.heaven7.core:commonutil:1.8.0'
 }
 ```
 view lib -> common-view

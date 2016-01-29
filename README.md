@@ -50,6 +50,8 @@ dependencies {
      compile 'org.heaven7.core.view:common-view:1.0.0'
 }
 ```
+
+volley及其扩展库
 expand volley lib - > volley_with_extra
 ``` java
 dependencies {
@@ -57,7 +59,9 @@ dependencies {
 }
 ```
 
-third sdk lib - > third_sdks (jcenter审核中)
+第三方sdk,目前已集成 支付宝，微信支付。 qq，微信登陆，分享
+third sdk lib - > third_sdks 
+
 ``` java
 dependencies {
     compile 'com.heaven7.third_sdks:third_sdks:1.0'

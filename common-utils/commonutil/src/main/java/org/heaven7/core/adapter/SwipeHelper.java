@@ -136,8 +136,6 @@ public class SwipeHelper {
         private int bgWidth;
         /*** 默认右滑菜单*/
         private int mTrackingEdges = EDGE_RIGHT;
-        /*** 滑动百分比，超过百分比松开自动完成，不到则还原*/
-        private float scrollPercent = 0.2f;
         /*** 当前是否打开*/
         protected int state = STATE_CLOSE;
 
@@ -233,7 +231,6 @@ public class SwipeHelper {
 
                 int newLeft;
                 if (mTrackingEdges == EDGE_LEFT) {
-                   // if (topView.getLeft() < (int) ((float) bgWidth * scrollPercent) || state == STATE_OPNE) {
                     if (topView.getLeft() < mTouchSlop || state == STATE_OPNE) {
                         newLeft = viewX;
                         changeSwipeState(STATE_CLOSE);
@@ -242,7 +239,6 @@ public class SwipeHelper {
                         changeSwipeState(STATE_OPNE);
                     }
                 } else {
-                   // if (topView.getLeft() > -(int) ((float) bgWidth * scrollPercent) || state == STATE_OPNE) {
                     if (topView.getLeft() > - mTouchSlop || state == STATE_OPNE) {
                         newLeft = viewX;
                         changeSwipeState(STATE_CLOSE);

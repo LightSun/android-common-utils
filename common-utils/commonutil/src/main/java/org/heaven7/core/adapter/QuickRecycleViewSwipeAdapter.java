@@ -18,6 +18,7 @@ package org.heaven7.core.adapter;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -34,16 +35,10 @@ import java.util.List;
  * @since 1.8.0
  */
 public abstract class QuickRecycleViewSwipeAdapter<T extends ISelectable>
-        extends RecyclerView.Adapter<QuickRecycleViewSwipeAdapter.ViewHolder>
-        implements AdapterManager.IAdapterManagerCallback, AdapterManager.IHeaderFooterManager ,
-        AdapterManager.IAdapterManagerCallback2{
+        extends QuickRecycleViewAdapter<T>{
 
     private static final int MAX_VIEW_TYPE = 0;
 
-    private final AdapterManager<T> mAdapterManager;
-    private HeaderFooterHelper mHeaderFooterHelper;
-
-    private int mLayoutId     = 0 ;
     private int mMenuLayoutId = 0 ;
 
     /** value is the view type */
@@ -68,163 +63,24 @@ public abstract class QuickRecycleViewSwipeAdapter<T extends ISelectable>
      * @param selectMode  select mode
      */
     public QuickRecycleViewSwipeAdapter(int layoutId,int menuLayoutId ,List<T> mDatas, int selectMode) {
-       if(layoutId <0 ){
-           throw new IllegalArgumentException("layoutId can't be negative ");
-       }
-        this.mLayoutId     =  layoutId;
+        super(layoutId,mDatas,selectMode,false);
         this.mMenuLayoutId =  menuLayoutId;
-       // mAdapterManager = createAdapterManager(mDatas,selectMode);
-        mAdapterManager = new AdapterManager<T>(mDatas,selectMode,this){
-            @Override
-            public IHeaderFooterManager getHeaderFooterManager() {
-                return QuickRecycleViewSwipeAdapter.this;
-            }
-        };
         onFinalInit();
     }
 
     /** called before {@link #notifyDataSetChanged()} */
     @Override
     public void beforeNotifyDataChanged() {
+        super.beforeNotifyDataChanged();
         mViewTypeMap.clear();
         mMinValueType = MAX_VIEW_TYPE;
-    }
-    /** this is callled after data {@link #notifyDataSetChanged()} */
-    @Override
-    public void afterNotifyDataChanged(){
-
-    }
-    /** the init operation of the last, called in constructor */
-    protected void onFinalInit() {
-
-    }
-
-    //=================== start header footer view ======================= //
-    @Override
-    public void addHeaderView(View v){
-        if(mHeaderFooterHelper == null)
-            mHeaderFooterHelper = new HeaderFooterHelper();
-        int headerSize = getHeaderSize();
-        mHeaderFooterHelper.addHeaderView(v);
-        notifyItemInserted(headerSize);
-    }
-    @Override
-    public void removeHeaderView(View v){
-        if(mHeaderFooterHelper !=null){
-            int index = mHeaderFooterHelper.removeHeaderView(v);
-            if(index != -1){
-                notifyItemRemoved(index);
-            }
-        }
-    }
-    @Override
-    public void addFooterView(View v){
-        if(mHeaderFooterHelper ==null)
-            mHeaderFooterHelper = new HeaderFooterHelper();
-        int itemCount = getItemCount();
-        mHeaderFooterHelper.addFooterView(v);
-        notifyItemInserted(itemCount);
-    }
-    @Override
-    public void removeFooterView(View v){
-        if(mHeaderFooterHelper !=null){
-            int index = mHeaderFooterHelper.removeFooterView(v);
-            if(index != -1){
-                notifyItemRemoved(index + getHeaderSize() + mAdapterManager.getItemSize());
-            }
-        }
-    }
-    @Override
-    public int getHeaderSize() {
-        return mHeaderFooterHelper ==null ? 0 : mHeaderFooterHelper.getHeaderViewSize();
-    }
-    @Override
-    public int getFooterSize() {
-        return mHeaderFooterHelper ==null ? 0 : mHeaderFooterHelper.getFooterViewSize();
-    }
-    // =================== end header footer view ======================= //
-
-
-    @Override
-    public final boolean isRecyclable() {
-        return true;
-    }
-
-    public SelectHelper<T> getSelectHelper(){
-        return getAdapterManager().getSelectHelper();
-    }
-
-    public final T getItem(int position){
-        return mAdapterManager.getItems().get(position);
-    }
-    /**
-     * select the target position
-     * only support select mode = {@link ISelectable#SELECT_MODE_MULTI}**/
-    public void addSelected(int selectPosition){
-        getSelectHelper().addSelected(selectPosition);
-    }
-
-    /**  un select the target position  .
-     * <li>only support select mode = {@link ISelectable#SELECT_MODE_MULTI}*/
-    public void addUnselected(int position){
-        getSelectHelper().addUnselected(position);
-    }
-
-    /**
-     * un select the all selected position.
-     * mode single or multi all supoorted */
-    public void clearAllSelected(){
-        getSelectHelper().clearAllSelected();
-    }
-    /**
-     * select the target position with notify data.if currentPosition  == position.ignore it.
-     * <li></>only support select mode = {@link ISelectable#SELECT_MODE_SINGLE} ,this will auto update**/
-    public void setSelected(int position){
-        getSelectHelper().setSelected(position);
-    }
-    /** un select the target position
-     * <li>only support select mode = {@link ISelectable#SELECT_MODE_SINGLE} */
-    public void setUnselected(int position){
-        getSelectHelper().setUnselected(position);
-    }
-
-    /** clear selected positions  . this just clear record. bu not notify item change
-     * <li> support select mode = {@link ISelectable#SELECT_MODE_SINGLE} or {@link ISelectable#SELECT_MODE_MULTI}*/
-    public void clearSelectedPositions(){
-        getSelectHelper().clearSelectedPositions();
-    }
-
-    public T getSelectedData(){
-       return getSelectHelper().getSelectedItem();
-    }
-
-    public List<T> getSelectedItems(){
-        return getSelectHelper().getSelectedItems();
-    }
-
-    public int getSelectedPosition(){
-        return getSelectHelper().getSelectedPosition() ;
-    }
-
-    //====================== begin items ========================//
-
-    @Override
-    public AdapterManager<T> getAdapterManager() {
-        return mAdapterManager;
     }
 
     //====================== end items ========================//
 
+
     @Override
-    public final int getItemViewType(int position) {
-        if(mHeaderFooterHelper !=null){
-            //in header or footer
-            if(mHeaderFooterHelper.isInHeader(position) ||
-                    mHeaderFooterHelper.isInFooter(position,mAdapterManager.getItemSize())) {
-                return position;
-            }
-            position -= mHeaderFooterHelper.getHeaderViewSize();
-        }
+    protected int getItemViewTypeImpl(HeaderFooterHelper hfHelper, int position) {
         final T t = getItem(position);
         int layoutId = getItemLayoutId(position, t);
         int menuLayoutId = getItemMenuLayoutId(position, layoutId, t);
@@ -237,22 +93,24 @@ public abstract class QuickRecycleViewSwipeAdapter<T extends ISelectable>
             viewType =  --mMinValueType;
             holder.mViewType = viewType;
             mViewTypeMap.put(holder,viewType);
-            if(mHeaderFooterHelper != null)
-                mHeaderFooterHelper.recordLayoutId(viewType);
+            if(hfHelper != null)
+                hfHelper.recordLayoutId(viewType);
         }else{
             viewType = val;
         }
         return viewType;
     }
 
+    @NonNull
     @Override
-    public final ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if(mHeaderFooterHelper == null || mHeaderFooterHelper.isLayoutIdInRecord(viewType)){
+    protected RecyclerView.ViewHolder onCreateViewHolderImpl(HeaderFooterHelper hfHelper,
+                                                             ViewGroup parent, int viewType) {
+        if(hfHelper == null || hfHelper.isLayoutIdInRecord(viewType)){
             LayoutIdHolder holder = findLayoutIdHolder(viewType);
             return new ViewHolder(parent, holder.mMainLayoutId, holder.mMenuLayoutId,
                     getTrackingEdge(), mSwipeListener);
         }else{
-            return new ViewHolder(mHeaderFooterHelper.findView(viewType,mAdapterManager.getItemSize()));
+            return new ViewHolder(hfHelper.findView(viewType,getAdapterManager().getItemSize()));
         }
     }
 
@@ -266,48 +124,10 @@ public abstract class QuickRecycleViewSwipeAdapter<T extends ISelectable>
     }
 
     @Override
-    public final void onBindViewHolder(ViewHolder holder,int position) {
-        if(mHeaderFooterHelper !=null) {
-            if ( mHeaderFooterHelper.isInHeader(position)
-                    || mHeaderFooterHelper.isInFooter(position,mAdapterManager.getItemSize())){
-                return ;
-            }
-            position -= mHeaderFooterHelper.getHeaderViewSize();
-        }
-        //not in header or footer populate it
-        final T item = getItem(position);
-        final int layoutId = holder.getSwipeHelper().getMainLayoutId();
-        final ViewHelper helper = holder.mViewHelper;
-
-       onBindData(holder.getContext(), position, item, layoutId,
-               holder.getSwipeHelper().getMenuLayoutId() , helper );
-
-        if(getAdapterManager().getPostRunnableCallbacks() != null){
-            final int pos = position;
-            for(final AdapterManager.IPostRunnableCallback<T> callback : getAdapterManager()
-                    .getPostRunnableCallbacks()){
-                holder.itemView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onPostCallback(pos, item, layoutId , helper);
-                    }
-                });
-            }
-        }
-    }
-
-    @Override
-    public final int getItemCount() {
-        return mHeaderFooterHelper == null ? mAdapterManager.getItemSize() :
-                mAdapterManager.getItemSize() + mHeaderFooterHelper.getHeaderViewSize() +
-                        mHeaderFooterHelper.getFooterViewSize();
-    }
-
-    // may use
-    @Override
-    public void onViewDetachedFromWindow(ViewHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-        holder.mViewHelper.getRootView().clearAnimation();
+    protected void onBindDataImpl(RecyclerView.ViewHolder holder, int position, T item) {
+        ViewHolder vh = (ViewHolder) holder;
+        onBindData(vh.getContext(), position, item, vh.getLayoutId(),
+                vh.getSwipeHelper().getMenuLayoutId(), vh.getViewHelper());
     }
 
     /**
@@ -326,18 +146,20 @@ public abstract class QuickRecycleViewSwipeAdapter<T extends ISelectable>
         return SwipeHelper.EDGE_RIGHT;
     }
     /** if you use multi item ,override this */
-    protected int getItemLayoutId(int position,T t) {
-        return mLayoutId;
-    }
-    /** if you use multi item ,override this */
     protected int getItemMenuLayoutId(int position, int itemLayoutId, T t) {
         return mMenuLayoutId;
+    }
+
+    @Override
+    protected void onBindData(Context context, int position, T item, int itemLayoutId, ViewHelper helper) {
+        // there is no need to implements this method
     }
 
     protected abstract void onBindData(Context context, int position,  T item,
                                        int itemLayoutId,int menuLayoutId, ViewHelper helper);
 
-    /*public*/ static class ViewHolder extends SwipeHelper.BaseSwipeViewHolder{
+    /*public*/ static class ViewHolder extends SwipeHelper.BaseSwipeViewHolder implements
+            QuickRecycleViewAdapter.IRecyclerViewHolder{
 
         public final ViewHelper mViewHelper;
         /** if is in header or footer ,mLayoutId = 0 */
@@ -361,6 +183,16 @@ public abstract class QuickRecycleViewSwipeAdapter<T extends ISelectable>
         }
         public Context getContext(){
             return mViewHelper.getContext();
+        }
+
+        @Override
+        public int getLayoutId() {
+            return getSwipeHelper().getMainLayoutId();
+        }
+
+        @Override
+        public ViewHelper getViewHelper() {
+            return mViewHelper;
         }
     }
 

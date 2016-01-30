@@ -69,34 +69,6 @@ public abstract class QuickAdapter<T extends ISelectable> extends
 		super(data, multiItemSupport, selectMode);
 	}
 
-	public SelectHelper<T> getSelectHelper(){
-		return getAdapterManager().getSelectHelper();
-	}
-
-	/**
-	 * select the target position with notify data.if currentPosition  == position.ignore it.
-	 * <li></>only support select mode = {@link ISelectable#SELECT_MODE_SINGLE} ,this will auto update**/
-	public void setSelected(int position){
-		getSelectHelper().setSelected(position);
-	}
-
-	/** only support select mode = {@link ISelectable#SELECT_MODE_MULTI}**/
-	public void addSelected(int selectPosition){
-		getSelectHelper().addSelected(selectPosition);
-	}
-
-	public void clearAllSelected(){
-		getSelectHelper().clearAllSelected();
-	}
-
-	public T getSelectedData(){
-		return getSelectHelper().getSelectedItem();
-	}
-
-	public int getSelectedPosition(){
-		return getSelectHelper().getSelectedPosition() ;
-	}
-
 	@Override
 	protected BaseAdapterHelper getAdapterHelper(int position,
 			View convertView, ViewGroup parent) {

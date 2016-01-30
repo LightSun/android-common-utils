@@ -4,9 +4,117 @@ this is a common utils of android (used to fast develop). contains QuickAdapter 
  <img src="/images/swipe_adapter_1.gif" alt="Demo Screen Capture" width="300px" />
 
 ## New Features
-  support swipe operate of ListView/RecyclerView adapter. see it demo.
+  support swipe (左滑或者右滑)  operation of ListView/RecyclerView adapter named swipe     adapter(QuickSwipeAdapter/QuickRecycleViewSwipeAdapter). 
+  see it below or demo.
+  
+## Swipe adapter: sample code.
+``` java
+ //recycler view swipe adapter 
+  mRecyclerView.setAdapter(mAdapter = new QuickRecycleViewSwipeAdapter<Item>(
+                R.layout.item_swipe, R.layout.item_menu, mItems) {
 
-## sample code 
+            @Override
+            protected void onBindData(Context context, final int position, final Item item,
+                                      int itemLayoutId, int menuLayoutId, ViewHelper helper) {
+                helper.setImageUrl(R.id.eniv, item.url, new RoundedBitmapBuilder()
+                        .scaleType(ImageView.ScaleType.CENTER_CROP)
+                        .placeholder(R.drawable.ic_launcher))
+                        .view(R.id.tv)
+                        .setTextColor(item.isSelected() ? Color.RED : Color.BLACK)
+                        .setText(item.url).reverse(helper)
+                        .setOnClickListener(R.id.ll, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(shouldIgnoreTouchEvent()){
+                                    showToast("if have a item that opened the swipe , the item is closed swipe now.");
+                                }else {
+                                    showToast("select position is " + position);
+                                    mSelectUrl = item.url;
+                                    setSelected(position);
+                                }
+                            }
+                        })
+                        .setOnClickListener(R.id.tv_delete, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showToast("delete is clicked!");
+                            }
+                        })
+                        .setOnClickListener(R.id.tv_closeMenu, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                shouldIgnoreTouchEvent();
+                            }
+                        });
+            }
+
+            //if you use multi item.override this 
+            @Override
+            protected int getItemLayoutId(int position, Item item) {
+                return super.getItemLayoutId(position, item);
+            }
+
+              //if you use multi menu override this 
+            @Override
+            protected int getItemMenuLayoutId(int position, int itemLayoutId, Item item) {
+                return super.getItemMenuLayoutId(position, itemLayoutId, item);
+            }
+
+            // swipe to left or right.
+            @Override
+            protected int getTrackingEdge() {
+                return super.getTrackingEdge();
+            }
+        });
+```
+
+ListView同理。
+``` java
+ mListView.setAdapter(mAdapter = new QuickSwipeAdapter<Item>(
+                R.layout.item_swipe, R.layout.item_menu, mItems) {
+
+            @Override
+            protected void onBindData(Context context, final int position, final Item item,
+                                      int itemLayoutId, int menuLayoutId, ViewHelper helper) {
+                helper.setImageUrl(R.id.eniv, item.url, new RoundedBitmapBuilder()
+                        .scaleType(ImageView.ScaleType.CENTER_CROP)
+                        .placeholder(R.drawable.ic_launcher))
+                        .view(R.id.tv)
+                        .setTextColor(item.isSelected() ? Color.RED : Color.BLACK)
+                        .setText(item.url).reverse(helper)
+                        .setOnClickListener(R.id.ll, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (shouldIgnoreTouchEvent()) {
+                                    showToast("if have a item that opened the swipe , the item is closed swipe now.");
+                                } else {
+                                    showToast("select position is " + position);
+                                    mSelectUrl = item.url;
+                                    setSelected(position);
+                                }
+                            }
+                        })
+                        .setOnClickListener(R.id.tv_delete, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showToast("delete is clicked!");
+                            }
+                        })
+                        .setOnClickListener(R.id.tv_closeMenu, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                shouldIgnoreTouchEvent();
+                            }
+                        });
+            }
+            @Override
+            protected int getTrackingEdge() {
+                return super.getTrackingEdge();
+            }
+        });
+```
+
+## fast adapter sample code 
 ``` java
    mRecyclerView_room.setAdapter(mRoomAdapter = new QuickRecycleViewAdapter<RoomItem>(
                         R.layout.item_ktv_detail_room, dateItems) {
@@ -40,7 +148,7 @@ this is a common utils of android (used to fast develop). contains QuickAdapter 
 common-util
 ``` java
 dependencies {
-     compile 'org.heaven7.core:commonutil:1.7.7'
+     compile 'org.heaven7.core:commonutil:1.8.0'
 }
 ```
 view lib -> common-view
@@ -68,6 +176,8 @@ dependencies {
 }
 ```
 
+## thanks
+ szpnygo's [SwipeRecyclerView](https://github.com/szpnygo/android-SwipeRecyclerView)
 
 ## License
 

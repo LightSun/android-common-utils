@@ -1,5 +1,6 @@
 package com.android.volley.extra.util;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -146,7 +147,7 @@ public class VolleyUtil {
     }
 
     public static void post(final String url, final ApiParams params, Object tag, final HttpCallback callback) {
-        sendRequest(Request.Method.POST,url,params,tag,callback);
+        sendRequest(Request.Method.POST, url, params, tag, callback);
     }
 
     public static void get(final String url, ApiParams params, Object tag, final HttpCallback callback) {
@@ -196,7 +197,7 @@ public class VolleyUtil {
      * get 请求返回 string
      */
     public static void get(final String url, Object tag, final HttpCallback callback) {
-       sendRequest(Request.Method.GET,url ,null, tag, callback);
+       sendRequest(Request.Method.GET, url, null, tag, callback);
     }
 
     public static void loadImage(String url, ExpandNetworkImageView imageView, RoundedBitmapBuilder builder) {
@@ -219,7 +220,9 @@ public class VolleyUtil {
     public static void cancelAll(Object tag) {
         RequestManager.cancelAll(tag);
     }
-
+    public static void init(Context context){
+        RequestManager.init(context);
+    }
 
     public interface HttpCallback {
         /**

@@ -23,5 +23,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile project(':commonutil')
     compile project(':pulltorefresh-swipe')
+    compile project(':third_sdks')
    // compile 'org.heaven7.core.view:common-view:1.0.0'
 }

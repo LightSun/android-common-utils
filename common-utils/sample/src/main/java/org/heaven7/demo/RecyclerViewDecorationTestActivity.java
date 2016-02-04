@@ -2,7 +2,6 @@ package org.heaven7.demo;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -18,7 +17,6 @@ import com.android.volley.extra.RoundedBitmapBuilder;
 import org.heaven7.core.adapter.AdapterManager;
 import org.heaven7.core.adapter.ISelectable;
 import org.heaven7.core.adapter.QuickRecycleViewAdapter;
-import org.heaven7.core.item.decoration.DividerGridItemDecoration;
 import org.heaven7.core.layoutmanager.FullyGridLayoutManager;
 import org.heaven7.core.save_state.BundleSupportType;
 import org.heaven7.core.save_state.SaveStateField;
@@ -61,18 +59,30 @@ public class RecyclerViewDecorationTestActivity extends BaseActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
       //  mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
       //  mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL));
-        final GridLayoutManager lm = new FullyGridLayoutManager(this, 2, LinearLayoutManager.VERTICAL, false);
+        final GridLayoutManager lm = new FullyGridLayoutManager(this, 3, LinearLayoutManager.VERTICAL, false);
+        lm.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override  //跨度，比如跨度为2： 表示 某个Item将会被空白所代替
+                   //1表示不影响。但是这个不能大于 spanCount
+            public int getSpanSize(int position) {
+              // return 3 -  position % 3; // 0-3   1-2   2-1   3-3
+
+                //第一行. 3个合成1个。
+                if (position == 0) {
+                    return 3;
+                }
+                return 1;
+            }
+        });
         mRecyclerView.setLayoutManager(lm);
 
       //  mRecyclerView.offsetChildrenVertical(10);
-
-        final DividerGridItemDecoration decoration = new DividerGridItemDecoration(this);
-        decoration.getDividerManager().setDivider(Color.RED, 10, 10);
-        if(Build.VERSION.SDK_INT >= 21) {
+       // final DividerGridItemDecoration decoration = new DividerGridItemDecoration(this);
+       // decoration.getDividerManager().setDivider(Color.RED, 10, 10);
+      /*  if(Build.VERSION.SDK_INT >= 21) {
             mRecyclerView.setNestedScrollingEnabled(false);
         }
-        mRecyclerView.setHasFixedSize(false);
-        mRecyclerView.addItemDecoration(decoration);
+        mRecyclerView.setHasFixedSize(true);*/
+      //  mRecyclerView.addItemDecoration(decoration);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
@@ -91,7 +101,7 @@ public class RecyclerViewDecorationTestActivity extends BaseActivity {
                 )
                         .view(R.id.tv)
                         .setTextColor(item.isSelected() ? Color.RED : Color.BLACK)
-                        .setText("item.url").reverse(helper)
+                        .setText("position = " + position).reverse(helper)
                         .setOnClickListener(R.id.ll, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -116,6 +126,15 @@ public class RecyclerViewDecorationTestActivity extends BaseActivity {
     }
 
     private void addTestData(List<Item> items) {
+        for(int i=0 ,size = Test.URLS.length ; i<size ;i++){
+            items.add(new Item(Test.URLS[i]));
+        }
+        items.add(new Item(Test.URLS[0]));
+        for(int i=0 ,size = Test.URLS.length ; i<size ;i++){
+            items.add(new Item(Test.URLS[i]));
+        }
+        items.add(new Item(Test.URLS[0]));
+
         for(int i=0 ,size = Test.URLS.length ; i<size ;i++){
             items.add(new Item(Test.URLS[i]));
         }

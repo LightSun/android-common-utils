@@ -44,6 +44,15 @@
             android:name=".QuickSwipeListViewAdapterTestActivity"
             >
         </activity>
+        <activity
+            android:name=".third_sdk.PayDemoActivity"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="xxxxxxxxxxxxxxx"/> <!--微信id,支付必须配置-->
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

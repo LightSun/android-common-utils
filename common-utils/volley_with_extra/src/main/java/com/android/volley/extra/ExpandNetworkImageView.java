@@ -26,7 +26,6 @@ import com.android.volley.toolbox.ImageLoader.ImageListener;
  * associated request. <li>based on volley NetWorkImageView <li>note method:
  * {@linkplain #setDefaultImageResId(int)},
  * {@linkplain #setErrorImageResId(int)} ,
- * {@linkplain #setImageParam(ImageParam)},
  * {@linkplain #setImageUrl(String, ImageLoader)}
  * 
  * @author heaven7
@@ -724,10 +723,6 @@ public class ExpandNetworkImageView extends ImageView {
 		mMutateBackground = mutate;
 		updateBackgroundDrawableAttrs(true);
 		invalidate();
-	}
-	
-	public static interface LoadListener{
-		
 	}
 
 }

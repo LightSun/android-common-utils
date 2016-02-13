@@ -148,7 +148,7 @@ ListView同理。
 common-util
 ``` java
 dependencies {
-     compile 'org.heaven7.core:commonutil:1.8.0'
+     compile 'org.heaven7.core:commonutil:1.8.1'
 }
 ```
 view lib -> common-view

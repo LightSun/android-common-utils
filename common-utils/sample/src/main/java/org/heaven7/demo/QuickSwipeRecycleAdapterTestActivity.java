@@ -102,7 +102,7 @@ public class QuickSwipeRecycleAdapterTestActivity extends BaseActivity {
                 return super.getItemLayoutId(position, item);
             }
 
-            @Override
+            @Override //if you want multi menu. override this
             protected int getItemMenuLayoutId(int position, int itemLayoutId, Item item) {
                 return super.getItemMenuLayoutId(position, itemLayoutId, item);
             }

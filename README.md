@@ -148,7 +148,7 @@ ListView同理。
 common-util (已包含volley扩展库：volley_with_extra)
 ``` java
 dependencies {
-     compile 'org.heaven7.core:commonutil:1.8.1'
+     compile 'org.heaven7.core:commonutil:1.8.2'
 }
 ```
 view lib -> common-view
@@ -163,7 +163,7 @@ volley及其扩展库
 expand volley lib - > volley_with_extra
 ``` java
 dependencies {
-    compile 'com.heaven7.volley:volley_with_extra:1.0'
+    compile 'com.heaven7.volley:volley_with_extra:1.0.1'
 }
 ```
 

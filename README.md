@@ -145,10 +145,10 @@ ListView同理。
 
 ## How to use ? 
 
-common-util
+common-util (已包含volley扩展库：volley_with_extra)
 ``` java
 dependencies {
-     compile 'org.heaven7.core:commonutil:1.8.0'
+     compile 'org.heaven7.core:commonutil:1.8.1'
 }
 ```
 view lib -> common-view

@@ -172,7 +172,7 @@ third sdk lib - > third_sdks
 
 ``` java
 dependencies {
-    compile 'com.heaven7.third_sdks:third_sdks:1.0'
+    compile 'com.heaven7.third_sdks:third_sdks:1.0.2'
 }
 ```
 

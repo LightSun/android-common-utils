@@ -17,6 +17,7 @@
 package org.heaven7.core.adapter;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -304,7 +305,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
     }
 
     /** if you use multi item ,override this */
-    protected int getItemLayoutId(int position,T t) {
+    protected @LayoutRes int getItemLayoutId(int position,T t) {
         return mLayoutId;
     }
 

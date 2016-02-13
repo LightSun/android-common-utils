@@ -1,3 +1,5 @@
 
 
 1, swipelistview have bugs . so it is Deprecated.
+
+2. com.baidu.location.a that does't come with an associated enclosingMethod attribute 有重复的jar

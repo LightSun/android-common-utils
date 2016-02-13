@@ -32,4 +32,5 @@ public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
     public int getItemPosition(Object object) {
         return POSITION_NONE;
     }
+
 }

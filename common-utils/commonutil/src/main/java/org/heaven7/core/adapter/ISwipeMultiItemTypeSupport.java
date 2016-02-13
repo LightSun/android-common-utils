@@ -8,7 +8,7 @@ package org.heaven7.core.adapter;
 public interface ISwipeMultiItemTypeSupport<T>  extends MultiItemTypeSupport<T>{
 
     /**
-     * get the menu layout id o
+     * get the menu layout id
      * @param position the position
      * @param mainLayoutId the layout id of main  item
      * @param t  the T

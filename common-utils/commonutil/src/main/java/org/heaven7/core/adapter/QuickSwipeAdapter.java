@@ -45,12 +45,24 @@ public abstract class QuickSwipeAdapter<T extends ISelectable> extends
 	 * initialization data.
 	 * @param layoutResId
 	 *            The layout resource id of each item.
+	 * @param menuLayoutId the menulayout id of swipe
 	 * @param data
 	 *            A new list is created out of this one to avoid mutable list
 	 */
 	public QuickSwipeAdapter(int layoutResId,int menuLayoutId, List<T> data) {
 		this(layoutResId, menuLayoutId  ,data, ISelectable.SELECT_MODE_SINGLE);
 	}
+	/**
+	 * Same as QuickAdapter#QuickAdapter(Context,int) but with some
+	 * initialization data.
+	 * @param layoutResId
+	 *            The layout resource id of each item.
+	 * @param menuLayoutId the menulayout id of swipe
+	 * @param data
+	 *            A new list is created out of this one to avoid mutable list
+	 * @param selectMode  the select mode, see {@link ISelectable#SELECT_MODE_MULTI}
+	 *                       and  {@link ISelectable#SELECT_MODE_SINGLE}
+	 */
 	public QuickSwipeAdapter(int layoutResId,int menuLayoutId, List<T> data, int selectMode) {
 		super(layoutResId, data, selectMode);
 		this.mMenuLayoutId = menuLayoutId;

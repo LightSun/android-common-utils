@@ -19,9 +19,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * this is moved to module/lib: volley_with_eatra
  * Created by heaven7 on 2015/8/12.
  */
-@Deprecated  //this is moved to module/lib: volley_with_eatra
+@Deprecated
 public class VolleyUtil {
 
     private static final String TAG = "VolleyUtil";

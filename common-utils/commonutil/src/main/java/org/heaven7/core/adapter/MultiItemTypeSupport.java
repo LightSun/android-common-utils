@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 package org.heaven7.core.adapter;
+
+import android.support.annotation.LayoutRes;
+
 /**
  * used to multi item support. such as: Listview contains two items
  * @author heaven7
@@ -22,8 +25,8 @@ package org.heaven7.core.adapter;
  * @param <T>
  */
 public interface MultiItemTypeSupport<T> {
-	
-	int getLayoutId(int position, T t);
+
+	@LayoutRes int getLayoutId(int position, T t);
 
 	int getViewTypeCount();
 

@@ -50,6 +50,7 @@ public abstract class QuickRecycleViewSwipeAdapter<T extends ISelectable>
      * create QuickRecycleViewAdapter with the layout id. if layoutId==0, the method
      * {@link #getItemLayoutId(int, ISelectable)} will be called.
      * @param layoutId the layout id you want to inflate, or 0 if you want multi item.
+     * @param menuLayoutId the menulayout id of swipe
      * @param mDatas the datas
      */
     public QuickRecycleViewSwipeAdapter(int layoutId,int menuLayoutId, List<T> mDatas) {
@@ -59,7 +60,8 @@ public abstract class QuickRecycleViewSwipeAdapter<T extends ISelectable>
      * create QuickRecycleViewAdapter with the layout id. if layoutId==0, the method
      * {@link #getItemLayoutId(int, ISelectable)} will be called.
      * @param layoutId the layout id you want to inflate, or 0 if you want multi item.
-     * @param mDatas
+     * @param menuLayoutId the menulayout id of swipe
+     * @param mDatas the data
      * @param selectMode  select mode
      */
     public QuickRecycleViewSwipeAdapter(int layoutId,int menuLayoutId ,List<T> mDatas, int selectMode) {
@@ -146,7 +148,7 @@ public abstract class QuickRecycleViewSwipeAdapter<T extends ISelectable>
         return SwipeHelper.EDGE_RIGHT;
     }
     /** if you use multi item ,override this */
-    protected int getItemMenuLayoutId(int position, int itemLayoutId, T t) {
+    protected  @LayoutRes int getItemMenuLayoutId(int position, int itemLayoutId, T t) {
         return mMenuLayoutId;
     }
 

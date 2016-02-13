@@ -23,7 +23,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.1.0'
     compile "com.android.support:gridlayout-v7:22.1.0"
     compile 'com.android.support:recyclerview-v7:22.1.0'
-    compile 'com.heaven7.volley:volley_with_extra:1.0'
+    compile 'com.heaven7.volley:volley_with_extra:1.0.1'
 }
 
 //apply from: "https://raw.githubusercontent.com/xiaopansky/android-library-publish-to-jcenter/master/bintrayUpload.gradle"

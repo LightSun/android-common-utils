@@ -37,7 +37,8 @@
         <!-- alipay sdk end -->
 
         <!-- qq login -->
-        <activity
+     <!--   这个只能自己在manifest中配置了
+     <activity
             android:name="com.tencent.tauth.AuthActivity"
             android:launchMode="singleTask"
             android:noHistory="true" >
@@ -45,10 +46,11 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="tencent1104668213" />
-                <!-- 100380359 100381104 222222 -->
+                <data android:scheme="tencent1104668213" /> &lt;!&ndash; 每个app都不一样 &ndash;&gt;
+                &lt;!&ndash; 100380359 100381104 222222 &ndash;&gt;
             </intent-filter>
         </activity>
+        -->
 
         <activity
             android:name="com.tencent.connect.common.AssistActivity"

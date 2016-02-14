@@ -31,6 +31,20 @@ public class LoginShareDemo extends BaseActivity {
         initConfig();
     }
 
+    /*
+     *  关于qq登陆必须配置的activity. 只能自己配置了.
+     *  <activity
+     android:name="com.tencent.tauth.AuthActivity"
+     android:launchMode="singleTask"
+     android:noHistory="true" >
+     <intent-filter>
+     <action android:name="android.intent.action.VIEW" />
+     <category android:name="android.intent.category.DEFAULT" />
+     <category android:name="android.intent.category.BROWSABLE" />
+     <data android:scheme="tencent1104668213" /> //  每个app都不一样
+     </intent-filter>
+     </activity>
+     */
     private void initConfig() {
         SdkFactory.ShareConfig.sQq_app_id = "xxx";
         SdkFactory.ShareConfig.sWeixin_app_Id = "xxx";

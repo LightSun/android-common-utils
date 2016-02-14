@@ -53,6 +53,23 @@
                 <data android:scheme="xxxxxxxxxxxxxxx"/> <!--微信id,支付必须配置-->
             </intent-filter>
         </activity>
+
+        <!-- begin qq login  -->
+
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="tencent1104668213" /> <!--每个app都不一样,你需要修改为tencent+自己app id -->
+            </intent-filter>
+        </activity>
+
+        <!-- end qq login -->
+
     </application>
 
 </manifest>

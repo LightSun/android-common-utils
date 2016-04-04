@@ -443,6 +443,22 @@ public class SlidingTabLayout extends HorizontalScrollView {
         /** return true  while init title  success! */
        boolean onInitTitle(int position, TextView title);
     }
+
+    public static abstract class SlidingPageChangeListener implements ViewPager.OnPageChangeListener{
+        boolean ignore;
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            if(!ignore){
+                onPageSelected(position);
+            }
+        }
+        @Override
+        public void onPageScrollStateChanged(int state) {
+            ignore = state == ViewPager.SCROLL_STATE_SETTLING;
+        }
+    }
+
+
     /*
      *
      private void initSlidingTabLayout() {

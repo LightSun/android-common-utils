@@ -34,7 +34,8 @@ import java.util.List;
  * @param <T>  the data
  * @since 1.8.0
  */
-public abstract class QuickRecycleViewSwipeAdapter<T extends ISelectable>
+@Deprecated //bugs
+/*public*/ abstract class QuickRecycleViewSwipeAdapter<T extends ISelectable>
         extends QuickRecycleViewAdapter<T>{
 
     private static final int MAX_VIEW_TYPE = 0;

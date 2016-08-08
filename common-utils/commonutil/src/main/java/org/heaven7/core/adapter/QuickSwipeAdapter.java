@@ -34,7 +34,8 @@ import java.util.List;
  *            The type of the items in the list.
  * @since 1.8.0
  */
-public abstract class QuickSwipeAdapter<T extends ISelectable> extends
+@Deprecated //bugs
+/*public*/ abstract class QuickSwipeAdapter<T extends ISelectable> extends
 		BaseQuickAdapter<T, BaseSwipeAdapterHelper> {
 
 	private final SimpleSwipeStateChangeListener mSwipeListener = new SimpleSwipeStateChangeListener();

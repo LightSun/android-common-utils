@@ -1,5 +1,6 @@
 package org.heaven7.core.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.v4.view.ViewCompat;
@@ -14,6 +15,10 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
+import org.heaven7.core.util.Cacher;
+
+import java.lang.ref.WeakReference;
 
 /**
  * 支持左滑右滑菜单
@@ -35,6 +40,42 @@ public class SwipeHelper {
 
     private final int mMainLayoutId;
     private final int mMenuLayoutId;
+
+    // here resolve the problem : while swipe in adapter. the  outmost view can't reuse. so just cache some. and reuse item and menu view.
+    // or else will cause bug
+    private static final Cacher<WeakReference<DragFrameLayout>,Context> sCacher = new Cacher<WeakReference<DragFrameLayout>, Context>(5) {
+        @Override
+        public WeakReference<DragFrameLayout> create(Context context) {
+            return new WeakReference<>(new DragFrameLayout(context));
+        }
+
+        @Override
+        public WeakReference<DragFrameLayout> obtain(Context context) {
+            WeakReference<DragFrameLayout>  wrf = super.obtain(context);
+            if( wrf != null && wrf.get() != null){
+               Context oldContext =  wrf.get().getContext();
+                if(oldContext == null || (oldContext instanceof Activity  &&  context instanceof Activity
+                        && oldContext != context)  ) {
+                    // invalid
+                    return super.obtain(context);
+                }
+            }
+            return wrf;
+        }
+
+        @Override
+        public void recycle(WeakReference<DragFrameLayout> wrf) {
+            if(wrf != null && wrf.get() != null){
+                Context oldContext =  wrf.get().getContext();
+                //no need recycle
+                if(oldContext == null || (oldContext instanceof Activity &&
+                        ((Activity) oldContext).isFinishing())){
+                     return;
+                }
+                super.recycle(wrf);
+            }
+        }
+    };
 
     /**
      * called on swipe state change
@@ -80,7 +121,7 @@ public class SwipeHelper {
         mItemView.open();
     }
     public boolean isOpen() {
-        return mItemView.state == STATE_OPNE;
+        return mItemView.mState == STATE_OPNE;
     }
 
     public View getItemView(){
@@ -95,6 +136,10 @@ public class SwipeHelper {
     public void setOnSwipeStateChangeListener(OnSwipeStateChangeListener l){
         this.mItemView.setOnSwipeStateChangeListener(l);
     }
+
+ /*   public View obtainItemView(){
+
+    }*/
 
     public static class BaseSwipeViewHolder extends RecyclerView.ViewHolder{
 
@@ -128,16 +173,16 @@ public class SwipeHelper {
         private static final String TAG = "DragFrameLayout";
         private ViewDragHelper mDragHelper;
 
-        private View topView;   //主view
-        private View bgView;    //菜单view
+         View mMainView;    //主view
+         View mMenuView;    //菜单view
         /*** 左侧起点*/
-        private int viewX;
+        private int mLeftStartX;
         /*** 背景大小*/
-        private int bgWidth;
+        private int mMenuWidth;
         /*** 默认右滑菜单*/
         private int mTrackingEdges = EDGE_RIGHT;
         /*** 当前是否打开*/
-        protected int state = STATE_CLOSE;
+        protected int mState = STATE_CLOSE;
 
         private OnSwipeStateChangeListener mSwipeListener;
         private int mTouchSlop;
@@ -157,19 +202,21 @@ public class SwipeHelper {
             init();
         }
 
-        public void initView(View topView, View bgView) {
-            viewX = 0;
-            this.topView = topView;
-            this.bgView = bgView;
-            addView(createBgView(bgView));
-            addView(topView);
+        public void initView(View mainView, View menuView) {
+            mLeftStartX = 0;
+            this.mMainView = mainView;
+            this.mMenuView = menuView;
+            //remove previous
+            removeAllViews();
+            addView(createBgView(menuView));
+            addView(mainView);
         }
 
         @Override
         protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             if (widthMeasureSpec != 0) {
-                bgWidth = bgView.getWidth();
+                mMenuWidth = mMenuView.getWidth();
             }
         }
 
@@ -196,27 +243,27 @@ public class SwipeHelper {
 
             @Override
             public boolean tryCaptureView(View child, int pointerId) {
-                return child == topView;
+                return child == mMainView;
             }
 
             @Override
             public void onEdgeDragStarted(int edgeFlags, int pointerId) {
               //  Logger.i(TAG,"---- onEdgeDragStarted ------");
-                mDragHelper.captureChildView(topView, pointerId);
-                if (bgWidth != 0)
-                    bgView.setVisibility(View.GONE);
+                mDragHelper.captureChildView(mMainView, pointerId);
+                if (mMenuWidth != 0)
+                    mMenuView.setVisibility(View.GONE);
 
             }
 
             @Override
             public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
              //   Logger.i(TAG,"---- onViewPositionChanged : dx = " + dx);
-                if (left != viewX) {
-                    if (bgView.getVisibility() == View.GONE)
-                        bgView.setVisibility(View.VISIBLE);
+                if (left != mLeftStartX) {
+                    if (mMenuView.getVisibility() == View.GONE)
+                        mMenuView.setVisibility(View.VISIBLE);
                 } else {
-                    if (bgView.getVisibility() == View.VISIBLE)
-                        bgView.setVisibility(View.GONE);
+                    if (mMenuView.getVisibility() == View.VISIBLE)
+                        mMenuView.setVisibility(View.GONE);
 
                 }
                invalidate();
@@ -226,28 +273,28 @@ public class SwipeHelper {
             public void onViewReleased(View releasedChild, float xvel, float yvel) {
                 super.onViewReleased(releasedChild, xvel, yvel);
              //   Logger.i(TAG, "---- onViewReleased ------");
-                if (releasedChild != topView)
+                if (releasedChild != mMainView)
                     return;
 
                 int newLeft;
                 if (mTrackingEdges == EDGE_LEFT) {
-                    if (topView.getLeft() < mTouchSlop || state == STATE_OPNE) {
-                        newLeft = viewX;
+                    if (mMainView.getLeft() < mTouchSlop || mState == STATE_OPNE) {
+                        newLeft = mLeftStartX;
                         changeSwipeState(STATE_CLOSE);
                     } else {
-                        newLeft = bgWidth;
+                        newLeft = mMenuWidth;
                         changeSwipeState(STATE_OPNE);
                     }
                 } else {
-                    if (topView.getLeft() > - mTouchSlop || state == STATE_OPNE) {
-                        newLeft = viewX;
+                    if (mMainView.getLeft() > - mTouchSlop || mState == STATE_OPNE) {
+                        newLeft = mLeftStartX;
                         changeSwipeState(STATE_CLOSE);
                     } else {
-                        newLeft = -1 * bgWidth;
+                        newLeft = -1 * mMenuWidth;
                         changeSwipeState(STATE_OPNE);
                     }
                 }
-                if (mDragHelper.smoothSlideViewTo(topView, newLeft, 0)) {
+                if (mDragHelper.smoothSlideViewTo(mMainView, newLeft, 0)) {
                     ViewCompat.postInvalidateOnAnimation(DragFrameLayout.this);
                 }
                 invalidate();
@@ -263,31 +310,31 @@ public class SwipeHelper {
             @Override
             public int clampViewPositionHorizontal(View child, int left, int dx) {
                 if (mTrackingEdges == EDGE_LEFT) {
-                    if (left > bgWidth && dx > 0) return bgWidth;
+                    if (left > mMenuWidth && dx > 0) return mMenuWidth;
                     if (left < 0 && dx < 0) return 0;
                 } else {
                     if (left > 0 && dx > 0) return 0;
-                    if (left < -bgWidth && dx < 0) return -bgWidth;
+                    if (left < -mMenuWidth && dx < 0) return -mMenuWidth;
                 }
                 return left;
             }
 
             @Override
             public int getViewHorizontalDragRange(View child) {
-                return topView == child ? child.getWidth() : 0;
+                return mMainView == child ? child.getWidth() : 0;
             }
 
             @Override
             public int getViewVerticalDragRange(View child) {
-                return topView == child ? child.getHeight() : 0;
+                return mMainView == child ? child.getHeight() : 0;
             }
         }
 
         @Override
         public boolean onInterceptTouchEvent(MotionEvent ev) {
            // Logger.i(TAG, "---- onInterceptTouchEvent : MotionEvent = " + ev.toString());
-            if (state == STATE_CLOSE)
-                bgView.setVisibility(View.GONE);
+            if (mState == STATE_CLOSE)
+                mMenuView.setVisibility(View.GONE);
             return mDragHelper.shouldInterceptTouchEvent(ev);
         }
 
@@ -315,8 +362,8 @@ public class SwipeHelper {
         @Override
         public void open() {
             changeSwipeState(STATE_OPNE);
-            int newLeft = (mTrackingEdges == EDGE_LEFT ? bgWidth : -1 * bgWidth);
-            if (mDragHelper.smoothSlideViewTo(topView, newLeft, 0)) {
+            int newLeft = (mTrackingEdges == EDGE_LEFT ? mMenuWidth : -1 * mMenuWidth);
+            if (mDragHelper.smoothSlideViewTo(mMainView, newLeft, 0)) {
                 ViewCompat.postInvalidateOnAnimation(DragFrameLayout.this);
             }
             invalidate();
@@ -324,26 +371,32 @@ public class SwipeHelper {
 
         @Override
         public boolean isOpened() {
-            return state == STATE_OPNE;
+            return mState == STATE_OPNE;
         }
 
         @Override
         public void close() {
             changeSwipeState(STATE_CLOSE);
-            if (mDragHelper.smoothSlideViewTo(topView, viewX, 0)) {
+            if (mDragHelper.smoothSlideViewTo(mMainView, mLeftStartX, 0)) {
                 ViewCompat.postInvalidateOnAnimation(DragFrameLayout.this);
             }
             invalidate();
         }
 
         void changeSwipeState(int newSwipeState){
-            state = newSwipeState;
+            mState = newSwipeState;
             if(mSwipeListener!=null){
                 mSwipeListener.onSwipeStateChange(this,newSwipeState);
             }
         }
         public void setOnSwipeStateChangeListener(OnSwipeStateChangeListener l){
             this.mSwipeListener  = l;
+        }
+
+        @Override
+        protected void onDetachedFromWindow() {
+            sCacher.recycle(new WeakReference<>(this));
+            super.onDetachedFromWindow();
         }
     }
 

@@ -200,6 +200,9 @@ public class SlidingTabLayout extends HorizontalScrollView {
     public void setDrawHorizontalIndicator(boolean drawHorizontalIndicator){
         mTabStrip.setDrawHorizontalIndicator(drawHorizontalIndicator);
     }
+    public void setDrawVerticalIndicator(boolean drawVerticalIndicator){
+        mTabStrip.setDrawVerticalIndicator(drawVerticalIndicator);
+    }
 
     public List<TextView> getTitleTextViews(){
         return mTitleTextViews;

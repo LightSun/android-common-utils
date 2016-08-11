@@ -59,11 +59,12 @@ public class SlidingTabLayout extends HorizontalScrollView {
     public interface TabColorizer {
 
         /**
+         * @param position the position
          * @return return the color of the indicator used when {@code position} is selected.
          */
         int getIndicatorColor(int position);
 
-        /**
+        /**@param position the position
          * @return return the color of the divider drawn to the right of {@code position}.
          */
         int getDividerColor(int position);
@@ -177,7 +178,9 @@ public class SlidingTabLayout extends HorizontalScrollView {
     public void setDrawBottomUnderLine(boolean draw){
         mTabStrip.mDrawBottomUnderline = draw;
     }
-    /** set the select text color and unselect text color. */
+    /** set the select text color and unselect text color.
+     * @param selectColor the color of select
+     * @param unSelectColor the color of unselect*/
     public void setSelectRelativeTextColors(int selectColor, int unSelectColor) {
         mSelectTextColor = selectColor;
         mUnSelectTextColor = unSelectColor;
@@ -193,6 +196,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
      * If you only require simple custmisation then you can use
      * {@link #setSelectedIndicatorColors(int...)} and {@link #setDividerColors(int...)} to achieve
      * similar effects.
+     * @param tabColorizer the Tab Colorizer
      */
     public void setCustomTabColorizer(TabColorizer tabColorizer) {
         mTabStrip.setCustomTabColorizer(tabColorizer);
@@ -211,6 +215,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
     /**
      * Sets the colors to be used for indicating the selected tab. These colors are treated as a
      * circular array. Providing one color will mean that all tabs are indicated with the same color.
+     * @param colors the colors
      */
     public void setSelectedIndicatorColors(int... colors) {
         mTabStrip.setSelectedIndicatorColors(colors);
@@ -219,6 +224,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
     /**
      * Sets the colors to be used for tab dividers. These colors are treated as a circular array.
      * Providing one color will mean that all tabs are indicated with the same color.
+     * @param colors the colors
      */
     public void setDividerColors(int... colors) {
         mTabStrip.setDividerColors(colors);
@@ -230,6 +236,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
      * that the layout can update it's scroll position correctly.
      *
      * @see ViewPager#setOnPageChangeListener(ViewPager.OnPageChangeListener)
+     * @param listener the listener
      */
     public void setOnPageChangeListener(ViewPager.OnPageChangeListener listener) {
         mViewPagerPageChangeListener = listener;
@@ -249,6 +256,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
     /**
      * Sets the associated view pager. Note that the assumption here is that the pager content
      * (number of tabs and tab titles) does not change after this call has been made.
+     * @param viewPager the view pager
      */
     public void setViewPager(ViewPager viewPager) {
         mTabStrip.removeAllViews();
@@ -260,9 +268,10 @@ public class SlidingTabLayout extends HorizontalScrollView {
         }
     }
 
-    /**
+    /*
      * Create a default view to be used for tabs. This is called if a custom tab view is not set via
      * {@link #setCustomTabView(int, int)}.
+     *
      */
     protected TextView createDefaultTabView(Context context) {
         TextView textView = new TextView(context);
@@ -443,7 +452,13 @@ public class SlidingTabLayout extends HorizontalScrollView {
      * this must be called
      */
     public interface OnInitTitleListener{
-        /** return true  while init title  success! */
+
+        /**
+         * init title
+         * @param position  the position of this tab
+         * @param title the tab text/title
+         * @return  true  while init title  success!
+         */
        boolean onInitTitle(int position, TextView title);
     }
 

@@ -13,10 +13,10 @@ import android.widget.EditText;
 
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 
-/**
+/*
  * usage like this:
  *
- * <pre>
+ * <p>
  <com.yyh.singcat.view.PasswordInputView
  android:id="@+id/password_input_view"
  android:layout_width="match_parent"
@@ -34,7 +34,7 @@ import static android.graphics.Paint.ANTI_ALIAS_FLAG;
  app:piv_passwordColor="@color/mublack"
  app:piv_passwordWidth="@dimen/custom_ev_password_width"
  />
- </pre>
+ </p>
  */
 public class PasswordInputView extends EditText {
     

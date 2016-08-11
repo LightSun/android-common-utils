@@ -251,6 +251,7 @@ public class BadgeView extends TextView {
      * an integer value, its label will be set to "0".
      * 
      * @param offset the increment offset.
+	 * @return new number
      */
 	public int increment(int offset) {
 		CharSequence txt = getText();
@@ -274,6 +275,7 @@ public class BadgeView extends TextView {
      * an integer value, its label will be set to "0".
      * 
      * @param offset the decrement offset.
+	 *               @return new number
      */
 	public int decrement(int offset) {
 		return increment(-offset);
@@ -363,7 +365,7 @@ public class BadgeView extends TextView {
 	
 	/**
      * Returns the vertical margin from the target View that is applied to this badge.
-     * 
+     * @return the vertical margin
      */
 	public int getVerticalBadgeMargin() {
 		return badgeMarginV;

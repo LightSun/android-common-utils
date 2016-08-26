@@ -331,10 +331,20 @@ public class SlidingTabLayout extends HorizontalScrollView {
             }
 
             if(!initSuccess) {
-                if (tabTitleView == null && TextView.class.isInstance(tabView)) {
-                    tabTitleView = (TextView) tabView;
-                    tabTitleView.setText(adapter.getPageTitle(i));
+                if(tabTitleView == null){
+                    if( TextView.class.isInstance(tabView)){
+                        tabTitleView = (TextView) tabView;
+                    }else{
+                        throw new IllegalStateException("tabView not intanceof TextView");
+                    }
                 }
+                tabTitleView.setText(adapter.getPageTitle(i));
+                /*if (tabTitleView == null && TextView.class.isInstance(tabView)) {
+                    if( TextView.class.isInstance(tabView)) {
+                        tabTitleView = (TextView) tabView;
+                        tabTitleView.setText(adapter.getPageTitle(i));
+                    }
+                }*/
             }
 
             tabView.setOnClickListener(tabClickListener);

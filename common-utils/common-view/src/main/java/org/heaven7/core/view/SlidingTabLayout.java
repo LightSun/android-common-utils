@@ -405,8 +405,8 @@ public class SlidingTabLayout extends HorizontalScrollView {
                 mViewPagerPageChangeListener.onPageScrolled(position, positionOffset,
                         positionOffsetPixels);
             }
-            if(mSelectPosition != position)
-                mSelectPosition = position;
+            /*if(mSelectPosition != position)
+                mSelectPosition = position;*/
         }
 
         @Override

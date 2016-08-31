@@ -110,6 +110,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
     private List<TextView> mTitleTextViews;
     private OnTabListener mInternalTabListener;
     private OnInitTitleListener mInitTitleListener;
+    private OnPopulateListener mPopulateListener;
 
     private int mSelectTextColor;
     private int mUnSelectTextColor;
@@ -140,6 +141,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
     }
 
     public void setSplitWidthEquality(boolean splitEquality){
+        //this.mSplitEquality = splitEquality;
         if(splitEquality){
             mTabStrip.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
@@ -153,6 +155,13 @@ public class SlidingTabLayout extends HorizontalScrollView {
                 }
             });
         }
+    }
+
+    public OnPopulateListener getPopulateListener() {
+        return mPopulateListener;
+    }
+    public void setOnPopulateListener(OnPopulateListener mPopulateListener) {
+        this.mPopulateListener = mPopulateListener;
     }
 
     public void toogleSelect(int position) {
@@ -305,7 +314,8 @@ public class SlidingTabLayout extends HorizontalScrollView {
         if(mTitleTextViews!=null)
             mTitleTextViews.clear();
 
-        for (int i = 0; i < adapter.getCount(); i++) {
+        final int count = adapter.getCount();
+        for (int i = 0; i < count; i++) {
             View tabView = null;
             TextView tabTitleView = null;
 
@@ -350,6 +360,9 @@ public class SlidingTabLayout extends HorizontalScrollView {
             tabView.setOnClickListener(tabClickListener);
 
             mTabStrip.addView(tabView);
+            if(mPopulateListener != null){
+                mPopulateListener.onPopulateTab(this, i,tabView, tabTitleView);
+            }
         }
     }
 
@@ -484,6 +497,9 @@ public class SlidingTabLayout extends HorizontalScrollView {
         public void onPageScrollStateChanged(int state) {
             ignore = state == ViewPager.SCROLL_STATE_SETTLING;
         }
+    }
+    public interface OnPopulateListener {
+        void onPopulateTab(SlidingTabLayout stl, int position, View itemView, TextView tabview);
     }
 
 

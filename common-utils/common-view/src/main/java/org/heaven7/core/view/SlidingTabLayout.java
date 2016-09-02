@@ -360,8 +360,11 @@ public class SlidingTabLayout extends HorizontalScrollView {
             tabView.setOnClickListener(tabClickListener);
 
             mTabStrip.addView(tabView);
+            if(mSelectTextColor != 0){
+                tabTitleView.setTextColor( i == 0 ? mSelectTextColor : mUnSelectTextColor);
+            }
             if(mPopulateListener != null){
-                mPopulateListener.onPopulateTab(this, i,tabView, tabTitleView);
+                mPopulateListener.onPopulateTab(this, i, count ,tabView, tabTitleView);
             }
         }
     }
@@ -499,7 +502,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
         }
     }
     public interface OnPopulateListener {
-        void onPopulateTab(SlidingTabLayout stl, int position, View itemView, TextView tabview);
+        void onPopulateTab(SlidingTabLayout stl, int position, int count, View itemView, TextView tabview);
     }
 
 

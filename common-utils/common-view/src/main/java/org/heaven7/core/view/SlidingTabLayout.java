@@ -147,8 +147,9 @@ public class SlidingTabLayout extends HorizontalScrollView {
                 @Override
                 public boolean onPreDraw() {
                     //let child split width
+                    final int width = getMeasuredWidth();
                     for (int i = 0, size = mTabStrip.getChildCount(); i < size; i++) {
-                        mTabStrip.getChildAt(i).getLayoutParams().width = getWidth() / size;
+                        mTabStrip.getChildAt(i).getLayoutParams().width = width / size;
                     }
                     mTabStrip.getViewTreeObserver().removeOnPreDrawListener(this);
                     return true;

@@ -26,7 +26,6 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
@@ -140,9 +139,13 @@ public class SlidingTabLayout extends HorizontalScrollView {
         addView(mTabStrip, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
     }
 
+    /**
+     * you should use the weight of {@link android.widget.LinearLayout}
+     * @param splitEquality true to equality
+     */
+    @Deprecated
     public void setSplitWidthEquality(boolean splitEquality){
-        //this.mSplitEquality = splitEquality;
-        if(splitEquality){
+        /*if(splitEquality){
             mTabStrip.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
@@ -155,7 +158,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
                     return true;
                 }
             });
-        }
+        }*/
     }
 
     public OnPopulateListener getPopulateListener() {

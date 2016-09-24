@@ -1,6 +1,8 @@
 package org.heaven7.core.view;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -13,10 +15,42 @@ public class FlowLayout extends ViewGroup {
 
     private static final String TAG = "FlowLayout";
     private static final boolean sDebug = false;
-
+    private int mMaxLine = Integer.MAX_VALUE;
 
     public FlowLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(context, attrs);
+    }
+
+    public FlowLayout(Context context) {
+        super(context);
+        init(context, null);
+    }
+
+    public FlowLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(context, attrs);
+    }
+
+    @TargetApi(21)
+    public FlowLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        init(context, attrs);
+    }
+
+    private void init(Context context, AttributeSet attrs) {
+        if (attrs != null) {
+            final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FlowLayout);
+            this.mMaxLine = a.getInt(a.getIndex(R.styleable.FlowLayout_maxLine), Integer.MAX_VALUE);
+            a.recycle();
+        }
+    }
+
+    public void setMaxLine(int maxLine) {
+        if (maxLine > 0 && maxLine != mMaxLine) {
+            this.mMaxLine = maxLine;
+            requestLayout();
+        }
     }
 
     @Override
@@ -49,7 +83,7 @@ public class FlowLayout extends ViewGroup {
         int modeWidth = MeasureSpec.getMode(widthMeasureSpec);
         int modeHeight = MeasureSpec.getMode(heightMeasureSpec);
 
-        if(sDebug)
+        if (sDebug)
             Log.e(TAG, sizeWidth + "," + sizeHeight);
 
         // 如果是warp_content情况下，记录宽和高
@@ -65,6 +99,9 @@ public class FlowLayout extends ViewGroup {
         int lineHeight = 0;
 
         int cCount = getChildCount();
+
+        int rows = 1;
+        boolean limited = false;  //限制多行
 
         // 遍历每个子元素
         for (int i = 0; i < cCount; i++) {
@@ -84,15 +121,25 @@ public class FlowLayout extends ViewGroup {
              * 如果加入当前child，则超出最大宽度，则的到目前最大宽度给width，类加height 然后开启新行
              */
             if (lineWidth + childWidth > sizeWidth) {
-                width = Math.max(lineWidth, childWidth);// 取最大的
-                lineWidth = childWidth; // 重新开启新行，开始记录
-                // 叠加当前高度，
-                height += lineHeight;
-                // 开启记录下一行的高度
-                lineHeight = childHeight;
-            } else
-            // 否则累加值lineWidth,lineHeight取最大高度
-            {
+                if(!limited) {
+                    width = Math.max(lineWidth, childWidth);// 取最大的
+                    lineWidth = childWidth; // 重新开启新行，开始记录
+                    // 叠加当前高度，
+                    height += lineHeight;
+                    // 开启记录下一行的高度
+                    lineHeight = childHeight;
+
+                    rows ++;
+                    if (rows == mMaxLine) {
+                        limited = true;
+                    }
+                }else{
+                    width = Math.max(width, lineWidth);
+                    height += lineHeight;
+                    break;
+                }
+            } else {
+                //否则累加值lineWidth,lineHeight取最大高度
                 lineWidth += childWidth;
                 lineHeight = Math.max(lineHeight, childHeight);
             }
@@ -101,17 +148,11 @@ public class FlowLayout extends ViewGroup {
                 width = Math.max(width, lineWidth);
                 height += lineHeight;
             }
-
         }
         setMeasuredDimension(
-                (modeWidth == MeasureSpec.EXACTLY) ? sizeWidth : width ,
-                (modeHeight == MeasureSpec.EXACTLY) ? sizeHeight : height );
+                (modeWidth == MeasureSpec.EXACTLY) ? sizeWidth : width,
+                (modeHeight == MeasureSpec.EXACTLY) ? sizeHeight : height);
 
-    }
-
-    @Override
-    public void addView(View child) {
-        super.addView(child);
     }
 
     /**
@@ -174,7 +215,7 @@ public class FlowLayout extends ViewGroup {
             // 当前行的最大高度
             lineHeight = mLineHeight.get(i);
 
-            if(sDebug) {
+            if (sDebug) {
                 Log.e(TAG, "第" + i + "行 ：" + lineViews.size() + " , " + lineViews);
                 Log.e(TAG, "第" + i + "行， ：" + lineHeight);
             }
@@ -194,9 +235,9 @@ public class FlowLayout extends ViewGroup {
                 int rc = lc + child.getMeasuredWidth();
                 int bc = tc + child.getMeasuredHeight();
 
-                if(sDebug)
-                     Log.e(TAG, child + " , l = " + lc + " , t = " + t + " , r ="
-                             + rc + " , b = " + bc);
+                if (sDebug)
+                    Log.e(TAG, child + " , l = " + lc + " , t = " + t + " , r ="
+                            + rc + " , b = " + bc);
 
                 child.layout(lc, tc, rc, bc);
 

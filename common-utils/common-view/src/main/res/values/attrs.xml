@@ -17,4 +17,9 @@
         <attr name="ep_borderWidth"  format="reference|dimension"/>
         <attr name="ep_duration"  format="reference|integer"/>
     </declare-styleable>
+
+    <declare-styleable name="FlowLayout">
+        <attr name="maxLine"  format="reference|integer"/>
+    </declare-styleable>
+
 </resources>

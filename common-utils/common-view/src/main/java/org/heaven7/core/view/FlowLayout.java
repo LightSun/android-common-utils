@@ -16,6 +16,7 @@ public class FlowLayout extends ViewGroup {
     private static final String TAG = "FlowLayout";
     private static final boolean sDebug = false;
     private int mMaxLine = Integer.MAX_VALUE;
+    private boolean mHasMoreByMaxLine;
 
     public FlowLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -51,6 +52,14 @@ public class FlowLayout extends ViewGroup {
             this.mMaxLine = maxLine;
             requestLayout();
         }
+    }
+
+    /**
+     * has more line by the max line.
+     * @return  true if has more line
+     */
+    public boolean hasMoreLine(){
+        return mHasMoreByMaxLine;
     }
 
     @Override
@@ -133,9 +142,11 @@ public class FlowLayout extends ViewGroup {
                     if (rows == mMaxLine) {
                         limited = true;
                     }
+                    mHasMoreByMaxLine = false;
                 }else{
                     width = Math.max(width, lineWidth);
                     height += lineHeight;
+                    mHasMoreByMaxLine = true;
                     break;
                 }
             } else {

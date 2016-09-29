@@ -188,6 +188,9 @@ public class SlidingTabLayout extends HorizontalScrollView {
     public void setSelectIndicatorHeight(int height){
         mTabStrip.mSelectedIndicatorThickness = height;
     }
+    public void setBottomIndicatorHeight(int height){
+        mTabStrip.mBottomBorderThickness = height;
+    }
     public void setDrawBottomUnderLine(boolean draw){
         mTabStrip.mDrawBottomUnderline = draw;
     }

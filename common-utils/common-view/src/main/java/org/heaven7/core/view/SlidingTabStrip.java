@@ -37,7 +37,7 @@ class SlidingTabStrip extends LinearLayout implements SlidingTabLayout.OnTabList
     private static final byte DEFAULT_DIVIDER_COLOR_ALPHA = 0x20;
     private static final float DEFAULT_DIVIDER_HEIGHT = 0.5f;
 
-    private final int mBottomBorderThickness;
+    /*private final*/ int mBottomBorderThickness;
     private final Paint mBottomBorderPaint;
 
     /*private*/ int mSelectedIndicatorThickness;

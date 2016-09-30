@@ -54,6 +54,10 @@ public class FlowLayout extends ViewGroup {
         }
     }
 
+    public int getMaxLine(){
+        return mMaxLine;
+    }
+
     /**
      * has more line by the max line.
      * @return  true if has more line
